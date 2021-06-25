@@ -1,0 +1,7 @@
+<lcgdict>
+  <class name="mu2e::REveMainWindow"/>
+  <class name="mu2e::REveMu2eDataInterface"/>
+  <class name="mu2e::EventDisplayManager"/>
+  <class name="mu2e::DataCollections"/>
+  <class name="mu2e::CollectionFiller"/>
+</lcgdict>

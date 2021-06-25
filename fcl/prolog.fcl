@@ -1,0 +1,26 @@
+BEGIN_PROLOG
+			
+REveEventDisplayBase : {
+    module_type : REveEventDisplay
+   
+    showCRV : false
+    filler : {
+     diagLevel : 0
+     ComboHitCollection : "makeSH"
+     CaloClusterCollection : "CaloClusterFast"
+     KalSeedCollection : ["KFFDeM"]
+     addHits : true
+     addClusters : true
+     addKalSeeds : true
+     FillAll : false
+    }
+}  
+
+REveDis : {  
+	analyzers : { 	
+	    REveEventDisplayBase     : @local::REveEventDisplayBase
+	} 
+
+	seqBase 	: [REveEventDisplayBase]
+}
+END_PROLOG
