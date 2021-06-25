@@ -1,0 +1,32 @@
+#include "fcl/minimalMessageService.fcl"
+#include "fcl/standardServices.fcl"
+process_name : RunDisplay
+
+source : {
+  module_type : RootInput
+}
+
+services : @local::Services.Reco
+physics: {
+		analyzers: {
+
+        neweventdisplay: {
+				  module_type: REveEventDisplay
+				  showCRV	:	false
+                  filler : {
+                       diagLevel : 0
+                       ComboHitCollection : "makeSH"
+                       CaloClusterCollection : "CaloClusterFast"
+                       KalSeedCollection : ["KFFDeM"]
+                       addHits : true
+                       addClusters : true
+                       addKalSeeds : true
+                       FillAll : false
+                  }
+			}
+
+		}
+	}
+
+physics.EndPath : [ neweventdisplay ] 
+services.TFileService.fileName: "EventDisplay.root"
