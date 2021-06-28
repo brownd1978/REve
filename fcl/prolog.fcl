@@ -1,8 +1,7 @@
 BEGIN_PROLOG
 			
-REveEventDisplayBase : {
-    module_type : REveEventDisplay
-   
+REveEventDisplay : {
+    module_type : REveEventDisplay  
     showCRV : false
     filler : {
      diagLevel : 0
@@ -18,9 +17,9 @@ REveEventDisplayBase : {
 
 REveDis : {  
 	analyzers : { 	
-	    REveEventDisplayBase     : @local::REveEventDisplayBase
+	    REveEventDisplay     : @local::REveEventDisplay
 	} 
-
-	seqBase 	: [REveEventDisplayBase]
+	seqBase 	: [REveEventDisplay]
 }
+
 END_PROLOG

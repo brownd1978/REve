@@ -20,13 +20,9 @@
 
 #include "artdaq-core/Data/ContainerFragment.hh"
 #include "artdaq-core/Data/Fragment.hh"
-#include "artdaq/DAQdata/Globals.hh"
+//#include "artdaq/DAQdata/Globals.hh"
 
 #include "cetlib_except/exception.h"
-
-//mu2e:
-/*#include "otsdaq/Macros/CoutMacros.h"
-#include "otsdaq/MessageFacility/MessageFacility.h"*/
 
 //ROOT:
 //#include "art_root_io/TFileService.h" 
@@ -54,13 +50,8 @@
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic pop
 
-//OTS:
-/*#include "otsdaq/MessageFacility/MessageFacility.h"
-#include "otsdaq/Macros/CoutMacros.h"
-#include "otsdaq/Macros/ProcessorPluginMacros.h"*/
-
 //EveMu2e
-#include "REve/inc/EveMainWindow.hh"
+#include "REve/inc/REveMainWindow.hh"
 #include "REve/inc/EventDisplayManager.hh"
 #include "REve/inc/CollectionFiller.hh"
 #include "REve/inc/DataCollections.hh"
@@ -95,8 +86,7 @@ namespace mu2e
             }
     };
 
-    class REveEventDisplay : public art::EDAnalyzer
-    {
+    class REveEventDisplay : public art::EDAnalyzer {
       public:
         struct Config{
           using Name=fhicl::Name;
@@ -140,7 +130,7 @@ namespace mu2e
 
         TDirectory*   directory_ = nullptr;   
         CollectionFiller filler_;
-        EveMainWindow *frame_;
+        REveMainWindow *frame_;
         DataCollections data;
         bool firstLoop_ = true; 
         
@@ -246,11 +236,12 @@ namespace mu2e
       world->AddElement(eventMgr_);
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
-      frame_ = new EveMainWindow();
+      frame_ = new REveMainWindow();
       frame_->makeGeometryScene(eveMng_);
 
       std::unique_lock lock{m_};
       cv_.notify_all();
+ 
   }
 
   // Actually interesting function responsible for drawing the current event
