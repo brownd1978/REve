@@ -11,7 +11,7 @@ helper=mu2e_helper(env)
 
 babarlibs = env['BABARLIBS']
 rootlibs = env['ROOTLIBS']
-extrarootlibs = [ 'Geom', 'Geom', 'GeomPainter', 'Ged', 'Graf3d', 'Eve','EG', 'RGL','Gui', "Gdml" , "Core", "Rint", "ROOTEve","ROOTWebDisplay"]
+extrarootlibs = [ 'Geom', 'Geom', 'GeomPainter', 'Ged', 'Graf3d', 'Eve','EG', 'RGL','Gui', 'Gdml' , 'Core', 'Rint', 'ROOTEve','ROOTWebDisplay']
 
 userlibs = [ rootlibs,
              extrarootlibs,
@@ -57,7 +57,8 @@ userlibs = [ rootlibs,
             'HepPID',
             'Core',
             'boost_filesystem',
-            'boost_system'
+            'boost_system',
+            'pthread'
 			  ]
 
 
@@ -86,6 +87,7 @@ helper.make_plugins( [
     'tbb',
     'canvas',
      rootlibs,
+     extrarootlibs,
     'boost_filesystem',
     'mu2e_Mu2eInterfaces',
     'mu2e_DataProducts',
@@ -93,7 +95,8 @@ helper.make_plugins( [
     'mu2e_Mu2eUtilities',
     'mu2e_BFieldGeom',
     'mu2e_CRVAnalysis',
-    'mu2e_TrkDiag'
+    'mu2e_TrkDiag',
+    'pthread'
     ] )
 
 # Fixme: do I need all of babarlibs below?
