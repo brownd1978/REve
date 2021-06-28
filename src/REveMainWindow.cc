@@ -55,9 +55,9 @@ j++;
                 t(3,1) = rm[6]/10; t(3,2) = rm[7]/10; t(3,3) = rm[8]/10;
                 
                 if(caloshift){
-                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 10; t(3,4) = tv[2]/10+2360/10; //dz = CaloCenter - TrackerCenter = 2360 mm
+                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10; //dz = CaloCenter - TrackerCenter = 2360 mm
                 } else {
-                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 10; t(3,4) = tv[2]/10;
+                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10;
                 }
                 ctrans *= t;
             }
@@ -149,7 +149,7 @@ j++;
 
 
  void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data){
-    pass_data->AddCaloClusters(eveMng, firstLoop, data.clustercol, eventScene, mngRhoPhi, mngRhoZ, rPhiEventScene, rhoZEventScene );
+    //pass_data->AddCaloClusters(eveMng, firstLoop, data.clustercol, eventScene, mngRhoPhi, mngRhoZ, rPhiEventScene, rhoZEventScene );
     pass_data->AddComboHits(eveMng, firstLoop, data.chcol, eventScene, mngRhoPhi, mngRhoZ, rPhiEventScene, rhoZEventScene );
     pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene, mngRhoPhi, mngRhoZ, rPhiEventScene, rhoZEventScene );
     //projectScenes(eveMng,true, true);
