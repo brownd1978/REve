@@ -1,5 +1,5 @@
 
-#include "REveMu2eDataInterface.hh"
+#include "REve/inc/REveMu2eDataInterface.hh"
 using namespace mu2e;
 namespace REX = ROOT::Experimental;
 

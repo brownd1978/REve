@@ -14,11 +14,11 @@
 #include <TGListBox.h>
 
 
-#include "DataCollections.hh"
+#include "REve/inc/DataCollections.hh"
 
-namespace ots{
+namespace mu2e{
 
-    enum RecoDataProductName {ComboHits, CaloClusters, KalSeeds};
+  enum RecoDataProductName {ComboHits, CaloClusters, KalSeeds};
   
 	class CollectionFiller
 	{

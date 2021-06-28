@@ -20,7 +20,7 @@
 #include <tuple>
 #include <string>
 
-namespace ots{
+namespace mu2e{
 	class DataCollections
 	{
     public:
