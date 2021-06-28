@@ -19,7 +19,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             CLHEP::Hep3Vector COG(cluster.cog3Vector().x(),cluster.cog3Vector().y(), cluster.cog3Vector().z());
             //CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDiskFF(cluster.diskID(),COG);
             //CLHEP::Hep3Vector pointInMu2e = det->toMu2e(crystalPos);
-            ps1->SetNextPoint(COG.x()/10, COG.y()/10 + 10, COG.z()/10 + dz/10 - 70); //70cm = separation between disks TODO - extract from GeomService
+            ps1->SetNextPoint(COG.x()/10, COG.y()/10 + 100, COG.z()/10 + dz/10 - 70); //70cm = separation between disks TODO - extract from GeomService
         }
 
         ps1->SetMarkerColor(kRed);
@@ -33,21 +33,20 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
 void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::ComboHitCollection *chcol, REX::REveElement* &scene, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiEveScene, REX::REveScene  *rhoZEveScene){
     if(chcol!=0){
         auto ps1 = new REX::REvePointSet("combohits", "",1);
-
+        if(!firstLoop_){
+            scene->DestroyElements();;
+        }
         for(unsigned int i=0; i< chcol->size(); i++){
             mu2e::ComboHit const  &hit= (*chcol)[i];
             CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
-            ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 + 10, HitPos.z()/10); 
+            ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 + 100, HitPos.z()/10); 
         }
 
 
         ps1->SetMarkerColor(kBlue);
         ps1->SetMarkerStyle(4);
         ps1->SetMarkerSize(6);
-
         scene->AddElement(ps1); 
-        /*mngRhoPhi->ImportElements(ps1, rPhiEveScene);
-        mngRhoZ  ->ImportElements(ps1, rhoZEveScene);*/
     }
 }
 
@@ -55,7 +54,7 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
     std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
     std::vector<std::string> names = std::get<0>(track_tuple);
     std::vector<int> colour;
-    std::cout<<"size in DI "<<track_list.size()<<std::endl;
+
     for(unsigned int j=0; j< track_list.size(); j++){
       const KalSeedCollection* seedcol = track_list[j];
       colour.push_back(j+3);
@@ -89,7 +88,7 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
               XYZVec pos;
               segment.helix().position(fltL,pos);
               CLHEP::Hep3Vector p = Geom::Hep3Vec(pos);
-              line->SetNextPoint((p.x())/10, (p.y())/10 + 10, (p.z())/10);
+              line->SetNextPoint((p.x())/10, (p.y())/10 + 100, (p.z())/10);
             }
           }
         
