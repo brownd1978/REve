@@ -69,7 +69,39 @@ helper.make_dict_and_map()
 
 mainlib = helper.make_mainlib([userlibs])
 
-helper.make_plugins( [ 'mu2e_REveEventDisplay',userlibs ] )
+# helper.make_plugins( [ 'mu2e_REveEventDisplay',userlibs ] )
+# Fixme: split into link lists for each module.
+helper.make_plugins( [
+    mainlib,
+    'art_Framework_Core',
+    'art_Framework_Principal',
+    'art_Framework_Services_Registry',
+    'art_Utilities',
+    'art_Persistency_Provenance',
+    'art_root_io_TFileService',
+    'art_root_io_tfile_support',
+    'cetlib_except',
+    'fhiclcpp',
+    'fhiclcpp_types',
+    'tbb',
+    'canvas',
+     rootlibs,
+    'boost_filesystem',
+    'mu2e_Mu2eInterfaces',
+    'mu2e_DataProducts',
+    'mu2e_RecoDataProducts',
+    'mu2e_Mu2eUtilities',
+    'mu2e_BFieldGeom',
+    'mu2e_CRVAnalysis',
+    'mu2e_TrkDiag'
+    ] )
+
+# Fixme: do I need all of babarlibs below?
+helper.make_dict_and_map( [
+        mainlib,
+        'Core'
+    ] )
+
 
 
 
