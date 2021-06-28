@@ -1,4 +1,4 @@
-#include "REveMainWindow.hh"
+#include "REve/inc/REveMainWindow.hh"
 
 namespace REX = ROOT::Experimental;
 using namespace std;

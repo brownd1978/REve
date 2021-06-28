@@ -60,10 +60,10 @@
 #include "otsdaq/Macros/ProcessorPluginMacros.h"*/
 
 //EveMu2e
-#include "EveMainWindow.hh"
-#include "EventDisplayManager.hh"
-#include "CollectionFiller.hh"
-#include "DataCollections.hh"
+#include "REve/inc/EveMainWindow.hh"
+#include "REve/inc/EventDisplayManager.hh"
+#include "REve/inc/CollectionFiller.hh"
+#include "REve/inc/DataCollections.hh"
 
 #include "RecoDataProducts/inc/CaloCluster.hh"
 #include "RecoDataProducts/inc/ComboHit.hh"

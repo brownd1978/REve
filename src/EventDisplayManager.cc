@@ -1,7 +1,7 @@
-#include "EventDisplayManager.hh"
+#include "REve/inc/EventDisplayManager.hh"
 
 
-namespace ots {
+namespace mu2e {
 
   EventDisplayManager::EventDisplayManager(
     ROOT::Experimental::REveManager* eveMgr,
