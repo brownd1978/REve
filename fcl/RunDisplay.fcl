@@ -1,32 +1,20 @@
+# Sophie Middleton 
 #include "fcl/minimalMessageService.fcl"
+#include "fcl/standardProducers.fcl"
 #include "fcl/standardServices.fcl"
-process_name : RunDisplay
-
-source : {
-  module_type : RootInput
-}
+#include "REve/fcl/prolog.fcl"
 
 services : @local::Services.Reco
-physics: {
-		analyzers: {
 
-        neweventdisplay: {
-				  module_type: REveEventDisplay
-				  showCRV	:	false
-                  filler : {
-                       diagLevel : 0
-                       ComboHitCollection : "makeSH"
-                       CaloClusterCollection : "CaloClusterFast"
-                       KalSeedCollection : ["KFFDeM"]
-                       addHits : true
-                       addClusters : true
-                       addKalSeeds : true
-                       FillAll : false
-                  }
-			}
+process_name : HelixED
 
-		}
-	}
+source : { module_type : RootInput }
 
-physics.EndPath : [ neweventdisplay ] 
-services.TFileService.fileName: "EventDisplay.root"
+physics :
+{
+ analyzers : { @table::REveDis.analyzers}
+}
+
+physics.EndPath  : [ @sequence::REveDis.seqBase] 
+
+
