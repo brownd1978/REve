@@ -1,7 +1,7 @@
 # Sophie Middleton 
-#include "fcl/minimalMessageService.fcl"
-#include "fcl/standardProducers.fcl"
-#include "fcl/standardServices.fcl"
+#include "Offline/fcl/minimalMessageService.fcl"
+#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/fcl/standardServices.fcl"
 #include "REve/fcl/prolog.fcl"
 
 services : @local::Services.Reco
@@ -16,5 +16,7 @@ physics :
 }
 
 physics.EndPath  : [ @sequence::REveDis.seqBase] 
+
+services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
 
 
