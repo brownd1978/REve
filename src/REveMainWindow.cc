@@ -159,7 +159,7 @@ j++;
  void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng)
  {
 
-    TGeoManager *geom = TGeoManager::Import("fix.gdml");
+    TGeoManager *geom = TGeoManager::Import("REve/src/fix.gdml");
 
     TGeoVolume* topvol = geom->GetTopVolume();
     gGeoManager->SetTopVolume(topvol);
