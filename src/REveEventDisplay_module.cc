@@ -263,6 +263,7 @@ namespace mu2e
       eveMng_->GetScenes()->AcceptChanges(false);
       eveMng_->GetWorld()->EndAcceptingChanges();
       eveMng_->EnableRedraw();
+      
       std::cout<<"[REveEventDisplay : process_single_event] End "<<std::endl;
     }
   }
