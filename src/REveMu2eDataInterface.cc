@@ -3,11 +3,11 @@
 using namespace mu2e;
 namespace REX = ROOT::Experimental;
 
-void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::CaloClusterCollection *clustercol, REX::REveElement* &scene, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiEveScene, REX::REveScene  *rhoZEveScene){
+void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::CaloClusterCollection *clustercol, REX::REveElement* &scene, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngXYCaloDisk1, REX::REveProjectionManager *mngXYCaloDisk2, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiEveScene,  REX::REveScene  *&Calo1GeomScene, REX::REveScene  *&Calo2GeomScene, REX::REveScene  *rhoZEveScene){
     std::cout<<"[REveMu2eDataInterface] AddCaloClusters "<<std::endl;
     if(clustercol != 0){    
-        auto ps1 = new REX::REvePointSet("clusters", "",1);// TODO - add in descriptive label
-        
+        auto ps1 = new REX::REvePointSet("disk1", "",0);// TODO - add in descriptive label
+        auto ps2 = new REX::REvePointSet("disk2", "",0);
         if(!firstLoop_){
             scene->DestroyElements();;
         }
@@ -18,20 +18,27 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             CLHEP::Hep3Vector COG(cluster.cog3Vector().x(),cluster.cog3Vector().y(), cluster.cog3Vector().z());
             CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDiskFF(cluster.diskID(),COG);
             CLHEP::Hep3Vector pointInMu2e = det->toMu2e(crystalPos);
-            ps1->SetNextPoint(COG.x()/10, COG.y()/10 + 100, abs(pointInMu2e.z())/10); 
+            if(cluster.diskID() == 0) ps1->SetNextPoint(COG.x()/10, COG.y()/10 +50, abs(pointInMu2e.z())/10); 
+            if(cluster.diskID() == 1) ps2->SetNextPoint(COG.x()/10, COG.y()/10 +50, abs(pointInMu2e.z())/10); 
         }
 
         ps1->SetMarkerColor(kRed);
         ps1->SetMarkerStyle(4);
         ps1->SetMarkerSize(4);
-        scene->AddElement(ps1); 
+
+        ps2->SetMarkerColor(kRed);
+        ps2->SetMarkerStyle(4);
+        ps2->SetMarkerSize(4);
+    
+        if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
+        if(ps2->GetSize() !=0 ) scene->AddElement(ps2); 
     }
 }
 
-void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::ComboHitCollection *chcol, REX::REveElement* &scene, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiEveScene, REX::REveScene  *rhoZEveScene){
+void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::ComboHitCollection *chcol, REX::REveElement* &scene, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiEveScene,REX::REveScene  *rhoZEveScene){
     std::cout<<"[REveMu2eDataInterface] AddComboHits "<<std::endl;
     if(chcol!=0){
-        auto ps1 = new REX::REvePointSet("combohits", "",1); // TODO - add in descriptive label
+        auto ps1 = new REX::REvePointSet("ComboHits", "",0); // TODO - add in descriptive label
         if(!firstLoop_){
             scene->DestroyElements();;
         }
@@ -39,13 +46,13 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
         for(unsigned int i=0; i< chcol->size(); i++){
             mu2e::ComboHit const  &hit= (*chcol)[i];
             CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
-            ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 + 100, HitPos.z()/10); 
+            ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +50, HitPos.z()/10); 
         }
   
         ps1->SetMarkerColor(kBlue);
         ps1->SetMarkerStyle(4);
         ps1->SetMarkerSize(6);
-        scene->AddElement(ps1); 
+        if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
     }
 }
 
@@ -86,7 +93,7 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
               XYZVec pos;
               segment.helix().position(fltL,pos);
               CLHEP::Hep3Vector p = Geom::Hep3Vec(pos);
-              line->SetNextPoint((p.x())/10, (p.y())/10 + 100, (p.z())/10);
+              line->SetNextPoint((p.x())/10, (p.y())/10 +50, (p.z())/10);
             }
           }
         line->SetLineColor(kBlack);

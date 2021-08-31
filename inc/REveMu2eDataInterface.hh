@@ -38,7 +38,7 @@ namespace mu2e{
           #ifndef __CINT__
           REX::REveElement *fClusters;
           void AddComboHits(REX::REveManager *&eveMng,bool firstloop, const mu2e::ComboHitCollection *clustercol,REX::REveElement* &hitlist, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiGeomScene, REX::REveScene  *rhoZGeomScene);
-          void AddCaloClusters(REX::REveManager *&eveMng,bool firstloop, const mu2e::CaloClusterCollection *hitcol, REX::REveElement* &clusterlist, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiGeomScene, REX::REveScene  *rhoZGeomScene);
+          void AddCaloClusters(REX::REveManager *&eveMng,bool firstloop, const mu2e::CaloClusterCollection *hitcol, REX::REveElement* &clusterlist, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngXYCaloDisk1, REX::REveProjectionManager *mngXYCaloDisk2,REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiGeomScene, REX::REveScene  *&Calo1GeomScene, REX::REveScene  *&Calo2GeomScene, REX::REveScene  *rhoZGeomScene);
           void AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple,REX::REveElement* &tracklist, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiGeomScene, REX::REveScene  *rhoZGeomScene);
           #endif
           ClassDef(REveMu2eDataInterface, 0);
