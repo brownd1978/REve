@@ -6,8 +6,7 @@ namespace REX = ROOT::Experimental;
 void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::CaloClusterCollection *clustercol, REX::REveElement* &scene, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngXYCaloDisk1, REX::REveProjectionManager *mngXYCaloDisk2, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiEveScene,  REX::REveScene  *&Calo1GeomScene, REX::REveScene  *&Calo2GeomScene, REX::REveScene  *rhoZEveScene){
     std::cout<<"[REveMu2eDataInterface] AddCaloClusters "<<std::endl;
     if(clustercol != 0){    
-        auto ps1 = new REX::REvePointSet("disk1", "",0);// TODO - add in descriptive label
-        auto ps2 = new REX::REvePointSet("disk2", "",0);
+        
         if(!firstLoop_){
             scene->DestroyElements();;
         }
@@ -15,23 +14,33 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
         GeomHandle<DetectorSystem> det;
         for(unsigned int i=0; i< clustercol->size(); i++){
             mu2e::CaloCluster const  &cluster= (*clustercol)[i];
+            std::string cluster_energy = std::to_string(cluster.energyDep());
+            std::string cluster_time = std::to_string(cluster.time());
+            std::string cluster_x = std::to_string(cluster.cog3Vector().x());
+            std::string cluster_y = std::to_string(cluster.cog3Vector().y());
+            std::string cluster_z = std::to_string(cluster.cog3Vector().z());
+            std::string label =  "Energy Dep. = "+cluster_energy+" MeV "+", Time = "+cluster_time+" ns " +" Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
+            auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
+            auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
+            
             CLHEP::Hep3Vector COG(cluster.cog3Vector().x(),cluster.cog3Vector().y(), cluster.cog3Vector().z());
             CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDiskFF(cluster.diskID(),COG);
             CLHEP::Hep3Vector pointInMu2e = det->toMu2e(crystalPos);
+            
             if(cluster.diskID() == 0) ps1->SetNextPoint(COG.x()/10, COG.y()/10 +50, abs(pointInMu2e.z())/10); 
             if(cluster.diskID() == 1) ps2->SetNextPoint(COG.x()/10, COG.y()/10 +50, abs(pointInMu2e.z())/10); 
+
+            ps1->SetMarkerColor(kRed);
+            ps1->SetMarkerStyle(4);
+            ps1->SetMarkerSize(4);
+
+            ps2->SetMarkerColor(kRed);
+            ps2->SetMarkerStyle(4);
+            ps2->SetMarkerSize(4);
+        
+            if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
+            if(ps2->GetSize() !=0 ) scene->AddElement(ps2); 
         }
-
-        ps1->SetMarkerColor(kRed);
-        ps1->SetMarkerStyle(4);
-        ps1->SetMarkerSize(4);
-
-        ps2->SetMarkerColor(kRed);
-        ps2->SetMarkerStyle(4);
-        ps2->SetMarkerSize(4);
-    
-        if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
-        if(ps2->GetSize() !=0 ) scene->AddElement(ps2); 
     }
 }
 
@@ -69,7 +78,7 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
         for(unsigned int k = 0; k < seedcol->size(); k = k + 20){ 
           mu2e::KalSeed kseed = (*seedcol)[k];
           const std::vector<mu2e::KalSegment> &segments = kseed.segments();
-          size_t nSegments=segments.size();
+          unsigned int nSegments=segments.size();
           if(nSegments==0) continue;
           const mu2e::KalSegment &segmentFirst = kseed.segments().front();
           const mu2e::KalSegment &segmentLast = kseed.segments().back();
@@ -77,7 +86,7 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
           double fltLMax=segmentLast.fmax();
           auto line = new REX::REveLine(names[j], "",nSegments); // TODO - add in descriptive label
           
-          for(size_t m=0; m<nSegments; m++){
+          for(unsigned int m=0; m<nSegments; m++){
             const mu2e::KalSegment &segment = segments.at(m);
             fltLMin=segment.fmin();
             fltLMax=segment.fmax();
