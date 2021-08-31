@@ -59,17 +59,23 @@ namespace mu2e {
 
             void TestEventScene(REX::REveElement* event );
             void makeGeometryScene(REX::REveManager *eveMng);
-            void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop, DataCollections &data);//
+            void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop, DataCollections &data);
             
             void createProjectionStuff(REX::REveManager *eveMng);
             void AddTrackerProjection(REX::REveManager *eveMng);
             void projectScenes(REX::REveManager *eveMng,bool geomp, bool eventp);
             void projectEvents(REX::REveManager *eveMng);
-            REX::REveProjectionManager *mngRhoPhi = nullptr;
+            REX::REveProjectionManager *mngTrackerXY = nullptr;
+            REX::REveProjectionManager *mngXYCaloDisk1 = nullptr;
+            REX::REveProjectionManager *mngXYCaloDisk2 = nullptr;
             REX::REveProjectionManager *mngRhoZ   = nullptr;
-            REX::REveScene  *rPhiGeomScene = nullptr, *rPhiEventScene = nullptr;
+            REX::REveScene  *TrackerXYGeomScene = nullptr, *TrackerXYEventScene = nullptr;
+            REX::REveScene  *XYCaloDisk1GeomScene = nullptr, *XYCaloDisk1EventScene = nullptr;
+            REX::REveScene  *XYCaloDisk2GeomScene = nullptr, *XYCaloDisk2EventScene = nullptr;
             REX::REveScene  *rhoZGeomScene = nullptr, *rhoZEventScene = nullptr;
-            REX::REveViewer *rphiView = nullptr;
+            REX::REveViewer *TrackerXYView = nullptr;
+            REX::REveViewer *XYCaloDisk1View = nullptr;
+            REX::REveViewer *XYCaloDisk2View = nullptr;
             REX::REveViewer *rhoZView = nullptr;
             #endif
             ClassDef(REveMainWindow, 0);

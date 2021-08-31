@@ -17,8 +17,13 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     b1s->SetMainColor(kCyan);
     b1s->SetMainTransparency(100);
     holder->AddElement(b1s);
+    if(val == 24516){
+        mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
+    }if(val == 28772){
+        mngXYCaloDisk2->ImportElements(b1s, XYCaloDisk2GeomScene);
+    }
     if(val == 41612){
-        mngRhoPhi->ImportElements(b1s, rPhiGeomScene); //shows only one plane for simplicity
+        mngTrackerXY->ImportElements(b1s, TrackerXYGeomScene); //shows only one plane for simplicity
     }
         mngRhoZ  ->ImportElements(b1s, rhoZGeomScene);
     
@@ -55,9 +60,9 @@ j++;
                 t(3,1) = rm[6]/10; t(3,2) = rm[7]/10; t(3,3) = rm[8]/10;
                 
                 if(caloshift){
-                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10; //dz = CaloCenter - TrackerCenter = 2360 mm
+                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 50; t(3,4) = tv[2]/10+2360/10; //dz = CaloCenter - TrackerCenter = 2360 mm
                 } else {
-                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10;
+                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 50; t(3,4) = tv[2]/10;
                 }
                 ctrans *= t;
             }
@@ -85,7 +90,7 @@ j++;
 }
 
 
-  void REveMainWindow::projectScenes(REX::REveManager *eveMng,bool geomp, bool eventp)
+  /*void REveMainWindow::projectScenes(REX::REveManager *eveMng,bool geomp, bool eventp)
  {
     if (geomp)
     {
@@ -94,7 +99,7 @@ j++;
        {
           //ie->SetMainColor(kCyan);
           ie->SetMainTransparency(100);
-          mngRhoPhi->ImportElements(ie, rPhiGeomScene);
+          mngTrackerXY->ImportElements(ie, TrackerXYGeomScene);
           mngRhoZ  ->ImportElements(ie, rhoZGeomScene);
        }
     }
@@ -103,39 +108,41 @@ j++;
        for (auto &ie : eveMng->GetEventScene()->RefChildren())
        {
           
-          mngRhoPhi->ImportElements(ie, rPhiEventScene);
+          mngTrackerXY->ImportElements(ie, TrackerXYEventScene);
           mngRhoZ  ->ImportElements(ie, rhoZEventScene);
        }
     }
 
- }
+ }*/
 
  void REveMainWindow::projectEvents(REX::REveManager *eveMng)
  {
     
        for (auto &ie : eveMng->GetEventScene()->RefChildren())
        {
-          mngRhoPhi->ImportElements(ie, rPhiEventScene);
+          mngTrackerXY->ImportElements(ie, TrackerXYEventScene);
           mngRhoZ  ->ImportElements(ie, rhoZEventScene);
+          if(ie->GetName() == "disk1") mngXYCaloDisk1->ImportElements(ie, XYCaloDisk1EventScene);
+          if(ie->GetName() == "disk2") mngXYCaloDisk2->ImportElements(ie, XYCaloDisk2EventScene);
        }
-    
+     
 
  }
 
  void REveMainWindow::createProjectionStuff(REX::REveManager *eveMng)
  {
 
-    // project RhoPhi
-    rPhiGeomScene  = eveMng->SpawnNewScene("RPhi Geometry","RPhi");
-    rPhiEventScene = eveMng->SpawnNewScene("RPhi Event Data","RPhi");
+    // -------------------Tracker XY View ----------------------------------
+    TrackerXYGeomScene  = eveMng->SpawnNewScene("TrackerXY Geometry","TrackerXY");
+    TrackerXYEventScene = eveMng->SpawnNewScene("TrackerXY Event Data","TrackerXY");
   
-    mngRhoPhi = new REX::REveProjectionManager(REX::REveProjection::kPT_RPhi);
+    mngTrackerXY = new REX::REveProjectionManager(REX::REveProjection::kPT_RPhi);
   
-    rphiView = eveMng->SpawnNewViewer("RPhi View", "");
-    rphiView->AddScene(rPhiGeomScene);
-    rphiView->AddScene(rPhiEventScene);
+    TrackerXYView = eveMng->SpawnNewViewer("TrackerXY View", "");
+    TrackerXYView->AddScene(TrackerXYGeomScene);
+    TrackerXYView->AddScene(TrackerXYEventScene);
   
-    // ----------------------------------------------------------------
+    // --------------------Tracker + Calo XZ View ------------------------------
   
     rhoZGeomScene  = eveMng->SpawnNewScene("RhoZ Geometry", "RhoZ");
     rhoZEventScene = eveMng->SpawnNewScene("RhoZ Event Data","RhoZ");
@@ -145,14 +152,38 @@ j++;
     rhoZView = eveMng->SpawnNewViewer("RhoZ View", "");
     rhoZView->AddScene(rhoZGeomScene);
     rhoZView->AddScene(rhoZEventScene);
+    
+     // ---------------------Calo Disk 1 XY View ----------------------------
+    
+    XYCaloDisk1GeomScene  = eveMng->SpawnNewScene("XYCaloDisk1 Geometry", "XYCaloDisk1");
+    XYCaloDisk1EventScene = eveMng->SpawnNewScene("XYCaloDisk1 Event Data","XYCaloDisk1");
+  
+    mngXYCaloDisk1 = new REX::REveProjectionManager(REX::REveProjection::kPT_RPhi);
+  
+    XYCaloDisk1View = eveMng->SpawnNewViewer("XYCaloDisk1 View", "");
+    XYCaloDisk1View->AddScene(XYCaloDisk1GeomScene);
+    XYCaloDisk1View->AddScene(XYCaloDisk1EventScene);
+    
+    // -------------------- Calo Disk 2 XY View ------------------------
+    
+    XYCaloDisk2GeomScene  = eveMng->SpawnNewScene("XYCaloDisk2 Geometry", "XYCaloDisk2");
+    XYCaloDisk2EventScene = eveMng->SpawnNewScene("XYCaloDisk2 Event Data","XYCaloDisk2");
+  
+    mngXYCaloDisk2 = new REX::REveProjectionManager(REX::REveProjection::kPT_RPhi);
+  
+    XYCaloDisk2View = eveMng->SpawnNewViewer("XYCaloDisk2 View", "");
+    XYCaloDisk2View->AddScene(XYCaloDisk2GeomScene);
+    XYCaloDisk2View->AddScene(XYCaloDisk2EventScene);
+    
+    
  }
 
 
  void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data){
-    if(data.clustercol->size() !=0) pass_data->AddCaloClusters(eveMng, firstLoop, data.clustercol, eventScene, mngRhoPhi, mngRhoZ, rPhiEventScene, rhoZEventScene );
-    if(data.chcol->size() !=0)pass_data->AddComboHits(eveMng, firstLoop, data.chcol, eventScene, mngRhoPhi, mngRhoZ, rPhiEventScene, rhoZEventScene );
+    if(data.clustercol->size() !=0) pass_data->AddCaloClusters(eveMng, firstLoop, data.clustercol, eventScene, mngTrackerXY, mngXYCaloDisk1, mngXYCaloDisk2, mngRhoZ, XYCaloDisk1EventScene, XYCaloDisk2EventScene, XYCaloDisk2EventScene, rhoZEventScene );
+    //if(data.chcol->size() !=0)pass_data->AddComboHits(eveMng, firstLoop, data.chcol, eventScene, mngTrackerXY, mngRhoZ, TrackerXYEventScene, rhoZEventScene );
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
-    if(track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene, mngRhoPhi, mngRhoZ, rPhiEventScene, rhoZEventScene );
+    if(track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene, mngTrackerXY, mngRhoZ, TrackerXYEventScene, rhoZEventScene );
     //projectScenes(eveMng,true, true);
     projectEvents(eveMng);
  }
@@ -166,7 +197,7 @@ j++;
     gGeoManager->SetTopVolume(topvol);
     gGeoManager->SetTopVisible(kFALSE);
     TGeoNode* topnode = gGeoManager->GetTopNode(); 
-     createProjectionStuff(eveMng);
+    createProjectionStuff(eveMng);
     std::string name(topnode->GetName());
     {
         auto holder = new REX::REveElement("Inside DS");
