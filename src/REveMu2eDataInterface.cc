@@ -18,17 +18,19 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             std::string cluster_time = std::to_string(cluster.time());
             std::string cluster_x = std::to_string(cluster.cog3Vector().x());
             std::string cluster_y = std::to_string(cluster.cog3Vector().y());
-            std::string cluster_z = std::to_string(cluster.cog3Vector().z());
-            std::string label =  "Energy Dep. = "+cluster_energy+" MeV "+", Time = "+cluster_time+" ns " +" Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
-            auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
-            auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
             
             CLHEP::Hep3Vector COG(cluster.cog3Vector().x(),cluster.cog3Vector().y(), cluster.cog3Vector().z());
             CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDiskFF(cluster.diskID(),COG);
             CLHEP::Hep3Vector pointInMu2e = det->toMu2e(crystalPos);
             
-            if(cluster.diskID() == 0) ps1->SetNextPoint(COG.x()/10, COG.y()/10 +50, abs(pointInMu2e.z())/10); 
-            if(cluster.diskID() == 1) ps2->SetNextPoint(COG.x()/10, COG.y()/10 +50, abs(pointInMu2e.z())/10); 
+            std::string cluster_z = std::to_string(abs(pointInMu2e.z()));
+            
+            std::string label =  "Energy Dep. = "+cluster_energy+" MeV "+", Time = "+cluster_time+" ns " +" Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
+            auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
+            auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
+            
+            if(cluster.diskID() == 0) ps1->SetNextPoint(COG.x()/10, COG.y()/10 +100, abs(pointInMu2e.z())/10); 
+            if(cluster.diskID() == 1) ps2->SetNextPoint(COG.x()/10, COG.y()/10 +100, abs(pointInMu2e.z())/10); 
 
             ps1->SetMarkerColor(kRed);
             ps1->SetMarkerStyle(4);
@@ -55,7 +57,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
         for(unsigned int i=0; i< chcol->size(); i++){
             mu2e::ComboHit const  &hit= (*chcol)[i];
             CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
-            ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +50, HitPos.z()/10); 
+            ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); 
         }
   
         ps1->SetMarkerColor(kBlue);
@@ -84,7 +86,7 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
           const mu2e::KalSegment &segmentLast = kseed.segments().back();
           double fltLMin=segmentFirst.fmin();
           double fltLMax=segmentLast.fmax();
-          auto line = new REX::REveLine(names[j], "",nSegments); // TODO - add in descriptive label
+          auto line = new REX::REveLine(names[j], names[j],nSegments); 
           
           for(unsigned int m=0; m<nSegments; m++){
             const mu2e::KalSegment &segment = segments.at(m);
@@ -102,7 +104,7 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
               XYZVec pos;
               segment.helix().position(fltL,pos);
               CLHEP::Hep3Vector p = Geom::Hep3Vec(pos);
-              line->SetNextPoint((p.x())/10, (p.y())/10 +50, (p.z())/10);
+              line->SetNextPoint((p.x())/10, (p.y())/10 +100, (p.z())/10);
             }
           }
         line->SetLineColor(kBlack);

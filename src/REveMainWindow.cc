@@ -4,7 +4,8 @@ namespace REX = ROOT::Experimental;
 using namespace std;
 using namespace mu2e;
 
-
+double disk1_center = -49.4705;
+double disk2_center = 20.95295;
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val)
  {
 
@@ -13,7 +14,6 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     b1s->InitMainTrans();
     b1s->RefMainTrans().SetFrom(trans.Array());
     b1s->SetShape(gss);
-    //b1s->SetMainColor(kGray-10);
     b1s->SetMainColor(kCyan);
     b1s->SetMainTransparency(100);
     holder->AddElement(b1s);
@@ -25,19 +25,20 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     if(val == 41612){
         mngTrackerXY->ImportElements(b1s, TrackerXYGeomScene); //shows only one plane for simplicity
     }
-        mngRhoZ  ->ImportElements(b1s, rhoZGeomScene);
+    mngRhoZ  ->ImportElements(b1s, rhoZGeomScene);
+    
     
  }
 int fp = 0;
 int j = 0;
-void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift) {
+void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal) {
     ++level;
     if (level > maxlevel){
        return;
     }
     std::string name(n->GetName());
-    fp++;
-j++;
+    
+    j++;
     int ndau = n->GetNdaughters();
     for ( int i=0; i<ndau; ++i ){
         TGeoNode * pn = n->GetDaughter(i);
@@ -60,9 +61,15 @@ j++;
                 t(3,1) = rm[6]/10; t(3,2) = rm[7]/10; t(3,3) = rm[8]/10;
                 
                 if(caloshift){
-                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 50; t(3,4) = tv[2]/10+2360/10; //dz = CaloCenter - TrackerCenter = 2360 mm
+                    fp++;
+                    double d = 0;
+                    if(fp < 674) { d = disk1_center; }
+                    else { d = disk2_center; }
+                    if(crystal) { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10 + d; } //dz=CaloCenter-TrackerCenter= 2360 mm
+                    else { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10; }
+                    std::cout<<fp<<" "<<crystal<<" "<<name<<" Pos : "<< tv[0]/10 + 100<<" "<< tv[1]/10 <<" "<< tv[2]/10<<std::endl;
                 } else {
-                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 50; t(3,4) = tv[2]/10;
+                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10;
                 }
                 ctrans *= t;
             }
@@ -71,7 +78,7 @@ j++;
             //}
         }
        
-       showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift);
+       showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal);
        }
     
   } 
@@ -79,13 +86,17 @@ j++;
 
  //Function to hide all elements which are not PS,TS, DS:
   void REveMainWindow::SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level) {
-    static std::vector <std::string> substrings  {"caloDisk"}; 
-    for(auto& i: substrings){
-     showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true);
+    static std::vector <std::string> substrings_disk  {"caloDisk"}; 
+    for(auto& i: substrings_disk){
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false);
     }
-    static std::vector <std::string> substringst  {  "TrackerPlaneEnvelope"};//"TrackerSupportServiceSectionEnvelope",
+    static std::vector <std::string> substringst  {"TrackerPlaneEnvelope"};//"TrackerSupportServiceSectionEnvelope",
     for(auto& i: substringst){
-     showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false);
+    }
+    static std::vector <std::string> substrings_crystal  {"caloCrystal"};  
+    for(auto& i: substrings_crystal){
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true);
     }
 }
 
