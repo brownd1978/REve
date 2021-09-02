@@ -6,7 +6,7 @@ using namespace mu2e;
 
 double disk1_center = -49.4705;
 double disk2_center = 20.95295;
-void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val)
+void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2)
  {
 
     auto gss = n->GetVolume()->GetShape();
@@ -17,9 +17,9 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     b1s->SetMainColor(kCyan);
     b1s->SetMainTransparency(100);
     holder->AddElement(b1s);
-    if(val == 24516){
+    if(crystal1){ //val == 24516){
         mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
-    }if(val == 28772){
+    }if(crystal2){//val == 28772){
         mngXYCaloDisk2->ImportElements(b1s, XYCaloDisk2GeomScene);
     }
     if(val == 41612){
@@ -39,14 +39,15 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     std::string name(n->GetName());
     
     j++;
+    bool cry1 = false; // these help us know which disk and to draw crystals
+    bool cry2 = false;
     int ndau = n->GetNdaughters();
     for ( int i=0; i<ndau; ++i ){
         TGeoNode * pn = n->GetDaughter(i);
         
         if (name.find(str)!= std::string::npos and i==0 ){ //To make the geometry translucant we only add i==0
 
-            //if( j==41612) {
-            std::cout<<j<<" "<<name<<std::endl;
+            //std::cout<<j<<" "<<name<<std::endl;
             
             //TGeoMaterial* material = n->GetVolume()->GetMaterial();
             REX::REveTrans ctrans;
@@ -67,15 +68,16 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                     else { d = disk2_center; }
                     if(crystal) { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10 + d; } //dz=CaloCenter-TrackerCenter= 2360 mm
                     else { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10; }
-                    std::cout<<fp<<" "<<crystal<<" "<<name<<" Pos : "<< tv[0]/10 + 100<<" "<< tv[1]/10 <<" "<< tv[2]/10<<std::endl;
+                    if (fp < 674 and crystal) cry1 = true;
+                    if (fp >= 674 and crystal) cry2 = true;
                 } else {
                     t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10;
                 }
                 ctrans *= t;
             }
             n->ls();
-            makeEveGeoShape(n, ctrans, holder, j);
-            //}
+            makeEveGeoShape(n, ctrans, holder, j,cry1, cry2);
+            
         }
        
        showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal);
