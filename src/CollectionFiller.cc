@@ -11,9 +11,11 @@ namespace mu2e{
         chTag_(conf.chTag()),
         cluTag_(conf.cluTag()),
         kalSeedTag_(conf.kalSeedTag()),
+        cosmicTrackSeedTag_(conf.cosmicTrackSeedTag()),
         addHits_(conf.addHits()),
         addClusters_(conf.addClusters()),
         addKalSeeds_(conf.addKalSeeds()),
+        addCosmicTrackSeeds_(conf.addCosmicTrackSeeds()),
         FillAll_(conf.FillAll())
         {}
 
@@ -48,6 +50,10 @@ namespace mu2e{
             }
             data.track_tuple = std::make_tuple(data.track_labels,data.track_list);
             std::cout<<"size "<<data.track_list.size()<<std::endl;
+        }
+        if(FillAll_  or (CollectionName == CosmicTrackSeeds)){
+            auto chH = evt.getValidHandle<mu2e::CosmicTrackSeedCollection>(cosmicTrackSeedTag_);
+            data.CosmicTrackSeedcol = chH.product();
         }
     }
 

@@ -13,12 +13,11 @@
 #include <TGComboBox.h>
 #include <TGListBox.h>
 
-
 #include "REve/inc/DataCollections.hh"
 
 namespace mu2e{
 
-  enum RecoDataProductName {ComboHits, CaloClusters, KalSeeds};
+  enum RecoDataProductName {ComboHits, CaloClusters, KalSeeds, CosmicTrackSeeds};
   
 	class CollectionFiller
 	{
@@ -30,9 +29,11 @@ namespace mu2e{
           fhicl::Atom<art::InputTag>chTag{Name("ComboHitCollection"),Comment("chTag"), "makePH"};
           fhicl::Atom<art::InputTag>cluTag{Name("CaloClusterCollection"),Comment("cluTag")};
           fhicl::Sequence<art::InputTag>kalSeedTag{Name("KalSeedCollection"),Comment("kalseedTag")};
+          fhicl::Atom<art::InputTag>cosmicTrackSeedTag{Name("CosmicTrackSeedCollection"),Comment("cosmicTrackSeedTag")};
           fhicl::Atom<bool> addHits{Name("addHits"), Comment("set to add the hits"),false};
           fhicl::Atom<bool> addClusters{Name("addClusters"), Comment("set to add caloclusters"),false};
           fhicl::Atom<bool> addKalSeeds{Name("addKalSeeds"), Comment("set to add kalseeds"),false};
+          fhicl::Atom<bool> addCosmicTrackSeeds{Name("addCosmicTrackSeeds"), Comment("set to add cosmic track seeds"),false};
           fhicl::Atom<bool> FillAll{Name("FillAll"), Comment("to see all available products"), false};
         };
 
@@ -43,9 +44,10 @@ namespace mu2e{
         art::InputTag chTag_;
         art::InputTag cluTag_;
         std::vector<art::InputTag> kalSeedTag_;
+        art::InputTag cosmicTrackSeedTag_;
         art::Event *_event;
         art::Run *_run;
-        bool addHits_,  addClusters_, addKalSeeds_, FillAll_;
+        bool addHits_,  addClusters_, addKalSeeds_, addCosmicTrackSeeds_, FillAll_;
         void FillRecoCollections(const art::Event& evt, DataCollections &data, RecoDataProductName code);
         virtual ~CollectionFiller(){};
 

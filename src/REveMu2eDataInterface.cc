@@ -1,9 +1,8 @@
-
 #include "REve/inc/REveMu2eDataInterface.hh"
 using namespace mu2e;
 namespace REX = ROOT::Experimental;
 
-void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::CaloClusterCollection *clustercol, REX::REveElement* &scene, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngXYCaloDisk1, REX::REveProjectionManager *mngXYCaloDisk2, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiEveScene,  REX::REveScene  *&Calo1GeomScene, REX::REveScene  *&Calo2GeomScene, REX::REveScene  *rhoZEveScene){
+void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::CaloClusterCollection *clustercol, REX::REveElement* &scene){
     std::cout<<"[REveMu2eDataInterface] AddCaloClusters "<<std::endl;
     if(clustercol != 0){    
         
@@ -46,7 +45,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
     }
 }
 
-void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::ComboHitCollection *chcol, REX::REveElement* &scene, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiEveScene,REX::REveScene  *rhoZEveScene){
+void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::ComboHitCollection *chcol, REX::REveElement* &scene){
     std::cout<<"[REveMu2eDataInterface] AddComboHits "<<std::endl;
     if(chcol!=0){
         auto ps1 = new REX::REvePointSet("ComboHits", "",0); // TODO - add in descriptive label
@@ -67,7 +66,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
     }
 }
 
-void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiEveScene, REX::REveScene  *rhoZEveScene){
+void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
     std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
     std::vector<std::string> names = std::get<0>(track_tuple);
     std::vector<int> colour;
@@ -113,7 +112,33 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
     }
    }
   }
+  
 }
 
+void REveMu2eDataInterface::AddCosmicTrackFit(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::CosmicTrackSeedCollection *cosmiccol, REX::REveElement* &scene){
+      std::cout<<"[REveMu2eDataInterface] AddCosmicTrackSeed "<<std::endl;
+      if(cosmiccol!=0){
+          auto line = new REX::REveLine("Cosmic","Cosmic",2); 
+          if(!firstLoop_){
+              scene->DestroyElements();;
+          }
+          for(unsigned int i=0; i< cosmiccol->size(); i++){
+              mu2e::CosmicTrackSeed const  &sts= (*cosmiccol)[i];      
+              mu2e::CosmicTrack st = sts._track;
+              double ty1 = sts._straw_chits[0].pos().y();
+              double ty2 = sts._straw_chits[sts._straw_chits.size()-1].pos().y();
+              double tx1 = st.MinuitParams.A0  - st.MinuitParams.A1*ty1;
+              double tx2 = st.MinuitParams.A0  - st.MinuitParams.A1*ty2;
+              double tz1 = st.MinuitParams.B0  - st.MinuitParams.B1*ty1;
+              double tz2 = st.MinuitParams.B0  - st.MinuitParams.B1*ty2; 	
+              line->SetNextPoint((tx1)/10, (ty1)/10, (tz1)/10);
+              line->SetNextPoint((tx2)/10, (ty2)/10, (tz2)/10);
+          }
+    
+          line->SetLineColor(kGreen);
+          line->SetLineWidth(5);
+          scene->AddElement(line);
+      }
 
+}
 

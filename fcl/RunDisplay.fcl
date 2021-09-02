@@ -15,6 +15,8 @@ physics :
  analyzers : { @table::REveDis.analyzers}
 }
 
+physics.analyzers.filler.REveEventDisplay.addKalSeeds : false
+physics.analyzers.filler.REveEventDisplay.addCaloClusters: false
 physics.EndPath  : [ @sequence::REveDis.seqBase] 
 
 services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
