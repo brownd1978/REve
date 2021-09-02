@@ -191,6 +191,7 @@ namespace mu2e
       if(filler_.addClusters_)  filler_.FillRecoCollections(event, data, CaloClusters);
       if(filler_.addHits_)  filler_.FillRecoCollections(event, data, ComboHits);
       if(filler_.addKalSeeds_)  filler_.FillRecoCollections(event, data, KalSeeds);
+      if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
       //if (displayedEventID_ != test::invalid_event)
       //{
       std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;

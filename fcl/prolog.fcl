@@ -8,9 +8,11 @@ REveEventDisplay : {
      ComboHitCollection : "makeSH"
      CaloClusterCollection : "CaloClusterFast"
      KalSeedCollection : ["KFFDeM"]
-     addHits : true
-     addClusters : true
-     addKalSeeds : true
+     CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
+     addHits : false
+     addClusters : false
+     addKalSeeds : false
+     addCosmicTrackSeeds : true
      FillAll : false
     }
 }  

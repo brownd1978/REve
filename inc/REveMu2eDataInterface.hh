@@ -9,6 +9,7 @@
 #include "RecoDataProducts/inc/CaloCluster.hh"
 #include "RecoDataProducts/inc/ComboHit.hh"
 #include "RecoDataProducts/inc/KalSeed.hh"
+#include "RecoDataProducts/inc/CosmicTrackSeed.hh"
 #include "RecoDataProducts/inc/ComboHit.hh"
 #include "GeometryService/inc/GeomHandle.hh"
 #include "CalorimeterGeom/inc/CaloGeomUtil.hh"
@@ -36,10 +37,10 @@ namespace mu2e{
           REveMu2eDataInterface& operator=(const REveMu2eDataInterface &);
           virtual ~REveMu2eDataInterface() = default;
           #ifndef __CINT__
-          REX::REveElement *fClusters;
-          void AddComboHits(REX::REveManager *&eveMng,bool firstloop, const mu2e::ComboHitCollection *clustercol,REX::REveElement* &hitlist, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiGeomScene, REX::REveScene  *rhoZGeomScene);
-          void AddCaloClusters(REX::REveManager *&eveMng,bool firstloop, const mu2e::CaloClusterCollection *hitcol, REX::REveElement* &clusterlist, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngXYCaloDisk1, REX::REveProjectionManager *mngXYCaloDisk2,REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiGeomScene, REX::REveScene  *&Calo1GeomScene, REX::REveScene  *&Calo2GeomScene, REX::REveScene  *rhoZGeomScene);
-          void AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple,REX::REveElement* &tracklist, REX::REveProjectionManager *mngRhoPhi, REX::REveProjectionManager *mngRhoZ, REX::REveScene  *rPhiGeomScene, REX::REveScene  *rhoZGeomScene);
+          void AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::ComboHitCollection *chcol, REX::REveElement* &scene);
+          void AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::CaloClusterCollection *clustercol, REX::REveElement* &scene);
+          void AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene);
+          void AddCosmicTrackFit(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::CosmicTrackSeedCollection *cosmiccol, REX::REveElement* &scene);
           #endif
           ClassDef(REveMu2eDataInterface, 0);
       }; 
