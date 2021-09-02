@@ -193,10 +193,10 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
 
 
  void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data){
-    //if(data.clustercol->size() !=0) pass_data->AddCaloClusters(eveMng, firstLoop, data.clustercol, eventScene);
-    //if(data.chcol->size() !=0)pass_data->AddComboHits(eveMng, firstLoop, data.chcol, eventScene);
-    //std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
-    //if(track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
+    if(data.clustercol->size() !=0) pass_data->AddCaloClusters(eveMng, firstLoop, data.clustercol, eventScene);
+    if(data.chcol->size() !=0)pass_data->AddComboHits(eveMng, firstLoop, data.chcol, eventScene);
+    std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
+    if(track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
     if(data.CosmicTrackSeedcol->size() !=0) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
     projectEvents(eveMng);
  }

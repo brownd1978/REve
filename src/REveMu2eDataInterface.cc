@@ -131,8 +131,8 @@ void REveMu2eDataInterface::AddCosmicTrackFit(REX::REveManager *&eveMng, bool fi
               double tx2 = st.MinuitParams.A0  - st.MinuitParams.A1*ty2;
               double tz1 = st.MinuitParams.B0  - st.MinuitParams.B1*ty1;
               double tz2 = st.MinuitParams.B0  - st.MinuitParams.B1*ty2; 	
-              line->SetNextPoint((tx1)/10, (ty1)/10, (tz1)/10);
-              line->SetNextPoint((tx2)/10, (ty2)/10, (tz2)/10);
+              line->SetNextPoint((tx1)/10, (ty1)/10 + 100, (tz1)/10);
+              line->SetNextPoint((tx2)/10, (ty2)/10 + 100, (tz2)/10);
           }
     
           line->SetLineColor(kGreen);
