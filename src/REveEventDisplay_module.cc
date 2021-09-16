@@ -56,13 +56,13 @@
 #include "REve/inc/CollectionFiller.hh"
 #include "REve/inc/DataCollections.hh"
 
-#include "RecoDataProducts/inc/CaloCluster.hh"
-#include "RecoDataProducts/inc/ComboHit.hh"
-#include "GeometryService/inc/GeomHandle.hh"
-#include "CalorimeterGeom/inc/CaloGeomUtil.hh"
-#include "CalorimeterGeom/inc/Calorimeter.hh"
-#include "GeometryService/inc/DetectorSystem.hh"
-#include "Mu2eInterfaces/inc/Detector.hh"
+#include "Offline/RecoDataProducts/inc/CaloCluster.hh"
+#include "Offline/RecoDataProducts/inc/ComboHit.hh"
+#include "Offline/GeometryService/inc/GeomHandle.hh"
+#include "Offline/CalorimeterGeom/inc/CaloGeomUtil.hh"
+#include "Offline/CalorimeterGeom/inc/Calorimeter.hh"
+#include "Offline/GeometryService/inc/DetectorSystem.hh"
+#include "Offline/Mu2eInterfaces/inc/Detector.hh"
 
 
 using namespace std;

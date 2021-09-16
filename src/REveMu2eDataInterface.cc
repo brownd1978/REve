@@ -100,9 +100,9 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
               fltLMax=(fltLMax+fltLMinNext)/2.0;
             }
             for(double fltL=fltLMin; fltL<=fltLMax; fltL+=1.0){
-              XYZVec pos;
+              XYZVectorF pos;
               segment.helix().position(fltL,pos);
-              CLHEP::Hep3Vector p = Geom::Hep3Vec(pos);
+              CLHEP::Hep3Vector p =  GenVector::Hep3Vec(pos);
               line->SetNextPoint((p.x())/10, (p.y())/10 +100, (p.z())/10);
             }
           }
