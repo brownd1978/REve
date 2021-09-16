@@ -38,8 +38,8 @@
 #include <ROOT/REveTrackPropagator.hxx>
 #include <ROOT/REveEllipsoid.hxx>
 #include "art/Framework/Principal/Event.h"
-#include "DataCollections.hh"
-#include "REveMu2eDataInterface.hh"
+#include "REve/inc/DataCollections.hh"
+#include "REve/inc/REveMu2eDataInterface.hh"
 
 namespace REX = ROOT::Experimental;
  
