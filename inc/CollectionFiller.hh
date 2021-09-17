@@ -8,7 +8,7 @@
 #include "fhiclcpp/types/Sequence.h"
 #include "fhiclcpp/types/Table.h"
 
-#include<TObject.h>
+#include <TObject.h>
 #include <TROOT.h>
 #include <TGComboBox.h>
 #include <TGListBox.h>
