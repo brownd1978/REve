@@ -9,9 +9,9 @@ REveEventDisplay : {
      CaloClusterCollection : "CaloClusterFast"
      KalSeedCollection : ["KFFDeM"]
      CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
-     addHits : false
-     addClusters : false
-     addKalSeeds : false
+     addHits : true
+     addClusters : true
+     addKalSeeds : true
      addCosmicTrackSeeds : true
      FillAll : false
     }
