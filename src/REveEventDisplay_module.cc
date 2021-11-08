@@ -114,6 +114,7 @@ namespace mu2e
         void setup_eve();
         void run_application();
         void process_single_event();
+        void printOpts();
 
         // Application control
         TApplication application_{"none", nullptr, nullptr};
@@ -178,7 +179,18 @@ namespace mu2e
 
   }
 
-
+  void REveEventDisplay::printOpts(){
+    std::cout<<"*********** REve Mu2e **************"
+    <<" User Options: "
+    <<" addHits : "<<filler_.addHits_
+    <<" addClusters : "<<filler_.addClusters_
+    <<" addTracks : "<<filler_.addKalSeeds_
+    <<" addCosmicTrackSeeds : "<<filler_.addCosmicTrackSeeds_<<std::endl;
+    
+  }
+  
+  
+  
   void REveEventDisplay::analyze(art::Event const& event){
 
       std::cout<<"[REveEventDisplay : analyze()] (event, sub, run): "<<event.id().event()<<" "<<event.subRun()<<" "<<event.run()<<std::endl;
@@ -238,7 +250,7 @@ namespace mu2e
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
       frame_ = new REveMainWindow();
-      frame_->makeGeometryScene(eveMng_);
+      frame_->makeGeometryScene(eveMng_,showCRV_);
 
       std::unique_lock lock{m_};
       cv_.notify_all();

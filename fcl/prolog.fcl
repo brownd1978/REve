@@ -2,17 +2,17 @@ BEGIN_PROLOG
 			
 REveEventDisplay : {
     module_type : REveEventDisplay  
-    showCRV : false
+    showCRV : true
     filler : {
      diagLevel : 0
      ComboHitCollection : "makeSH"
      CaloClusterCollection : "CaloClusterFast"
      KalSeedCollection : ["KFFDeM"]
      CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
-     addHits : false
-     addClusters : false
-     addKalSeeds : false
-     addCosmicTrackSeeds : true
+     addHits : true
+     addClusters : true
+     addKalSeeds : true
+     addCosmicTrackSeeds : false
      FillAll : false
     }
 }  

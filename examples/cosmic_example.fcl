@@ -1,0 +1,27 @@
+# author : Sophie Middleton 
+# purpose : example for straight cosmic tracks
+#include "Offline/fcl/minimalMessageService.fcl"
+#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/fcl/standardServices.fcl"
+#include "REve/fcl/prolog.fcl"
+
+services : @local::Services.Reco
+
+process_name : StraightCosmicFitED
+
+source : { module_type : RootInput }
+
+physics :
+{
+ analyzers : { @table::REveDis.analyzers}
+}
+
+physics.analyzers.filler.REveEventDisplay.addKalSeeds : false
+physics.analyzers.filler.REveEventDisplay.addCaloClusters : false
+physics.analyzers.filler.REveEventDisplay.addHits : true
+physics.analyzers.filler.REveEventDisplay.addCosmicTrackSeeds : true
+physics.EndPath  : [ @sequence::REveDis.seqBase] 
+
+services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
+
+
