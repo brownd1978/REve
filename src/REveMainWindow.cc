@@ -31,7 +31,7 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
  }
 int fp = 0;
 int j = 0;
-void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal) {
+void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, bool crvshift) {
     ++level;
     if (level > maxlevel){
        return;
@@ -47,7 +47,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         
         if (name.find(str)!= std::string::npos and i==0 ){ //To make the geometry translucant we only add i==0
 
-            //std::cout<<j<<" "<<name<<std::endl;
+            std::cout<<j<<" "<<name<<std::endl;
             
             //TGeoMaterial* material = n->GetVolume()->GetMaterial();
             REX::REveTrans ctrans;
@@ -70,8 +70,10 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                     else { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10; }
                     if (fp < 674 and crystal) cry1 = true;
                     if (fp >= 674 and crystal) cry2 = true;
-                } else {
-                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10;
+                } else if( !crvshift){
+                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100 ; t(3,4) = tv[2]/10;
+                } else if (crvshift){
+                    t(1,4) = tv[0]/10 + 390.4; t(2,4) = tv[1]/10 + 100 + 1.5*4500/10; t(3,4) = tv[2]/10;
                 }
                 ctrans *= t;
             }
@@ -80,53 +82,36 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
             
         }
        
-       showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal);
+       showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal,crvshift);
        }
     
   } 
 
 
- //Function to hide all elements which are not PS,TS, DS:
+  /* function to hide all elements which are not PS,TS, DS */
   void REveMainWindow::SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level) {
     static std::vector <std::string> substrings_disk  {"caloDisk"}; 
     for(auto& i: substrings_disk){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, false);
     }
-    static std::vector <std::string> substringst  {"TrackerPlaneEnvelope"};//"TrackerSupportServiceSectionEnvelope",
+    static std::vector <std::string> substringst  {"TrackerPlaneEnvelope"};
     for(auto& i: substringst){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, false);
     }
     static std::vector <std::string> substrings_crystal  {"caloCrystal"};  
     for(auto& i: substrings_crystal){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, false);
     }
+   
 }
+  /* function to add CRV */
+  void REveMainWindow::AddCRV(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level) {
+      static std::vector <std::string> substrings_crv  {"CRS"};  
+      for(auto& i: substrings_crv){
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true);
+      }
+  }
 
-
-  /*void REveMainWindow::projectScenes(REX::REveManager *eveMng,bool geomp, bool eventp)
- {
-    if (geomp)
-    {
-        
-       for (auto &ie : eveMng->GetGlobalScene()->RefChildren())
-       {
-          //ie->SetMainColor(kCyan);
-          ie->SetMainTransparency(100);
-          mngTrackerXY->ImportElements(ie, TrackerXYGeomScene);
-          mngRhoZ  ->ImportElements(ie, rhoZGeomScene);
-       }
-    }
-    if (eventp)
-    {
-       for (auto &ie : eveMng->GetEventScene()->RefChildren())
-       {
-          
-          mngTrackerXY->ImportElements(ie, TrackerXYEventScene);
-          mngRhoZ  ->ImportElements(ie, rhoZEventScene);
-       }
-    }
-
- }*/
 
  void REveMainWindow::projectEvents(REX::REveManager *eveMng)
  {
@@ -193,15 +178,15 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
 
 
  void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data){
-    if(data.clustercol->size() !=0) pass_data->AddCaloClusters(eveMng, firstLoop, data.clustercol, eventScene);
+    //if(data.clustercol->size() !=0) pass_data->AddCaloClusters(eveMng, firstLoop, data.clustercol, eventScene);
     if(data.chcol->size() !=0)pass_data->AddComboHits(eveMng, firstLoop, data.chcol, eventScene);
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
     if(track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
-    if(data.CosmicTrackSeedcol->size() !=0) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
+    //if(data.CosmicTrackSeedcol->size() !=0) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
     projectEvents(eveMng);
  }
 
- void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng)
+ void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV)
  {
 
     TGeoManager *geom = TGeoManager::Import("REve/src/fix.gdml");
@@ -216,11 +201,11 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         auto holder = new REX::REveElement("Inside DS");
         eveMng->GetGlobalScene()->AddElement(holder);
         REX::REveTrans trans;
+        if(addCRV) AddCRV(topnode, trans, holder,8,0);  
         SolenoidsOnly(topnode, trans, holder,8,0);
-       
-        
+         
     }
-    //projectScenes(eveMng,true, true);
+
    try {
      
 	 eveMng->Show();

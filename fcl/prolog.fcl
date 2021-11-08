@@ -2,7 +2,7 @@ BEGIN_PROLOG
 			
 REveEventDisplay : {
     module_type : REveEventDisplay  
-    showCRV : false
+    showCRV : true
     filler : {
      diagLevel : 0
      ComboHitCollection : "makeSH"
@@ -12,7 +12,7 @@ REveEventDisplay : {
      addHits : true
      addClusters : true
      addKalSeeds : true
-     addCosmicTrackSeeds : true
+     addCosmicTrackSeeds : false
      FillAll : false
     }
 }  
