@@ -204,6 +204,7 @@ namespace mu2e
       if(filler_.addHits_)  filler_.FillRecoCollections(event, data, ComboHits);
       if(filler_.addKalSeeds_)  filler_.FillRecoCollections(event, data, KalSeeds);
       if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
+     
       //if (displayedEventID_ != test::invalid_event)
       //{
       std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
@@ -268,7 +269,8 @@ namespace mu2e
       REX::REveElement* scene = eveMng_->GetEventScene();
 
       std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
-      frame_->showEvents(eveMng_, scene, firstLoop_, data);
+      DrawOptions drawOpts(false, filler_.addCosmicTrackSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_);
+      frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts);
       
       std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
       firstLoop_ = false;

@@ -89,7 +89,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
 
 
   /* function to hide all elements which are not PS,TS, DS */
-  void REveMainWindow::SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level) {
+  void REveMainWindow::SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV) {
     static std::vector <std::string> substrings_disk  {"caloDisk"}; 
     for(auto& i: substrings_disk){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, false);
@@ -102,15 +102,14 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     for(auto& i: substrings_crystal){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, false);
     }
-   
-}
-  /* function to add CRV */
-  void REveMainWindow::AddCRV(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level) {
+    if(addCRV){
       static std::vector <std::string> substrings_crv  {"CRS"};  
-      for(auto& i: substrings_crv){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true);
-      }
-  }
+        for(auto& i: substrings_crv){
+          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true);
+        }
+   }
+}
+
 
 
  void REveMainWindow::projectEvents(REX::REveManager *eveMng)
@@ -177,12 +176,12 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
  }
 
 
- void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data){
-    //if(data.clustercol->size() !=0) pass_data->AddCaloClusters(eveMng, firstLoop, data.clustercol, eventScene);
-    if(data.chcol->size() !=0)pass_data->AddComboHits(eveMng, firstLoop, data.chcol, eventScene);
+ void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts){
+    if(drawOpts.addClusters and data.clustercol->size() !=0) pass_data->AddCaloClusters(eveMng, firstLoop, data.clustercol, eventScene);
+    if(drawOpts.addComboHits and data.chcol->size() !=0) pass_data->AddComboHits(eveMng, firstLoop, data.chcol, eventScene);
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
-    if(track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
-    //if(data.CosmicTrackSeedcol->size() !=0) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
+    if(drawOpts.addTracks and track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
+    if(drawOpts.addCosmicTracks) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
     projectEvents(eveMng);
  }
 
@@ -201,9 +200,8 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         auto holder = new REX::REveElement("Inside DS");
         eveMng->GetGlobalScene()->AddElement(holder);
         REX::REveTrans trans;
-        if(addCRV) AddCRV(topnode, trans, holder,8,0);  
-        SolenoidsOnly(topnode, trans, holder,8,0);
-         
+        SolenoidsOnly(topnode, trans, holder,8,0, addCRV);
+       
     }
 
    try {

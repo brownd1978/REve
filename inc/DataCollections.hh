@@ -22,6 +22,7 @@
 #include <string>
 
 namespace mu2e{
+
 	class DataCollections
 	{
     public:

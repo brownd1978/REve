@@ -44,6 +44,19 @@
 namespace REX = ROOT::Experimental;
  
 namespace mu2e {
+    
+  struct DrawOptions{
+      // data options
+      bool addCRVInfo = false;
+      bool addCosmicTracks = false;
+      bool addTracks = false;
+      bool addClusters = false; 
+      bool addComboHits = false;
+      DrawOptions(){};
+      DrawOptions(bool crv, bool cosmictracks, bool tracks, bool clusters, bool combohits) 
+      : addCRVInfo(crv), addCosmicTracks(cosmictracks), addTracks(tracks), addClusters(clusters), addComboHits(combohits){};
+     };
+     
     class REveMainWindow  : public REX::REveElement {
 
         public :
@@ -53,10 +66,10 @@ namespace mu2e {
             REveMu2eDataInterface *pass_data;
             void makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int j, bool crys1, bool crys2);
             void showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool shift, bool crystal, bool crvshift);
-            void SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level); 
-            void AddCRV(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level);  
+            void SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV); 
+            //void AddCRV(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level);  
             void makeGeometryScene(REX::REveManager *eveMng, bool addCRV);
-            void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop, DataCollections &data);
+            void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts);
             
             void createProjectionStuff(REX::REveManager *eveMng);
             void AddTrackerProjection(REX::REveManager *eveMng);
@@ -74,6 +87,7 @@ namespace mu2e {
             REX::REveViewer *XYCaloDisk1View = nullptr;
             REX::REveViewer *XYCaloDisk2View = nullptr;
             REX::REveViewer *rhoZView = nullptr;
+
             #endif
             ClassDef(REveMainWindow, 0);
 
