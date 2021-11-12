@@ -90,6 +90,12 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
 
   /* function to hide all elements which are not PS,TS, DS */
   void REveMainWindow::SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV) {
+    if(addCRV){
+      static std::vector <std::string> substrings_crv  {"CRS"};  
+        for(auto& i: substrings_crv){
+          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true);
+        }
+    }
     static std::vector <std::string> substrings_disk  {"caloDisk"}; 
     for(auto& i: substrings_disk){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, false);
@@ -102,12 +108,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     for(auto& i: substrings_crystal){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, false);
     }
-    if(addCRV){
-      static std::vector <std::string> substrings_crv  {"CRS"};  
-        for(auto& i: substrings_crv){
-          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true);
-        }
-   }
+
 }
 
 
