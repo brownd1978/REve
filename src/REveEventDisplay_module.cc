@@ -204,6 +204,7 @@ namespace mu2e
       if(filler_.addHits_)  filler_.FillRecoCollections(event, data, ComboHits);
       if(filler_.addKalSeeds_)  filler_.FillRecoCollections(event, data, KalSeeds);
       if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
+      if(filler_.addMCTraj_)  filler_.FillMCCollections(event, data, MCTrajectories);
      
       //if (displayedEventID_ != test::invalid_event)
       //{
