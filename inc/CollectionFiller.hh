@@ -30,7 +30,7 @@ namespace mu2e{
           fhicl::Atom<art::InputTag>cluTag{Name("CaloClusterCollection"),Comment("cluTag")};
           fhicl::Sequence<art::InputTag>kalSeedTag{Name("KalSeedCollection"),Comment("kalseedTag")};
           fhicl::Atom<art::InputTag>cosmicTrackSeedTag{Name("CosmicTrackSeedCollection"),Comment("cosmicTrackSeedTag")};
-          fhicl::Sequence<art::InputTag>MCTrajTag{Name("MCTRajectoryCollection"),Comment("MCTrajTag")};
+          fhicl::Sequence<art::InputTag>MCTrajTag{Name("MCTrajectoryCollection"),Comment("MCTrajTag")};
           fhicl::Atom<bool> addHits{Name("addHits"), Comment("set to add the hits"),false};
           fhicl::Atom<bool> addClusters{Name("addClusters"), Comment("set to add caloclusters"),false};
           fhicl::Atom<bool> addKalSeeds{Name("addKalSeeds"), Comment("set to add kalseeds"),false};
