@@ -9,6 +9,7 @@ namespace mu2e{
 
     CollectionFiller::CollectionFiller(const Config& conf) :
         chTag_(conf.chTag()),
+        tcTag_(conf.tcTag()),
         cluTag_(conf.cluTag()),
         kalSeedTag_(conf.kalSeedTag()),
         cosmicTrackSeedTag_(conf.cosmicTrackSeedTag()),
@@ -33,6 +34,10 @@ namespace mu2e{
         if(FillAll_  or (CollectionName == ComboHits)){ 
             auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(chTag_);
             data.chcol = chH.product();
+        }
+        if(FillAll_  or (CollectionName == TimeClusters)){ 
+           auto chH = evt.getValidHandle<mu2e::TimeClusterCollection>(tcTag_);
+           data.tccol = chH.product();
         }
         if(FillAll_  or (CollectionName == CaloClusters)){
             auto chH = evt.getValidHandle<mu2e::CaloClusterCollection>(cluTag_);
