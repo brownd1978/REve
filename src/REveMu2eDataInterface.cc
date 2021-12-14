@@ -67,7 +67,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
 }
 
 /*------------Function to add TimeCluster Collection in 3D and 2D displays:-------------*/
-  void REveMu2eDataInterface::AddTimeClusters(REX::REveManager *&eveMng, bool firstloop, const mu2e::TimeClusterCollection *tccol, REX::REveElement* &scene){
+  void REveMu2eDataInterface::AddTimeClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::TimeClusterCollection *tccol, REX::REveElement* &scene){
      std::cout<<"[REveMu2eDataInterface] AddTimeClusters "<<std::endl;
      if(tccol!=0){
          
