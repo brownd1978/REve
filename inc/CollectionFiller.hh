@@ -17,7 +17,7 @@
 
 namespace mu2e{
 
-  enum RecoDataProductName {ComboHits, CaloClusters, KalSeeds, CosmicTrackSeeds};
+  enum RecoDataProductName {ComboHits, TimeClusters, CaloClusters, KalSeeds, CosmicTrackSeeds};
   enum MCDataProductName {MCTrajectories};
 	class CollectionFiller
 	{
@@ -27,11 +27,13 @@ namespace mu2e{
           using Comment=fhicl::Comment;
           fhicl::Atom<int> diagLevel{Name("diagLevel"), Comment("for info"),0};
           fhicl::Atom<art::InputTag>chTag{Name("ComboHitCollection"),Comment("chTag"), "makePH"};
+	  fhicl::Atom<art::InputTag>tcTag{Name("TimeClusterCollection"),Comment("ttcTag"), "makePH"};
           fhicl::Atom<art::InputTag>cluTag{Name("CaloClusterCollection"),Comment("cluTag")};
           fhicl::Sequence<art::InputTag>kalSeedTag{Name("KalSeedCollection"),Comment("kalseedTag")};
           fhicl::Atom<art::InputTag>cosmicTrackSeedTag{Name("CosmicTrackSeedCollection"),Comment("cosmicTrackSeedTag")};
           fhicl::Sequence<art::InputTag>MCTrajTag{Name("MCTrajectoryCollection"),Comment("MCTrajTag")};
           fhicl::Atom<bool> addHits{Name("addHits"), Comment("set to add the hits"),false};
+          fhicl::Atom<bool> addTimeclusters{Name("addTimeClusters"), Comment("set to add the TC hits"),false};
           fhicl::Atom<bool> addClusters{Name("addClusters"), Comment("set to add caloclusters"),false};
           fhicl::Atom<bool> addKalSeeds{Name("addKalSeeds"), Comment("set to add kalseeds"),false};
           fhicl::Atom<bool> addCosmicTrackSeeds{Name("addCosmicTrackSeeds"), Comment("set to add cosmic track seeds"),false};
@@ -44,13 +46,14 @@ namespace mu2e{
         CollectionFiller& operator=(const CollectionFiller &);
 
         art::InputTag chTag_;
+	art::InputTag tcTag_;
         art::InputTag cluTag_;
         std::vector<art::InputTag> kalSeedTag_;
         art::InputTag cosmicTrackSeedTag_;
         std::vector<art::InputTag> MCTrajTag_;
         art::Event *_event;
         art::Run *_run;
-        bool addHits_,  addClusters_, addKalSeeds_, addCosmicTrackSeeds_, addMCTraj_, FillAll_;
+        bool addHits_,  addTimeClusters_, addClusters_, addKalSeeds_, addCosmicTrackSeeds_, addMCTraj_, FillAll_;
         void FillRecoCollections(const art::Event& evt, DataCollections &data, RecoDataProductName code);
         void FillMCCollections(const art::Event& evt, DataCollections &data, MCDataProductName code);
         virtual ~CollectionFiller(){};
