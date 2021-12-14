@@ -66,6 +66,28 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
     }
 }
 
+/*------------Function to add TimeCluster Collection in 3D and 2D displays:-------------*/
+  void REveMu2eDataInterface::AddTimeClusters(REX::REveManager *&eveMng, bool firstloop, const mu2e::TimeClusterCollection *tccol, REX::REveElement* &scene){
+     std::cout<<"[REveMu2eDataInterface] AddTimeClusters "<<std::endl;
+     if(tccol!=0){
+         
+          auto ps1 = new REX::REvePointSet("TimeClusters", "",0); // TODO - add in descriptive label
+        if(!firstLoop_){
+            scene->DestroyElements();;
+        }
+      for(size_t i=0; i<tccol->size();i++){
+        mu2e::TimeCluster const  &tclust= (*tccol)[i];
+        CLHEP::Hep3Vector HitPos(tclust._pos.x(), tclust._pos.y(), tclust._pos.z());
+        ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); 
+      }
+      ps1->SetMarkerColor(kGreen);
+        ps1->SetMarkerStyle(4);
+        ps1->SetMarkerSize(6);
+        if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
+    }
+  }
+	
+
 void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
     std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
     std::vector<std::string> names = std::get<0>(track_tuple);
