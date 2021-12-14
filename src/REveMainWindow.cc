@@ -184,7 +184,8 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
     if(drawOpts.addTracks and track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
     if(drawOpts.addCosmicTracks) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
-    projectEvents(eveMng);
+    if(DrawOpts.addMCTraj) pass_mc->AddMCTrajectoryCollection(eveMng,firstloop, data.mctrajcol, eventScene, particles);
+	 projectEvents(eveMng);
  }
 
  void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV)
