@@ -6,11 +6,13 @@ REveEventDisplay : {
     filler : {
      diagLevel : 0
      ComboHitCollection : "makeSH"
+     TimeClusterCollection : "MHDeM"
      CaloClusterCollection : "CaloClusterFast"
      KalSeedCollection : ["KFFDeM"]
      CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
      MCTrajectoryCollection : NULL
      addHits : true
+     addTimeClusters : true
      addClusters : true
      addKalSeeds : true
      addCosmicTrackSeeds : false
