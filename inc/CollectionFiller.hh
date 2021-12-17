@@ -31,7 +31,7 @@ namespace mu2e{
           fhicl::Atom<art::InputTag>cluTag{Name("CaloClusterCollection"),Comment("cluTag")};
           fhicl::Sequence<art::InputTag>kalSeedTag{Name("KalSeedCollection"),Comment("kalseedTag")};
           fhicl::Atom<art::InputTag>cosmicTrackSeedTag{Name("CosmicTrackSeedCollection"),Comment("cosmicTrackSeedTag")};
-          fhicl::Sequence<art::InputTag>MCTrajTag{Name("MCTrajectoryCollection"),Comment("MCTrajTag")};
+          fhicl::Atom<art::InputTag>MCTrajTag{Name("MCTrajectoryCollection"),Comment("MCTrajTag")};
           fhicl::Atom<bool> addHits{Name("addHits"), Comment("set to add the hits"),false};
           fhicl::Atom<bool> addTimeclusters{Name("addTimeClusters"), Comment("set to add the TC hits"),false};
 	  fhicl::Atom<bool> addTrkHits{Name("addTrkHits"), Comment("set to add the Trk hits"),false};
@@ -51,7 +51,7 @@ namespace mu2e{
         art::InputTag cluTag_;
         std::vector<art::InputTag> kalSeedTag_;
         art::InputTag cosmicTrackSeedTag_;
-        std::vector<art::InputTag> MCTrajTag_;
+        art::InputTag MCTrajTag_;
         art::Event *_event;
         art::Run *_run;
         bool addHits_,  addTimeClusters_, addTrkHits_, addClusters_, addKalSeeds_, addCosmicTrackSeeds_, addMCTraj_, FillAll_;
