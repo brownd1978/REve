@@ -34,6 +34,7 @@ namespace mu2e{
           fhicl::Sequence<art::InputTag>MCTrajTag{Name("MCTrajectoryCollection"),Comment("MCTrajTag")};
           fhicl::Atom<bool> addHits{Name("addHits"), Comment("set to add the hits"),false};
           fhicl::Atom<bool> addTimeclusters{Name("addTimeClusters"), Comment("set to add the TC hits"),false};
+	  fhicl::Atom<bool> addTrkHits{Name("addTrkHits"), Comment("set to add the Trk hits"),false};
           fhicl::Atom<bool> addClusters{Name("addClusters"), Comment("set to add caloclusters"),false};
           fhicl::Atom<bool> addKalSeeds{Name("addKalSeeds"), Comment("set to add kalseeds"),false};
           fhicl::Atom<bool> addCosmicTrackSeeds{Name("addCosmicTrackSeeds"), Comment("set to add cosmic track seeds"),false};
@@ -53,7 +54,7 @@ namespace mu2e{
         std::vector<art::InputTag> MCTrajTag_;
         art::Event *_event;
         art::Run *_run;
-        bool addHits_,  addTimeClusters_, addClusters_, addKalSeeds_, addCosmicTrackSeeds_, addMCTraj_, FillAll_;
+        bool addHits_,  addTimeClusters_, addTrkHits_, addClusters_, addKalSeeds_, addCosmicTrackSeeds_, addMCTraj_, FillAll_;
         void FillRecoCollections(const art::Event& evt, DataCollections &data, RecoDataProductName code);
         void FillMCCollections(const art::Event& evt, DataCollections &data, MCDataProductName code);
         virtual ~CollectionFiller(){};
