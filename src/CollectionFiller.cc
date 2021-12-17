@@ -15,6 +15,8 @@ namespace mu2e{
         cosmicTrackSeedTag_(conf.cosmicTrackSeedTag()),
         MCTrajTag_(conf.MCTrajTag()),
         addHits_(conf.addHits()),
+        addTimeClusters_(conf.addTimeClusters()),
+        addTrkHits_(conf.addTrkHits()),
         addClusters_(conf.addClusters()),
         addKalSeeds_(conf.addKalSeeds()),
         addCosmicTrackSeeds_(conf.addCosmicTrackSeeds()),
@@ -38,6 +40,10 @@ namespace mu2e{
         if(FillAll_  or (CollectionName == TimeClusters)){ 
            auto chH = evt.getValidHandle<mu2e::TimeClusterCollection>(tcTag_);
            data.tccol = chH.product();
+        }
+        if(FillAll_ or (addTrkHits_ and CollectionName == ComboHits)){ 
+           auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(chTag_);
+           data.chcol = chH.product();
         }
         if(FillAll_  or (CollectionName == CaloClusters)){
             auto chH = evt.getValidHandle<mu2e::CaloClusterCollection>(cluTag_);
