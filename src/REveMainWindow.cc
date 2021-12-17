@@ -186,7 +186,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     if(drawOpts.addTrkHits and data.chcol->size() !=0) pass_data->AddTrkHits(eveMng, firstLoop, data.chcol, data.track_tuple, eventScene);
     if(drawOpts.addTracks and track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
     if(drawOpts.addCosmicTracks) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
-    if(drawOpts.addMCTraj) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop, data.mctrajcol, eventScene);
+    if(drawOpts.addMCTraj and data.mctrajcol->size() !=0) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop, data.mctrajcol, eventScene);
 	 projectEvents(eveMng);
  }
 
