@@ -13,6 +13,7 @@ REveEventDisplay : {
      MCTrajectoryCollection : NULL
      addHits : true
      addTimeClusters : true
+     addTrkHits : true
      addClusters : true
      addKalSeeds : true
      addCosmicTrackSeeds : false
