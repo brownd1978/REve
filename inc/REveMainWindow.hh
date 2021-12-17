@@ -53,10 +53,11 @@ namespace mu2e {
       bool addClusters = false; 
       bool addComboHits = false;
       bool addTimeClusters = false;
+      bool addTrkHits = false;
       bool addMCTraj = false;
       DrawOptions(){};
-      DrawOptions(bool crv, bool cosmictracks, bool tracks, bool clusters, bool combohits, bool timeclusters, bool mctraj) 
-      : addCRVInfo(crv), addCosmicTracks(cosmictracks), addTracks(tracks), addClusters(clusters), addComboHits(combohits), addTimeClusters(timeclusters), addMCTraj(mctraj){};
+      DrawOptions(bool crv, bool cosmictracks, bool tracks, bool clusters, bool combohits, bool timeclusters, bool trkhits, bool mctraj) 
+      : addCRVInfo(crv), addCosmicTracks(cosmictracks), addTracks(tracks), addClusters(clusters), addComboHits(combohits), addTimeClusters(timeclusters), addTrkHits(trkhits), addMCTraj(mctraj){};
      };
      
     class REveMainWindow  : public REX::REveElement {
