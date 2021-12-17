@@ -88,7 +88,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
   }
 	
 /*------------Function to color code the Tracker hits in 3D and 2D displays:-------------*/
-  void TEveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::ComboHitCollection *chcol,
+  void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::ComboHitCollection *chcol,
 					 std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
     std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
     std::cout<<"[REveMu2eDataInterface] AddTrkHits  "<<std::endl;
