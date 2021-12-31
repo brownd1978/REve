@@ -68,81 +68,83 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
 
 /*------------Function to add TimeCluster Collection in 3D and 2D displays:-------------*/
   void REveMu2eDataInterface::AddTimeClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::TimeClusterCollection *tccol, REX::REveElement* &scene){
-     std::cout<<"[REveMu2eDataInterface] AddTimeClusters "<<std::endl;
-     if(tccol!=0){
-         
-          auto ps1 = new REX::REvePointSet("TimeClusters", "",0); // TODO - add in descriptive label
+      std::cout<<"[REveMu2eDataInterface] AddTimeClusters "<<std::endl;
+      if(tccol!=0){
+        auto ps1 = new REX::REvePointSet("TimeClusters", "TimeCluster", 0); // TODO - add in descriptive label
         if(!firstLoop_){
-            scene->DestroyElements();;
+          scene->DestroyElements();;
         }
-      for(size_t i=0; i<tccol->size();i++){
-        mu2e::TimeCluster const  &tclust= (*tccol)[i];
-        CLHEP::Hep3Vector HitPos(tclust._pos.x(), tclust._pos.y(), tclust._pos.z());
-        ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); 
-      }
-      ps1->SetMarkerColor(kGreen);
+        for(size_t i=0; i<tccol->size();i++){
+          mu2e::TimeCluster const  &tclust= (*tccol)[i];
+          CLHEP::Hep3Vector HitPos(tclust._pos.x(), tclust._pos.y(), tclust._pos.z());
+          ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); 
+        }
+        ps1->SetMarkerColor(kGreen);
         ps1->SetMarkerStyle(4);
         ps1->SetMarkerSize(6);
         if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
-    }
+      }
   }
 	
 /*------------Function to color code the Tracker hits in 3D and 2D displays:-------------*/
   void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::ComboHitCollection *chcol,
 					 std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
-    std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
-    std::cout<<"[REveMu2eDataInterface] AddTrkHits  "<<std::endl;
-    StrawId trksid[70];
-    unsigned int trkhitsize=0;
-    //Save the hit straw IDs of the KalSeed hits  
-    for(unsigned int j=0; j< track_list.size(); j++){
-      const KalSeedCollection* seedcol = track_list[j];
-      if(seedcol!=0){
-        for(unsigned int k = 0; k < seedcol->size(); k++){
-          KalSeed kseed = (*seedcol)[k];
-          const std::vector<mu2e::TrkStrawHitSeed> &hits = kseed.hits();
-          trkhitsize = hits.size();
-          for(unsigned int i=0; i <trkhitsize; i++){
-            const mu2e::TrkStrawHitSeed &hit = hits.at(i);
-            trksid[i] = hit._sid; 
+      std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
+      std::cout<<"[REveMu2eDataInterface] AddTrkHits  "<<std::endl;
+      GeomHandle<DetectorSystem> det;
+      StrawId trksid[70];
+      unsigned int trkhitsize=0;
+      //Save the hit straw IDs of the KalSeed hits  
+      for(unsigned int j=0; j< track_list.size(); j++){
+        const KalSeedCollection* seedcol = track_list[j];
+        if(seedcol!=0){
+          for(unsigned int k = 0; k < seedcol->size(); k++){
+            KalSeed kseed = (*seedcol)[k];
+            const std::vector<mu2e::TrkStrawHitSeed> &hits = kseed.hits();
+            trkhitsize = hits.size();
+            for(unsigned int i=0; i <trkhitsize; i++){
+              const mu2e::TrkStrawHitSeed &hit = hits.at(i);
+              trksid[i] = hit._sid; 
+            }
           }
         }
-      }
-    }        
-    StrawId usedtrksid[trkhitsize];
-    unsigned int usedid[trkhitsize];
-    //Compare the straw IDs of the Kal seed hits with the hits in the ComboHit Collection
-    if(chcol!=0){
-      for(unsigned int i=0; i<chcol->size();i++){
-        ComboHit hit = (*chcol)[i];
-        for(unsigned int q=0; q<trkhitsize; q++){
-          if(hit._sid == trksid[q]){
-            usedid[q]=q;
-            usedtrksid[q]=hit._sid;//Save the Straw ID if the KalSeed and Combo hit ID matches
-            CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
-	    auto trkhit = new REX::REvePointSet("TrkHits", "",0); 
-            trkhit ->SetMarkerStyle(9);
-	    trkhit ->SetMarkerSize(1);
-            trkhit ->SetMarkerColor(kGreen-4);
-            trkhit ->SetNextPoint(HitPos.x(),HitPos.y(),HitPos.z());
-             if(trkhit->GetSize() !=0 ) scene->AddElement(trkhit); 
+      }        
+      StrawId usedtrksid[trkhitsize];
+      unsigned int usedid[trkhitsize];
+      //Compare the straw IDs of the Kal seed hits with the hits in the ComboHit Collection
+      if(chcol!=0){
+        for(unsigned int i=0; i<chcol->size();i++){
+          ComboHit hit = (*chcol)[i];
+          for(unsigned int q=0; q<trkhitsize; q++){
+            if(hit._sid == trksid[q]){
+              usedid[q]=q;
+              usedtrksid[q]=hit._sid;//Save the Straw ID if the KalSeed and Combo hit ID matches
+              CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
+	      // CLHEP::Hep3Vector HitPos = det->toMu2e(HitPosition);
+              auto trkhit = new REX::REvePointSet("TrkHits", "trkhit",0); 
+              trkhit ->SetMarkerStyle(9);
+	      trkhit ->SetMarkerSize(1);
+              trkhit ->SetMarkerColor(kGreen-4);
+              trkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 + 100,HitPos.z()/10);
+              if(trkhit->GetSize() !=0 ) scene->AddElement(trkhit); 
+	    }
+          }
+        }
+        //Hits which are not in the ComboHit Collection of the helix    
+        for(unsigned int i = 0;i < trkhitsize;i++){
+          if(i != usedid[i] && i<chcol->size()){
+            ComboHit chhit = (*chcol)[i];
+            CLHEP::Hep3Vector HitPos(chhit.pos().x(), chhit.pos().y(), chhit.pos().z());
+	    // CLHEP::Hep3Vector HitPos = det->toMu2e(HitPosition);
+            auto notusedtrkhit = new REX::REvePointSet("NotTrkHits", "nottrkhit",0); 
+            notusedtrkhit ->SetMarkerStyle(9);
+            notusedtrkhit ->SetMarkerSize(1);
+            notusedtrkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 + 100,HitPos.z()/10);
+            notusedtrkhit ->SetMarkerColor(kRed-4);
+	    if(notusedtrkhit->GetSize() !=0 ) scene->AddElement(notusedtrkhit); 
 	  }
         }
       }
-      //Hits which are not in the ComboHit Collection of the helix    
-      for(unsigned int i = 0;i < trkhitsize;i++){
-        if(i != usedid[i] && i<chcol->size()){
-          ComboHit chhit = (*chcol)[i];
-          CLHEP::Hep3Vector HitPos(chhit.pos().x(), chhit.pos().y(), chhit.pos().z());
-         auto notusedtrkhit = new REX::REvePointSet("NotTrkHits", "",0); 
-          notusedtrkhit ->SetMarkerStyle(9);
-          notusedtrkhit ->SetMarkerSize(1);
-          notusedtrkhit ->SetNextPoint(HitPos.x(),HitPos.y(),HitPos.z());
-          notusedtrkhit ->SetMarkerColor(kRed-4);
-		if(notusedtrkhit->GetSize() !=0 ) scene->AddElement(trkhit); 
-	}
-      }
-    }
   }
 
 void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
