@@ -76,12 +76,9 @@ namespace mu2e{
                auto chH = evt.getValidHandle<mu2e::MCTrajectoryCollection>(MCTrajTag_);
                 data.mctrajcol = chH.product();
                 
-                std::cout<<"Plotting MCTrajectory Instance: "<<name<<std::endl;
+		// std::cout<<"Plotting MCTrajectory Instance: "<<name<<std::endl;
                 }
         
     }
 
 }
-
-
-
