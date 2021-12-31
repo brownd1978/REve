@@ -51,7 +51,7 @@ namespace mu2e {
       bool addCosmicTracks = false;
       bool addTracks = false;
       bool addClusters = false; 
-      bool addComboHits = false;
+      bool addHits = false;
       bool addTimeClusters = false;
       bool addTrkHits = false;
       bool addMCTraj = false;
