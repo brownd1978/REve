@@ -26,8 +26,8 @@ namespace mu2e{
           using Name=fhicl::Name;
           using Comment=fhicl::Comment;
           fhicl::Atom<int> diagLevel{Name("diagLevel"), Comment("for info"),0};
-          fhicl::Atom<art::InputTag>chTag{Name("ComboHitCollection"),Comment("chTag"), "makePH"};
-          fhicl::Atom<art::InputTag>cluTag{Name("CaloClusterCollection"),Comment("cluTag")};
+          fhicl::Sequence<art::InputTag>chTag{Name("ComboHitCollection"),Comment("chTag")};
+          fhicl::Sequence<art::InputTag>cluTag{Name("CaloClusterCollection"),Comment("cluTag")};
           fhicl::Sequence<art::InputTag>kalSeedTag{Name("KalSeedCollection"),Comment("kalseedTag")};
           fhicl::Atom<art::InputTag>cosmicTrackSeedTag{Name("CosmicTrackSeedCollection"),Comment("cosmicTrackSeedTag")};
           fhicl::Sequence<art::InputTag>MCTrajTag{Name("MCTrajectoryCollection"),Comment("MCTrajTag")};
@@ -43,8 +43,8 @@ namespace mu2e{
         CollectionFiller(const CollectionFiller &);
         CollectionFiller& operator=(const CollectionFiller &);
 
-        art::InputTag chTag_;
-        art::InputTag cluTag_;
+        std::vector<art::InputTag> chTag_;
+        std::vector<art::InputTag> cluTag_;
         std::vector<art::InputTag> kalSeedTag_;
         art::InputTag cosmicTrackSeedTag_;
         std::vector<art::InputTag> MCTrajTag_;

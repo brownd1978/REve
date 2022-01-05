@@ -40,7 +40,7 @@
 #include "art/Framework/Principal/Event.h"
 #include "REve/inc/DataCollections.hh"
 #include "REve/inc/REveMu2eDataInterface.hh"
-
+#include "REve/inc/REveMu2eMCInterface.hh"
 namespace REX = ROOT::Experimental;
  
 namespace mu2e {
@@ -52,6 +52,7 @@ namespace mu2e {
       bool addTracks = false;
       bool addClusters = false; 
       bool addComboHits = false;
+      bool addMCTrajectories = false;
       DrawOptions(){};
       DrawOptions(bool crv, bool cosmictracks, bool tracks, bool clusters, bool combohits) 
       : addCRVInfo(crv), addCosmicTracks(cosmictracks), addTracks(tracks), addClusters(clusters), addComboHits(combohits){};
@@ -64,12 +65,13 @@ namespace mu2e {
             virtual ~REveMainWindow() {}
             #ifndef __CINT__
             REveMu2eDataInterface *pass_data;
+            REveMu2eMCInterface *pass_mc;
             void makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int j, bool crys1, bool crys2);
             void showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool shift, bool crystal, bool crvshift);
             void SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV); 
             //void AddCRV(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level);  
             void makeGeometryScene(REX::REveManager *eveMng, bool addCRV);
-            void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts);
+            void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds);
             
             void createProjectionStuff(REX::REveManager *eveMng);
             void AddTrackerProjection(REX::REveManager *eveMng);

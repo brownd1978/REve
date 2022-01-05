@@ -5,11 +5,11 @@ REveEventDisplay : {
     showCRV : true
     filler : {
      diagLevel : 0
-     ComboHitCollection : "makeSH"
-     CaloClusterCollection : "CaloClusterFast"
+     ComboHitCollection : ["makeSH"]
+     CaloClusterCollection : ["CaloClusterFast"]
      KalSeedCollection : ["KFFDeM"]
      CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
-     MCTrajectoryCollection : NULL
+     MCTrajectoryCollection : [NULL]
      addHits : true
      addClusters : true
      addKalSeeds : true
@@ -17,6 +17,7 @@ REveEventDisplay : {
      addMCTraj : false
      FillAll : false
     }
+    particles :   [11,13,2212,2112,211,22,212]
 }  
 
 REveDis : {  

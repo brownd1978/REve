@@ -31,12 +31,26 @@ namespace mu2e{
 
     void CollectionFiller::FillRecoCollections(const art::Event& evt, DataCollections &data, RecoDataProductName CollectionName){
         if(FillAll_  or (CollectionName == ComboHits)){ 
-            auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(chTag_);
-            data.chcol = chH.product();
+            for(const auto &tag : chTag_){
+                auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(tag);
+                data.chcol = chH.product();
+                data.combohit_list.push_back(data.chcol);
+                std::string name = TurnNameToString(tag);
+                std::cout<<"Plotting ComboHit Instance: "<<name<<std::endl;
+                data.combohit_labels.push_back(name);
+            }
+            data.combohit_tuple = std::make_tuple(data.combohit_labels,data.combohit_list);
         }
         if(FillAll_  or (CollectionName == CaloClusters)){
-            auto chH = evt.getValidHandle<mu2e::CaloClusterCollection>(cluTag_);
-            data.clustercol = chH.product();
+            for(const auto &tag : cluTag_){
+                auto chH = evt.getValidHandle<mu2e::CaloClusterCollection>(tag);
+                data.clustercol = chH.product();
+                data.calocluster_list.push_back(data.clustercol);
+                std::string name = TurnNameToString(tag);
+                std::cout<<"Plotting CaloCluster Instance: "<<name<<std::endl;
+                data.calocluster_labels.push_back(name);
+            }
+            data.calocluster_tuple = std::make_tuple(data.calocluster_labels,data.calocluster_list);
         }
         if(FillAll_ or (CollectionName==KalSeeds)){
           
