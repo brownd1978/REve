@@ -32,12 +32,12 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             if(cluster.diskID() == 1) ps2->SetNextPoint(COG.x()/10, COG.y()/10 +100, abs(pointInMu2e.z())/10); 
 
             ps1->SetMarkerColor(kRed);
-            ps1->SetMarkerStyle(4);
-            ps1->SetMarkerSize(4);
+            ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+            ps1->SetMarkerSize(REveMu2eDataInterface::mstyle);
 
             ps2->SetMarkerColor(kRed);
-            ps2->SetMarkerStyle(4);
-            ps2->SetMarkerSize(4);
+            ps2->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+            ps2->SetMarkerSize(REveMu2eDataInterface::mstyle);
         
             if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
             if(ps2->GetSize() !=0 ) scene->AddElement(ps2); 
@@ -60,8 +60,8 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
         }
   
         ps1->SetMarkerColor(kBlue);
-        ps1->SetMarkerStyle(4);
-        ps1->SetMarkerSize(6);
+        ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+        ps1->SetMarkerSize(REveMu2eDataInterface::msize);
         if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
     }
 }
@@ -80,8 +80,8 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); 
         }
         ps1->SetMarkerColor(kGreen);
-        ps1->SetMarkerStyle(4);
-        ps1->SetMarkerSize(6);
+        ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+        ps1->SetMarkerSize(REveMu2eDataInterface::msize);
         if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
       }
   }
@@ -122,8 +122,8 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
               CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
 	      // CLHEP::Hep3Vector HitPos = det->toMu2e(HitPosition);
               auto trkhit = new REX::REvePointSet("TrkHits", "trkhit",0); 
-              trkhit ->SetMarkerStyle(9);
-	      trkhit ->SetMarkerSize(1);
+              trkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+	      trkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
               trkhit ->SetMarkerColor(kGreen-4);
               trkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 + 100,HitPos.z()/10);
               if(trkhit->GetSize() !=0 ) scene->AddElement(trkhit); 
@@ -137,8 +137,8 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
             CLHEP::Hep3Vector HitPos(chhit.pos().x(), chhit.pos().y(), chhit.pos().z());
 	    // CLHEP::Hep3Vector HitPos = det->toMu2e(HitPosition);
             auto notusedtrkhit = new REX::REvePointSet("NotTrkHits", "nottrkhit",0); 
-            notusedtrkhit ->SetMarkerStyle(9);
-            notusedtrkhit ->SetMarkerSize(1);
+            notusedtrkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+            notusedtrkhit ->SetMarkerSize()REveMu2eDataInterface::msize;
             notusedtrkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 + 100,HitPos.z()/10);
             notusedtrkhit ->SetMarkerColor(kRed-4);
 	    if(notusedtrkhit->GetSize() !=0 ) scene->AddElement(notusedtrkhit); 
