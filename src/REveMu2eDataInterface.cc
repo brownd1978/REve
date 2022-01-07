@@ -138,7 +138,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
 	    // CLHEP::Hep3Vector HitPos = det->toMu2e(HitPosition);
             auto notusedtrkhit = new REX::REvePointSet("NotTrkHits", "nottrkhit",0); 
             notusedtrkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
-            notusedtrkhit ->SetMarkerSize()REveMu2eDataInterface::msize;
+            notusedtrkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
             notusedtrkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 + 100,HitPos.z()/10);
             notusedtrkhit ->SetMarkerColor(kRed-4);
 	    if(notusedtrkhit->GetSize() !=0 ) scene->AddElement(notusedtrkhit); 
