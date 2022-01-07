@@ -3,6 +3,7 @@
 
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
+#include "Offline/RecoDataProducts/inc/TimeCluster.hh"
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
 #include "Offline/RecoDataProducts/inc/CosmicTrackSeed.hh"
 #include "Offline/MCDataProducts/inc/MCTrajectoryPoint.hh"
@@ -33,7 +34,8 @@ namespace mu2e{
       DataCollections& operator=(const DataCollections &);
 
       //DataProducts:
-      const mu2e::ComboHitCollection* chcol = 0;    
+      const mu2e::ComboHitCollection* chcol = 0;   
+      const TimeClusterCollection *tccol = 0;
       const mu2e::CaloClusterCollection* clustercol = 0;
       const mu2e::KalSeedCollection* kalSeedcol = 0;
       const mu2e::CosmicTrackSeedCollection* CosmicTrackSeedcol = 0;

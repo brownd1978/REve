@@ -9,11 +9,14 @@ namespace mu2e{
 
     CollectionFiller::CollectionFiller(const Config& conf) :
         chTag_(conf.chTag()),
+        tcTag_(conf.tcTag()),
         cluTag_(conf.cluTag()),
         kalSeedTag_(conf.kalSeedTag()),
         cosmicTrackSeedTag_(conf.cosmicTrackSeedTag()),
         MCTrajTag_(conf.MCTrajTag()),
         addHits_(conf.addHits()),
+        addTimeClusters_(conf.addTimeClusters()),
+        addTrkHits_(conf.addTrkHits()),
         addClusters_(conf.addClusters()),
         addKalSeeds_(conf.addKalSeeds()),
         addCosmicTrackSeeds_(conf.addCosmicTrackSeeds()),
@@ -33,6 +36,14 @@ namespace mu2e{
         if(FillAll_  or (CollectionName == ComboHits)){ 
             auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(chTag_);
             data.chcol = chH.product();
+        }
+        if(FillAll_  or (CollectionName == TimeClusters)){ 
+           auto chH = evt.getValidHandle<mu2e::TimeClusterCollection>(tcTag_);
+           data.tccol = chH.product();
+        }
+        if(FillAll_ or (addTrkHits_ and CollectionName == ComboHits)){ 
+           auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(chTag_);
+           data.chcol = chH.product();
         }
         if(FillAll_  or (CollectionName == CaloClusters)){
             auto chH = evt.getValidHandle<mu2e::CaloClusterCollection>(cluTag_);
@@ -62,24 +73,12 @@ namespace mu2e{
     void CollectionFiller::FillMCCollections(const art::Event& evt, DataCollections &data, MCDataProductName CollectionName){
 
         if(FillAll_ or (CollectionName==MCTrajectories)){
-          
-            for(const auto &tag : kalSeedTag_){
-                auto chH = evt.getValidHandle<mu2e::MCTrajectoryCollection>(tag);
+               auto chH = evt.getValidHandle<mu2e::MCTrajectoryCollection>(MCTrajTag_);
                 data.mctrajcol = chH.product();
-                data.mctrack_list.push_back(data.mctrajcol);
-
-                std::string name = TurnNameToString(tag);
-                std::cout<<"Plotting MCTrajectory Instance: "<<name<<std::endl;
-                data.mctrack_labels.push_back(name);
-
-            }
-            data.mctrack_tuple = std::make_tuple(data.mctrack_labels,data.mctrack_list);
-            std::cout<<"size "<<data.track_list.size()<<std::endl;
-        }
+                
+		// std::cout<<"Plotting MCTrajectory Instance: "<<name<<std::endl;
+                }
         
     }
 
 }
-
-
-

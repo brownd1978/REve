@@ -2,19 +2,18 @@
 using namespace mu2e;
 namespace REX = ROOT::Experimental;
 
-  int REveMu2eMCInterface::Contains(std::vector<int> v, int x)
+ /* int REveMu2eMCInterface::Contains(std::vector<int> v, int x)
   {
     return std::count(v.begin(), v.end(), x);
-  }
+  }*/
  
-  void REveMu2eMCInterface::AddMCTrajectoryCollection(REX::REveManager *&eveMng, bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const MCTrajectoryCollection *>> mctrack_tuple, REX::REveElement* &scene, std::vector<int> particleIds){
-    std::vector<const MCTrajectoryCollection*> track_list = std::get<1>(mctrack_tuple);
-    std::vector<std::string> names = std::get<0>(mctrack_tuple);
+  void REveMu2eMCInterface::AddMCTrajectoryCollection(REX::REveManager *&eveMng, bool firstloop,  const MCTrajectoryCollection *trajcol, REX::REveElement* &scene){
+   
     std::vector<int> colour;
 
-    for(unsigned int j=0; j< track_list.size(); j++){
-      const MCTrajectoryCollection* trajcol = track_list[j];
-      colour.push_back(j+3);
+    //for(unsigned int j=0; j< track_list.size(); j++){
+      //const MCTrajectoryCollection* trajcol = track_list[j];
+      colour.push_back(3);
       if(trajcol!=0){
           std::map<art::Ptr<mu2e::SimParticle>,mu2e::MCTrajectory>::const_iterator trajectoryIter;
           for(unsigned int k = 0; k < trajcol->size(); k++){ 
@@ -23,8 +22,8 @@ namespace REX = ROOT::Experimental;
             { 
 
               //check user defined list of particles to plot:
-              int x = Contains(particleIds,trajectoryIter->first->pdgId()); 
-              if(x == 1){
+              //int x = Contains(particleIds,trajectoryIter->first->pdgId()); 
+             // if(x == 1){
                 const std::vector<MCTrajectoryPoint> &points = trajectoryIter->second.points();
                 std::string energy = std::to_string(points[0].kineticEnergy());
                 const std::string title = " MCTrajectory "+ energy + " Creation code = " + std::to_string(trajectoryIter->first->creationCode()) + "Stopping code = " + std::to_string(trajectoryIter->first->stoppingCode()) + " End Global Time = " + std::to_string(trajectoryIter->first->endGlobalTime())  ;
@@ -42,9 +41,9 @@ namespace REX = ROOT::Experimental;
                 line->SetLineColor(kBlack);
                 line->SetLineWidth(5);
                 scene->AddElement(line); 
-              } else std::cout<<"Warning: No Particles of User-Specified Type In File "<<std::endl;
+              //} else std::cout<<"Warning: No Particles of User-Specified Type In File "<<std::endl;
             }
-          }
+         // }
         }
       }
      }

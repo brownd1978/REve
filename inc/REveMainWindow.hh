@@ -40,7 +40,7 @@
 #include "art/Framework/Principal/Event.h"
 #include "REve/inc/DataCollections.hh"
 #include "REve/inc/REveMu2eDataInterface.hh"
-
+#include "REve/inc/REveMu2eMCInterface.hh"
 namespace REX = ROOT::Experimental;
  
 namespace mu2e {
@@ -51,10 +51,13 @@ namespace mu2e {
       bool addCosmicTracks = false;
       bool addTracks = false;
       bool addClusters = false; 
-      bool addComboHits = false;
+      bool addHits = false;
+      bool addTimeClusters = false;
+      bool addTrkHits = false;
+      bool addMCTraj = false;
       DrawOptions(){};
-      DrawOptions(bool crv, bool cosmictracks, bool tracks, bool clusters, bool combohits) 
-      : addCRVInfo(crv), addCosmicTracks(cosmictracks), addTracks(tracks), addClusters(clusters), addComboHits(combohits){};
+      DrawOptions(bool crv, bool cosmictracks, bool tracks, bool clusters, bool combohits, bool timeclusters, bool trkhits, bool mctraj) 
+      : addCRVInfo(crv), addCosmicTracks(cosmictracks), addTracks(tracks), addClusters(clusters), addHits(combohits), addTimeClusters(timeclusters), addTrkHits(trkhits), addMCTraj(mctraj){};
      };
      
     class REveMainWindow  : public REX::REveElement {
@@ -64,6 +67,7 @@ namespace mu2e {
             virtual ~REveMainWindow() {}
             #ifndef __CINT__
             REveMu2eDataInterface *pass_data;
+            REveMu2eMCInterface *pass_mc;
             void makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int j, bool crys1, bool crys2);
             void showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool shift, bool crystal, bool crvshift);
             void SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV); 
