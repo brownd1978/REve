@@ -9,11 +9,14 @@ namespace mu2e{
 
     CollectionFiller::CollectionFiller(const Config& conf) :
         chTag_(conf.chTag()),
+        tcTag_(conf.tcTag()),
         cluTag_(conf.cluTag()),
         kalSeedTag_(conf.kalSeedTag()),
         cosmicTrackSeedTag_(conf.cosmicTrackSeedTag()),
         MCTrajTag_(conf.MCTrajTag()),
         addHits_(conf.addHits()),
+        addTimeClusters_(conf.addTimeClusters()),
+        addTrkHits_(conf.addTrkHits()),
         addClusters_(conf.addClusters()),
         addKalSeeds_(conf.addKalSeeds()),
         addCosmicTrackSeeds_(conf.addCosmicTrackSeeds()),
@@ -32,6 +35,22 @@ namespace mu2e{
     void CollectionFiller::FillRecoCollections(const art::Event& evt, DataCollections &data, RecoDataProductName CollectionName){
         if(FillAll_  or (CollectionName == ComboHits)){ 
             for(const auto &tag : chTag_){
+                auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(tag);
+                data.chcol = chH.product();
+                data.combohit_list.push_back(data.chcol);
+                std::string name = TurnNameToString(tag);
+                std::cout<<"Plotting ComboHit Instance: "<<name<<std::endl;
+                data.combohit_labels.push_back(name);
+            }
+            data.combohit_tuple = std::make_tuple(data.combohit_labels,data.combohit_list);
+        }
+        if(FillAll_  or (CollectionName == TimeClusters)){ 
+           auto chH = evt.getValidHandle<mu2e::TimeClusterCollection>(tcTag_);
+           data.tccol = chH.product();
+        }
+        if(FillAll_ or (addTrkHits_ and CollectionName == TrkHits)){ 
+
+           for(const auto &tag : chTag_){
                 auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(tag);
                 data.chcol = chH.product();
                 data.combohit_list.push_back(data.chcol);
@@ -65,7 +84,7 @@ namespace mu2e{
 
             }
             data.track_tuple = std::make_tuple(data.track_labels,data.track_list);
-            std::cout<<"size "<<data.track_list.size()<<std::endl;
+            
         }
         if(FillAll_  or (CollectionName == CosmicTrackSeeds)){
             auto chH = evt.getValidHandle<mu2e::CosmicTrackSeedCollection>(cosmicTrackSeedTag_);
@@ -76,24 +95,21 @@ namespace mu2e{
     void CollectionFiller::FillMCCollections(const art::Event& evt, DataCollections &data, MCDataProductName CollectionName){
 
         if(FillAll_ or (CollectionName==MCTrajectories)){
-          
-            for(const auto &tag : kalSeedTag_){
-                auto chH = evt.getValidHandle<mu2e::MCTrajectoryCollection>(tag);
-                data.mctrajcol = chH.product();
-                data.mctrack_list.push_back(data.mctrajcol);
+    
+                for(const auto &tag : MCTrajTag_){
+                  auto chH = evt.getValidHandle<mu2e::MCTrajectoryCollection>(tag);
+                  data.mctrajcol = chH.product();
+                  data.mctrack_list.push_back(data.mctrajcol);
 
-                std::string name = TurnNameToString(tag);
-                std::cout<<"Plotting MCTrajectory Instance: "<<name<<std::endl;
-                data.mctrack_labels.push_back(name);
+                  std::string name = TurnNameToString(tag);
+                  std::cout<<"Plotting MCTrajectory Instance: "<<name<<std::endl;
+                  data.mctrack_labels.push_back(name);
 
             }
             data.mctrack_tuple = std::make_tuple(data.mctrack_labels,data.mctrack_list);
-            std::cout<<"size "<<data.track_list.size()<<std::endl;
-        }
+         
+                }
         
     }
 
 }
-
-
-
