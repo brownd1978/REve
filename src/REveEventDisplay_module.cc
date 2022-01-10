@@ -95,6 +95,7 @@ namespace mu2e
           fhicl::Atom<bool> showCRV{Name("showCRV"), Comment("set false if you just want to see DS"),false};   
           fhicl::Atom<bool> show2D{Name("show2D"), Comment(""),true};   
           fhicl::Table<CollectionFiller::Config> filler{Name("filler"),Comment("fill collections")};
+          fhicl::Sequence<int>particles{Name("particles"),Comment("PDGcodes to plot")};
         };
 
         typedef art::EDAnalyzer::Table<Config> Parameters;
@@ -134,6 +135,7 @@ namespace mu2e
         REveMainWindow *frame_;
         DataCollections data;
         bool firstLoop_ = true; 
+        std::vector<int> particles_;
         
     };
 
@@ -141,7 +143,8 @@ namespace mu2e
   REveEventDisplay::REveEventDisplay(const Parameters& conf)  :
     art::EDAnalyzer(conf),
     showCRV_(conf().showCRV()),
-    filler_(conf().filler())
+    filler_(conf().filler()),
+    particles_(conf().particles())
     {}
 
   REveEventDisplay::~REveEventDisplay() {}
@@ -187,14 +190,15 @@ namespace mu2e
     <<" addClusters : "<<filler_.addClusters_
     <<" addTracks : "<<filler_.addKalSeeds_
     <<" addCosmicTrackSeeds : "<<filler_.addCosmicTrackSeeds_<<std::endl;
-    
   }
   
   
   
   void REveEventDisplay::analyze(art::Event const& event){
-
-      std::cout<<"[REveEventDisplay : analyze()] (event, sub, run): "<<event.id().event()<<" "<<event.subRun()<<" "<<event.run()<<std::endl;
+      std::cout<<"starting analyze"<<std::endl;
+      //remove previous event objects
+      data.Reset();
+      
       // Update state relevant for displaying new event.
       displayedEventID_ = event.id();
 
@@ -204,21 +208,17 @@ namespace mu2e
       if(filler_.addClusters_)  filler_.FillRecoCollections(event, data, CaloClusters);
       if(filler_.addHits_)  filler_.FillRecoCollections(event, data, ComboHits);
       if(filler_.addTimeClusters_) filler_.FillRecoCollections(event, data, TimeClusters);
-      if(filler_.addTrkHits_) filler_.FillRecoCollections(event, data, ComboHits);
+      if(filler_.addTrkHits_) filler_.FillRecoCollections(event, data, TrkHits); 
       if(filler_.addKalSeeds_)  filler_.FillRecoCollections(event, data, KalSeeds);
       if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
       if(filler_.addMCTraj_)  filler_.FillMCCollections(event, data, MCTrajectories);
      
-      //if (displayedEventID_ != test::invalid_event)
-      //{
       std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
       XThreadTimer proc_timer([this]{ process_single_event(); });
       std::cout<<"[REveEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
       cv_.wait(lock);
       std::cout<<"[REveEventDisplay : analyze()] -- TApplication thread returning control "<<std::endl;
-      //}
-      std::cout<<"[REveEventDisplay : analyze()] Ended Event "<<std::endl;
-     
+      std::cout<<"[REveEventDisplay : analyze()] Ended Event "<<std::endl; 
   }
 
     void REveEventDisplay::endJob()
@@ -274,11 +274,10 @@ namespace mu2e
 
       std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
       DrawOptions drawOpts(false, filler_.addCosmicTrackSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_);
-      frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts);
-      
+      frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts, particles_);
+
       std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
       firstLoop_ = false;
-      
       eveMng_->GetScenes()->AcceptChanges(false);
       eveMng_->GetWorld()->EndAcceptingChanges();
       eveMng_->EnableRedraw();

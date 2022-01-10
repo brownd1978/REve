@@ -30,7 +30,8 @@ namespace mu2e{
           REveMu2eMCInterface& operator=(const REveMu2eMCInterface &);
           virtual ~REveMu2eMCInterface() = default;
           #ifndef __CINT__
-          void AddMCTrajectoryCollection(REX::REveManager *&eveMng, bool firstLoop, const MCTrajectoryCollection *trajcol, REX::REveElement* &scene);
+          int Contains(std::vector<int> v, int x);
+          void AddMCTrajectoryCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const MCTrajectoryCollection*>> track_tuple, REX::REveElement* &scene, std::vector<int> particles );
           #endif
           ClassDef(REveMu2eMCInterface, 0);
       }; 

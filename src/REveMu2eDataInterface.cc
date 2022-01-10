@@ -2,36 +2,41 @@
 using namespace mu2e;
 namespace REX = ROOT::Experimental;
 
-void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::CaloClusterCollection *clustercol, REX::REveElement* &scene){
+void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CaloClusterCollection*>> calocluster_tuple, REX::REveElement* &scene){
     std::cout<<"[REveMu2eDataInterface] AddCaloClusters "<<std::endl;
-    if(clustercol != 0){    
-        
-        if(!firstLoop_){
-            scene->DestroyElements();;
-        }
-        mu2e::Calorimeter const &cal = *(mu2e::GeomHandle<mu2e::Calorimeter>());
-        GeomHandle<DetectorSystem> det;
-        for(unsigned int i=0; i< clustercol->size(); i++){
-            mu2e::CaloCluster const  &cluster= (*clustercol)[i];
-            std::string cluster_energy = std::to_string(cluster.energyDep());
-            std::string cluster_time = std::to_string(cluster.time());
-            std::string cluster_x = std::to_string(cluster.cog3Vector().x());
-            std::string cluster_y = std::to_string(cluster.cog3Vector().y());
-            
-            CLHEP::Hep3Vector COG(cluster.cog3Vector().x(),cluster.cog3Vector().y(), cluster.cog3Vector().z());
-            CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDiskFF(cluster.diskID(),COG);
-            CLHEP::Hep3Vector pointInMu2e = det->toMu2e(crystalPos);
-            
-            std::string cluster_z = std::to_string(abs(pointInMu2e.z()));
-            
-            std::string label =  "Energy Dep. = "+cluster_energy+" MeV "+", Time = "+cluster_time+" ns " +" Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
-            auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
-            auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
-            
-            if(cluster.diskID() == 0) ps1->SetNextPoint(COG.x()/10, COG.y()/10 +100, abs(pointInMu2e.z())/10); 
-            if(cluster.diskID() == 1) ps2->SetNextPoint(COG.x()/10, COG.y()/10 +100, abs(pointInMu2e.z())/10); 
+    std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(calocluster_tuple);
+    std::vector<std::string> names = std::get<0>(calocluster_tuple);
+    std::vector<int> colour;
+    for(unsigned int j=0; j< calocluster_list.size(); j++){
+      const CaloClusterCollection* clustercol = calocluster_list[j];
+      colour.push_back(j+3);
+      if(clustercol->size() != 0 and clustercol->size() < 2){    
+          if(!firstLoop_){
+              scene->DestroyElements();;
+          }
+          mu2e::Calorimeter const &cal = *(mu2e::GeomHandle<mu2e::Calorimeter>());
+          GeomHandle<DetectorSystem> det;
+          for(unsigned int i=0; i< clustercol->size(); i++){
+              mu2e::CaloCluster const  &cluster= (*clustercol)[i];
+              std::string cluster_energy = std::to_string(cluster.energyDep());
+              std::string cluster_time = std::to_string(cluster.time());
+              std::string cluster_x = std::to_string(cluster.cog3Vector().x());
+              std::string cluster_y = std::to_string(cluster.cog3Vector().y());
+              
+              CLHEP::Hep3Vector COG(cluster.cog3Vector().x(),cluster.cog3Vector().y(), cluster.cog3Vector().z());
+              CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDiskFF(cluster.diskID(),COG);
+              CLHEP::Hep3Vector pointInMu2e = det->toMu2e(crystalPos);
+              
+              std::string cluster_z = std::to_string(abs(pointInMu2e.z()));
+              
+              std::string label =  "Instance = " + names[0] + " Energy Dep. = "+cluster_energy+" MeV "+", Time = "+cluster_time+" ns " +" Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
+              auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
+              auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
+              
+              if(cluster.diskID() == 0) ps1->SetNextPoint(COG.x()/10, COG.y()/10 +100, abs(pointInMu2e.z())/10); 
+              if(cluster.diskID() == 1) ps2->SetNextPoint(COG.x()/10, COG.y()/10 +100, abs(pointInMu2e.z())/10); 
 
-            ps1->SetMarkerColor(kRed);
+             ps1->SetMarkerColor(kRed);
             ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
             ps1->SetMarkerSize(REveMu2eDataInterface::mstyle);
 
@@ -41,30 +46,37 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
         
             if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
             if(ps2->GetSize() !=0 ) scene->AddElement(ps2); 
-        }
+          }
+      }
     }
-}
+    std::cout<<"[REveMu2eDataInterface] AddCaloClusters end"<<std::endl;
+  }
 
-void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::ComboHitCollection *chcol, REX::REveElement* &scene){
-    std::cout<<"[REveMu2eDataInterface] AddComboHits "<<std::endl;
-    if(chcol!=0){
-        auto ps1 = new REX::REvePointSet("ComboHits", "",0); // TODO - add in descriptive label
-        if(!firstLoop_){
-            scene->DestroyElements();;
-        }
-
-        for(unsigned int i=0; i< chcol->size(); i++){
-            mu2e::ComboHit const  &hit= (*chcol)[i];
-            CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
-            ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); 
-        }
-  
+void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const ComboHitCollection*>> combohit_tuple, REX::REveElement* &scene){
+    std::cout<<"[REveMu2eDataInterface] AddComboHits start"<<std::endl;
+    std::vector<const ComboHitCollection*> combohit_list = std::get<1>(combohit_tuple);
+    std::vector<std::string> names = std::get<0>(combohit_tuple);
+    std::vector<int> colour;
+    for(unsigned int j=0; j< combohit_list.size(); j++){
+      const ComboHitCollection* chcol = combohit_list[j];
+      colour.push_back(j+3);
+      if(chcol->size() !=0 ){
+          auto ps1 = new REX::REvePointSet("ComboHits ", "",0); 
+          
+          for(unsigned int i=0; i< chcol->size(); i++){
+              mu2e::ComboHit const  &hit= (*chcol)[i];
+              CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
+              ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); //TODO - function
+          }
         ps1->SetMarkerColor(kBlue);
         ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
         ps1->SetMarkerSize(REveMu2eDataInterface::msize);
-        if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
+        if(ps1->GetSize() !=0 ) scene->AddElement(ps1);  
+        }
     }
+    std::cout<<"[REveMu2eDataInterface] AddComboHits end"<<std::endl;
 }
+
 
 /*------------Function to add TimeCluster Collection in 3D and 2D displays:-------------*/
   void REveMu2eDataInterface::AddTimeClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::TimeClusterCollection *tccol, REX::REveElement* &scene){
@@ -120,10 +132,10 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
               usedid[q]=q;
               usedtrksid[q]=hit._sid;//Save the Straw ID if the KalSeed and Combo hit ID matches
               CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
-	      // CLHEP::Hep3Vector HitPos = det->toMu2e(HitPosition);
+	            // CLHEP::Hep3Vector HitPos = det->toMu2e(HitPosition);
               auto trkhit = new REX::REvePointSet("TrkHits", "trkhit",0); 
               trkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
-	      trkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
+	            trkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
               trkhit ->SetMarkerColor(kGreen-4);
               trkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 + 100,HitPos.z()/10);
               if(trkhit->GetSize() !=0 ) scene->AddElement(trkhit); 
@@ -135,7 +147,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           if(i != usedid[i] && i<chcol->size()){
             ComboHit chhit = (*chcol)[i];
             CLHEP::Hep3Vector HitPos(chhit.pos().x(), chhit.pos().y(), chhit.pos().z());
-	    // CLHEP::Hep3Vector HitPos = det->toMu2e(HitPosition);
+	          // CLHEP::Hep3Vector HitPos = det->toMu2e(HitPosition);
             auto notusedtrkhit = new REX::REvePointSet("NotTrkHits", "nottrkhit",0); 
             notusedtrkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
             notusedtrkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
@@ -148,6 +160,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
   }
 
 void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
+    
     std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
     std::vector<std::string> names = std::get<0>(track_tuple);
     std::vector<int> colour;
@@ -155,18 +168,19 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
     for(unsigned int j=0; j< track_list.size(); j++){
       const KalSeedCollection* seedcol = track_list[j];
       colour.push_back(j+3);
-      
       if(seedcol!=0){  
-        for(unsigned int k = 0; k < seedcol->size(); k = k + 20){ 
+       for(unsigned int k = 0; k < seedcol->size(); k = k + 20){ 
           mu2e::KalSeed kseed = (*seedcol)[k];
           const std::vector<mu2e::KalSegment> &segments = kseed.segments();
           unsigned int nSegments=segments.size();
+          
+          auto line = new REX::REveLine(names[j], names[j],nSegments);
           if(nSegments==0) continue;
           const mu2e::KalSegment &segmentFirst = kseed.segments().front();
           const mu2e::KalSegment &segmentLast = kseed.segments().back();
           double fltLMin=segmentFirst.fmin();
           double fltLMax=segmentLast.fmax();
-          auto line = new REX::REveLine(names[j], names[j],nSegments); 
+          
           
           for(unsigned int m=0; m<nSegments; m++){
             const mu2e::KalSegment &segment = segments.at(m);
@@ -200,9 +214,7 @@ void REveMu2eDataInterface::AddCosmicTrackFit(REX::REveManager *&eveMng, bool fi
       std::cout<<"[REveMu2eDataInterface] AddCosmicTrackSeed "<<std::endl;
       if(cosmiccol!=0){
           auto line = new REX::REveLine("Cosmic","Cosmic",2); 
-          if(!firstLoop_){
-              scene->DestroyElements();;
-          }
+          
           for(unsigned int i=0; i< cosmiccol->size(); i++){
               mu2e::CosmicTrackSeed const  &sts= (*cosmiccol)[i];      
               mu2e::CosmicTrack st = sts._track;

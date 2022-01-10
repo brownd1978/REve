@@ -40,14 +40,33 @@ namespace mu2e{
       const mu2e::KalSeedCollection* kalSeedcol = 0;
       const mu2e::CosmicTrackSeedCollection* CosmicTrackSeedcol = 0;
       const mu2e::MCTrajectoryCollection *mctrajcol = 0;
+      //lists:
       std::vector<const mu2e::KalSeedCollection*> track_list;
+      std::vector<const mu2e::CaloClusterCollection*> calocluster_list;
+      std::vector<const mu2e::ComboHitCollection*> combohit_list;
       std::vector<const mu2e::MCTrajectoryCollection*> mctrack_list;
       //Input Tag Labels:
       std::vector<std::string> track_labels;
+      std::vector<std::string> calocluster_labels;
       std::vector<std::string> mctrack_labels;
+      std::vector<std::string> combohit_labels;
       //Link Labels and Lists:
       std::tuple<std::vector<std::string>, std::vector<const mu2e::KalSeedCollection*>> track_tuple;
+      std::tuple<std::vector<std::string>, std::vector<const mu2e::CaloClusterCollection*>> calocluster_tuple;
+      std::tuple<std::vector<std::string>, std::vector<const mu2e::ComboHitCollection*>> combohit_tuple;
       std::tuple<std::vector<std::string>, std::vector<const mu2e::MCTrajectoryCollection*>> mctrack_tuple;
+      
+      void Reset(){
+        this->track_list.clear();
+        this->calocluster_list.clear();
+        this->combohit_list.clear();
+        this->mctrack_list.clear();
+        this->track_labels.clear();
+        this->calocluster_labels.clear();
+        this->mctrack_labels.clear();
+        this->combohit_labels.clear();
+      }
+      
       virtual ~DataCollections(){};
 
 	};

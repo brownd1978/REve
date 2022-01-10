@@ -177,23 +177,34 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
  }
 
 
- void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts){
-    if(drawOpts.addClusters and data.clustercol->size() !=0) pass_data->AddCaloClusters(eveMng, firstLoop, data.clustercol, eventScene);
-    if(drawOpts.addHits and data.chcol->size() !=0) pass_data->AddComboHits(eveMng, firstLoop, data.chcol, eventScene);
-    if(drawOpts.addTimeClusters and data.tccol->size() !=0) pass_data->AddTimeClusters(eveMng, firstLoop, data.tccol, eventScene);
+ void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds){
+    if(!firstLoop){
+      eventScene->DestroyElements();;
+    }
+    //...addReco:
+    if(drawOpts.addComboHits) {
+      std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
+      if(combohit_list.size() !=0 ) pass_data->AddComboHits(eveMng, firstLoop, data.combohit_tuple, eventScene);
+    }
+    if(drawOpts.addClusters){
+      std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(data.calocluster_tuple);
+      if(calocluster_list.size() !=0 ) pass_data->AddCaloClusters(eveMng, firstLoop, data.calocluster_tuple, eventScene);
+    }
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
-    if(drawOpts.addTrkHits and data.chcol->size() !=0 and track_list.size() !=0) pass_data->AddTrkHits(eveMng, firstLoop, data.chcol, data.track_tuple, eventScene);
     if(drawOpts.addTracks and track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
     if(drawOpts.addCosmicTracks) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
-    if(drawOpts.addMCTraj and data.mctrajcol->size() !=0) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop, data.mctrajcol, eventScene);
-	 projectEvents(eveMng);
+    if(drawOpts.addTimeClusters and data.tccol->size() !=0) pass_data->AddTimeClusters(eveMng, firstLoop, data.tccol, eventScene); //TODO - put in same style
+    //... add MC:
+    std::vector<const MCTrajectoryCollection*> mctrack_list = std::get<1>(data.mctrack_tuple);
+   // if(drawOpts.addMCTrajectories) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  std::get<1>(data.mctrack_tuple), eventScene, particleIds); //TODO - put in same style as others
+    
+    projectEvents(eveMng);
  }
 
  void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV)
  {
 
-    TGeoManager *geom = TGeoManager::Import("REve/src/fix.gdml");
-
+    TGeoManager *geom = TGeoManager::Import("REve/src/newGeom.gdml"); //TODO - could this be a fcl parameter?
     TGeoVolume* topvol = geom->GetTopVolume();
     gGeoManager->SetTopVolume(topvol);
     gGeoManager->SetTopVisible(kFALSE);
