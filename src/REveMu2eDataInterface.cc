@@ -66,7 +66,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           for(unsigned int i=0; i< chcol->size(); i++){
               mu2e::ComboHit const  &hit= (*chcol)[i];
               CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
-              ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); 
+              ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10, HitPos.z()/10); 
           }
         ps1->SetMarkerColor(kBlue);
         ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);

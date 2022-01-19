@@ -66,14 +66,14 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                     double d = 0;
                     if(fp < 674) { d = disk1_center; }
                     else { d = disk2_center; }
-                    if(crystal) { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10 + d; } //dz=CaloCenter-TrackerCenter= 2360 mm
-                    else { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10; }
+                    if(crystal) { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 ; t(3,4) = tv[2]/10+2360/10 + d; } //dz=CaloCenter-TrackerCenter= 2360 mm
+                    else { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 ; t(3,4) = tv[2]/10+2360/10; }
                     if (fp < 674 and crystal) cry1 = true; //FIXME - hardcoded number
                     if (fp >= 674 and crystal) cry2 = true; //FIXME - hardcoded number
                 } else if( !crvshift){
-                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100 ; t(3,4) = tv[2]/10;
+                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 ; t(3,4) = tv[2]/10;
                 } else if (crvshift){
-                    t(1,4) = tv[0]/10 + 390.4; t(2,4) = tv[1]/10 + 100 + 1.5*4500/10; t(3,4) = tv[2]/10; //FIXME - hardcoded number
+                    t(1,4) = tv[0]/10 + 390.4; t(2,4) = tv[1]/10  + 1.5*4500/10; t(3,4) = tv[2]/10; //FIXME - hardcoded number
                 }
                 ctrans *= t;
             }
@@ -141,10 +141,10 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
   
     // --------------------Tracker + Calo XZ View ------------------------------
   
-    rhoZGeomScene  = eveMng->SpawnNewScene("RhoZ Geometry", "RhoZ");
+    rhoZGeomScene  = eveMng->SpawnNewScene("RhoZ Geometry", "RhoZ"); //TODO - change this name
     rhoZEventScene = eveMng->SpawnNewScene("RhoZ Event Data","RhoZ");
   
-    mngRhoZ = new REX::REveProjectionManager(REX::REveProjection::kPT_RhoZ);
+    mngRhoZ = new REX::REveProjectionManager(REX::REveProjection::kPT_ZY );
   
     rhoZView = eveMng->SpawnNewViewer("RhoZ View", "");
     rhoZView->AddScene(rhoZGeomScene);
@@ -171,8 +171,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     XYCaloDisk2View = eveMng->SpawnNewViewer("XYCaloDisk2 View", "");
     XYCaloDisk2View->AddScene(XYCaloDisk2GeomScene);
     XYCaloDisk2View->AddScene(XYCaloDisk2EventScene);
-    
-    
+
  }
 
 
@@ -192,18 +191,18 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
     if(drawOpts.addTracks and track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
     if(drawOpts.addCosmicTracks) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
-    if(drawOpts.addTimeClusters and data.tccol->size() !=0) pass_data->AddTimeClusters(eveMng, firstLoop, data.tccol, eventScene); //TODO - put in same style
+    if(drawOpts.addTimeClusters and data.tccol->size() !=0) pass_data->AddTimeClusters(eveMng, firstLoop, data.tccol, eventScene); 
     //... add MC:
     std::vector<const MCTrajectoryCollection*> mctrack_list = std::get<1>(data.mctrack_tuple);
-    if(drawOpts.addMCTrajectories) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  std::get<1>(data.mctrack_tuple), eventScene, particleIds); 
+    if(drawOpts.addMCTrajectories and mctrack_list.size() !=0 ) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  data.mctrack_tuple, eventScene, particleIds); 
     // ... project these events onto geometry:
     projectEvents(eveMng);
- }
+}
 
  void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV)
  {
 
-    TGeoManager *geom = TGeoManager::Import("REve/src/newGeom.gdml"); //TODO - could this be a fcl parameter?
+    TGeoManager *geom = TGeoManager::Import("REve/src/newGeom.gdml"); //FIXME - could this be a fcl parameter?
     TGeoVolume* topvol = geom->GetTopVolume();
     gGeoManager->SetTopVolume(topvol);
     gGeoManager->SetTopVisible(kFALSE);
