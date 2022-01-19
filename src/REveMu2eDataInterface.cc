@@ -10,7 +10,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
     for(unsigned int j=0; j< calocluster_list.size(); j++){
       const CaloClusterCollection* clustercol = calocluster_list[j];
       colour.push_back(j+3);
-      if(clustercol->size() != 0 and clustercol->size() < 2){ //FIXME - hardcoded number   
+      if(clustercol->size() != 0 and clustercol->size() < 2){    
           if(!firstLoop_){
               scene->DestroyElements();;
           }
@@ -59,14 +59,14 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
     std::vector<int> colour;
     for(unsigned int j=0; j< combohit_list.size(); j++){
       const ComboHitCollection* chcol = combohit_list[j];
-      colour.push_back(j+3);//FIXME - hardcoded number
+      colour.push_back(j+3);
       if(chcol->size() !=0 ){
           auto ps1 = new REX::REvePointSet("ComboHits ", "",0); 
           
           for(unsigned int i=0; i< chcol->size(); i++){
               mu2e::ComboHit const  &hit= (*chcol)[i];
               CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
-              ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10, HitPos.z()/10); 
+              ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); //TODO - function
           }
         ps1->SetMarkerColor(kBlue);
         ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
@@ -89,7 +89,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
         for(size_t i=0; i<tccol->size();i++){
           mu2e::TimeCluster const  &tclust= (*tccol)[i];
           CLHEP::Hep3Vector HitPos(tclust._pos.x(), tclust._pos.y(), tclust._pos.z());
-          ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 , HitPos.z()/10); 
+          ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); 
         }
         ps1->SetMarkerColor(kGreen);
         ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
@@ -104,7 +104,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
       std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
       std::cout<<"[REveMu2eDataInterface] AddTrkHits  "<<std::endl;
       GeomHandle<DetectorSystem> det;
-      StrawId trksid[70];//FIXME - hardcoded number
+      StrawId trksid[70];
       unsigned int trkhitsize=0;
       //Save the hit straw IDs of the KalSeed hits  
       for(unsigned int j=0; j< track_list.size(); j++){
@@ -137,7 +137,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
               trkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
 	            trkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
               trkhit ->SetMarkerColor(kGreen-4);
-              trkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10,HitPos.z()/10);
+              trkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 + 100,HitPos.z()/10);
               if(trkhit->GetSize() !=0 ) scene->AddElement(trkhit); 
 	    }
           }
@@ -151,7 +151,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
             auto notusedtrkhit = new REX::REvePointSet("NotTrkHits", "nottrkhit",0); 
             notusedtrkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
             notusedtrkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
-            notusedtrkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 ,HitPos.z()/10);
+            notusedtrkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 + 100,HitPos.z()/10);
             notusedtrkhit ->SetMarkerColor(kRed-4);
 	    if(notusedtrkhit->GetSize() !=0 ) scene->AddElement(notusedtrkhit); 
 	  }
@@ -198,7 +198,7 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
               XYZVectorF pos;
               segment.helix().position(fltL,pos);
               CLHEP::Hep3Vector p =  GenVector::Hep3Vec(pos);
-              line->SetNextPoint((p.x())/10, (p.y())/10, (p.z())/10);
+              line->SetNextPoint((p.x())/10, (p.y())/10 +100, (p.z())/10);
             }
           }
         line->SetLineColor(kBlack);
@@ -224,8 +224,8 @@ void REveMu2eDataInterface::AddCosmicTrackFit(REX::REveManager *&eveMng, bool fi
               double tx2 = st.MinuitParams.A0  - st.MinuitParams.A1*ty2;
               double tz1 = st.MinuitParams.B0  - st.MinuitParams.B1*ty1;
               double tz2 = st.MinuitParams.B0  - st.MinuitParams.B1*ty2; 	
-              line->SetNextPoint((tx1)/10, (ty1)/10, (tz1)/10);
-              line->SetNextPoint((tx2)/10, (ty2)/10, (tz2)/10);
+              line->SetNextPoint((tx1)/10, (ty1)/10 + 100, (tz1)/10);
+              line->SetNextPoint((tx2)/10, (ty2)/10 + 100, (tz2)/10);
           }
     
           line->SetLineColor(kGreen);
