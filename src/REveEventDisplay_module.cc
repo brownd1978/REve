@@ -96,6 +96,7 @@ namespace mu2e
           fhicl::Atom<bool> show2D{Name("show2D"), Comment(""),true};   
           fhicl::Table<CollectionFiller::Config> filler{Name("filler"),Comment("fill collections")};
           fhicl::Sequence<int>particles{Name("particles"),Comment("PDGcodes to plot")};
+          fhicl::Atom<std::string>gdmlname{Name("gdmlname"),Comment("gdmlname")};
         };
 
         typedef art::EDAnalyzer::Table<Config> Parameters;
@@ -136,6 +137,7 @@ namespace mu2e
         DataCollections data;
         bool firstLoop_ = true; 
         std::vector<int> particles_;
+        std::string gdmlname_;
         
     };
 
@@ -144,7 +146,8 @@ namespace mu2e
     art::EDAnalyzer(conf),
     showCRV_(conf().showCRV()),
     filler_(conf().filler()),
-    particles_(conf().particles())
+    particles_(conf().particles()),
+    gdmlname_(conf().gdmlname())
     {}
 
   REveEventDisplay::~REveEventDisplay() {}
