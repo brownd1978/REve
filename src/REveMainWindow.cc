@@ -4,8 +4,8 @@ namespace REX = ROOT::Experimental;
 using namespace std;
 using namespace mu2e;
 
-double disk1_center = -49.4705;
-double disk2_center = 20.95295;
+double disk1_center = -49.4705;//FIXME - hardcoded number
+double disk2_center = 20.95295;//FIXME - hardcoded number
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2)
  {
 
@@ -22,7 +22,7 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     }if(crystal2){//val == 28772){
         mngXYCaloDisk2->ImportElements(b1s, XYCaloDisk2GeomScene);
     }
-    if(val == 41612){
+    if(val == 41612){//FIXME - hardcoded number
         mngTrackerXY->ImportElements(b1s, TrackerXYGeomScene); //shows only one plane for simplicity
     }
     mngRhoZ  ->ImportElements(b1s, rhoZGeomScene);
@@ -47,7 +47,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         
         if (name.find(str)!= std::string::npos and i==0 ){ //To make the geometry translucant we only add i==0
 
-            std::cout<<j<<" "<<name<<std::endl;
+            //std::cout<<j<<" "<<name<<std::endl;
             
             //TGeoMaterial* material = n->GetVolume()->GetMaterial();
             REX::REveTrans ctrans;
@@ -68,12 +68,12 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                     else { d = disk2_center; }
                     if(crystal) { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10 + d; } //dz=CaloCenter-TrackerCenter= 2360 mm
                     else { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10; }
-                    if (fp < 674 and crystal) cry1 = true;
-                    if (fp >= 674 and crystal) cry2 = true;
+                    if (fp < 674 and crystal) cry1 = true; //FIXME - hardcoded number
+                    if (fp >= 674 and crystal) cry2 = true; //FIXME - hardcoded number
                 } else if( !crvshift){
                     t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100 ; t(3,4) = tv[2]/10;
                 } else if (crvshift){
-                    t(1,4) = tv[0]/10 + 390.4; t(2,4) = tv[1]/10 + 100 + 1.5*4500/10; t(3,4) = tv[2]/10;
+                    t(1,4) = tv[0]/10 + 390.4; t(2,4) = tv[1]/10 + 100 + 1.5*4500/10; t(3,4) = tv[2]/10; //FIXME - hardcoded number
                 }
                 ctrans *= t;
             }
@@ -115,7 +115,6 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
 
  void REveMainWindow::projectEvents(REX::REveManager *eveMng)
  {
-    
        for (auto &ie : eveMng->GetEventScene()->RefChildren())
        {
           mngTrackerXY->ImportElements(ie, TrackerXYEventScene);
@@ -196,8 +195,8 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     if(drawOpts.addTimeClusters and data.tccol->size() !=0) pass_data->AddTimeClusters(eveMng, firstLoop, data.tccol, eventScene); //TODO - put in same style
     //... add MC:
     std::vector<const MCTrajectoryCollection*> mctrack_list = std::get<1>(data.mctrack_tuple);
-   // if(drawOpts.addMCTrajectories) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  std::get<1>(data.mctrack_tuple), eventScene, particleIds); //TODO - put in same style as others
-    
+    if(drawOpts.addMCTrajectories) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  std::get<1>(data.mctrack_tuple), eventScene, particleIds); 
+    // ... project these events onto geometry:
     projectEvents(eveMng);
  }
 

@@ -10,7 +10,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
     for(unsigned int j=0; j< calocluster_list.size(); j++){
       const CaloClusterCollection* clustercol = calocluster_list[j];
       colour.push_back(j+3);
-      if(clustercol->size() != 0 and clustercol->size() < 2){    
+      if(clustercol->size() != 0 and clustercol->size() < 2){ //FIXME - hardcoded number   
           if(!firstLoop_){
               scene->DestroyElements();;
           }
@@ -59,14 +59,14 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
     std::vector<int> colour;
     for(unsigned int j=0; j< combohit_list.size(); j++){
       const ComboHitCollection* chcol = combohit_list[j];
-      colour.push_back(j+3);
+      colour.push_back(j+3);//FIXME - hardcoded number
       if(chcol->size() !=0 ){
           auto ps1 = new REX::REvePointSet("ComboHits ", "",0); 
           
           for(unsigned int i=0; i< chcol->size(); i++){
               mu2e::ComboHit const  &hit= (*chcol)[i];
               CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
-              ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); //TODO - function
+              ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); 
           }
         ps1->SetMarkerColor(kBlue);
         ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
@@ -104,7 +104,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
       std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
       std::cout<<"[REveMu2eDataInterface] AddTrkHits  "<<std::endl;
       GeomHandle<DetectorSystem> det;
-      StrawId trksid[70];
+      StrawId trksid[70];//FIXME - hardcoded number
       unsigned int trkhitsize=0;
       //Save the hit straw IDs of the KalSeed hits  
       for(unsigned int j=0; j< track_list.size(); j++){
