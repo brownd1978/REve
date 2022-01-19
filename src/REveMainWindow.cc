@@ -144,7 +144,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     rhoZGeomScene  = eveMng->SpawnNewScene("RhoZ Geometry", "RhoZ"); //TODO - change this name
     rhoZEventScene = eveMng->SpawnNewScene("RhoZ Event Data","RhoZ");
   
-    mngRhoZ = new REX::REveProjectionManager(REX::REveProjection::kPT_ZY );
+    mngRhoZ = new REX::REveProjectionManager(REX::REveProjection::kPT_YZ );
   
     rhoZView = eveMng->SpawnNewViewer("RhoZ View", "");
     rhoZView->AddScene(rhoZGeomScene);
@@ -202,7 +202,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
  void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV)
  {
 
-    TGeoManager *geom = TGeoManager::Import("REve/src/newGeom.gdml"); //FIXME - could this be a fcl parameter?
+    TGeoManager *geom = TGeoManager::Import("REve/src/mu2e.gdml"); //FIXME - could this be a fcl parameter?
     TGeoVolume* topvol = geom->GetTopVolume();
     gGeoManager->SetTopVolume(topvol);
     gGeoManager->SetTopVisible(kFALSE);
