@@ -73,7 +73,7 @@ namespace mu2e {
             void showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool shift, bool crystal, bool crvshift);
             void SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV); 
             //void AddCRV(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level);  
-            void makeGeometryScene(REX::REveManager *eveMng, bool addCRV);
+            void makeGeometryScene(REX::REveManager *eveMng, bool addCRV, std::string filename);
             void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds);
             
             void createProjectionStuff(REX::REveManager *eveMng);
