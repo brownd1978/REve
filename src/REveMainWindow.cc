@@ -199,10 +199,10 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     // ... project these events onto geometry:
     projectEvents(eveMng);
  }
- void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV)
+ void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV, std::string gdmlname)
  {
 
-    TGeoManager *geom = TGeoManager::Import("REve/src/mu2e.gdml"); //TODO - could this be a fcl parameter?
+    TGeoManager *geom = TGeoManager::Import(gdmlname.c_str()); //TODO - could this be a fcl parameter?
     TGeoVolume* topvol = geom->GetTopVolume();
     gGeoManager->SetTopVolume(topvol);
     gGeoManager->SetTopVisible(kFALSE);

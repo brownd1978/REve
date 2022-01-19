@@ -258,7 +258,7 @@ namespace mu2e
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
       frame_ = new REveMainWindow();
-      frame_->makeGeometryScene(eveMng_,showCRV_);
+      frame_->makeGeometryScene(eveMng_,showCRV_,gdmlname_);
 
       std::unique_lock lock{m_};
       cv_.notify_all();

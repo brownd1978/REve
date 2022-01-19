@@ -21,7 +21,7 @@ REveEventDisplay : {
     FillAll : false
     }
     particles :   [11,13,2212,2112,211,22,212]
-    gdmlname : "mu2e.gdml"
+    gdmlname : "REve/mu2e.gdml"
 }  
 
 REveDis : {  
