@@ -35,10 +35,8 @@ namespace REX = ROOT::Experimental;
                   line->SetNextPoint((Pos.x()),(Pos.y()),(Pos.z()));
 
                 }
-                //Get PID label:
-                //TEveText *t = GetLabel(trajectoryIter->first->pdgId(), line, line_twoDXZ, line_twoDXY); //TODO - find out about text
 
-                line->SetLineColor(kBlack);
+                line->SetLineColor(kRed);
                 line->SetLineWidth(5);
                 scene->AddElement(line); 
               } else std::cout<<"Warning: No Particles of User-Specified Type In File "<<std::endl;

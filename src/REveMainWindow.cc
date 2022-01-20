@@ -8,7 +8,6 @@ double disk1_center = -49.4705;//FIXME - hardcoded number
 double disk2_center = 20.95295;//FIXME - hardcoded number
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2)
  {
-
     auto gss = n->GetVolume()->GetShape();
     auto b1s = new REX::REveGeoShape(n->GetName());
     b1s->InitMainTrans();
@@ -25,10 +24,9 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     if(val == 41612){//FIXME - hardcoded number
         mngTrackerXY->ImportElements(b1s, TrackerXYGeomScene); //shows only one plane for simplicity
     }
-    mngRhoZ  ->ImportElements(b1s, rhoZGeomScene);
-    
-    
+    mngRhoZ  ->ImportElements(b1s, rhoZGeomScene); 
  }
+ 
 int fp = 0;
 int j = 0;
 void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, bool crvshift) {
@@ -46,10 +44,8 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         TGeoNode * pn = n->GetDaughter(i);
         
         if (name.find(str)!= std::string::npos and i==0 ){ //To make the geometry translucant we only add i==0
-
             //std::cout<<j<<" "<<name<<std::endl;
             
-            //TGeoMaterial* material = n->GetVolume()->GetMaterial();
             REX::REveTrans ctrans;
             ctrans.SetFrom(trans.Array());
             {
@@ -57,36 +53,32 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 const Double_t *rm = gm->GetRotationMatrix();
                 const Double_t *tv = gm->GetTranslation();
                 REX::REveTrans t;
-                t(1,1) = rm[0]/10; t(1,2) = rm[1]/10; t(1,3) = rm[2]/10;
-                t(2,1) = rm[3]/10; t(2,2) = rm[4]/10; t(2,3) = rm[5]/10;
-                t(3,1) = rm[6]/10; t(3,2) = rm[7]/10; t(3,3) = rm[8]/10;
+                t(1,1) = rm[0]; t(1,2) = rm[1]; t(1,3) = rm[2];
+                t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
+                t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 
                 if(caloshift){
                     fp++;
                     double d = 0;
                     if(fp < 674) { d = disk1_center; }
                     else { d = disk2_center; }
-                    if(crystal) { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10 + d; } //dz=CaloCenter-TrackerCenter= 2360 mm
-                    else { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100; t(3,4) = tv[2]/10+2360/10; }
+                    if(crystal) { t(1,4) = tv[0]; t(2,4) = tv[1] + 1000; t(3,4) = tv[2] + 2360 + d*10; } //dz=CaloCenter-TrackerCenter= 2360 mm FIXME
+                    else { t(1,4) = tv[0]; t(2,4) = tv[1] + 1000; t(3,4) = tv[2] + 2360; } //FIXME
                     if (fp < 674 and crystal) cry1 = true; //FIXME - hardcoded number
                     if (fp >= 674 and crystal) cry2 = true; //FIXME - hardcoded number
                 } else if( !crvshift){
-                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 100 ; t(3,4) = tv[2]/10;
+                    t(1,4) = tv[0]; t(2,4) = tv[1] + 1000 ; t(3,4) = tv[2];
                 } else if (crvshift){
-                    t(1,4) = tv[0]/10 + 390.4; t(2,4) = tv[1]/10 + 100 + 1.5*4500/10; t(3,4) = tv[2]/10; //FIXME - hardcoded number
+                    t(1,4) = tv[0] + 3904; t(2,4) = tv[1] + 1000 + 1.5*45000; t(3,4) = tv[2]; //FIXME - hardcoded number
                 }
                 ctrans *= t;
             }
             n->ls();
-            makeEveGeoShape(n, ctrans, holder, j,cry1, cry2);
-            
+            makeEveGeoShape(n, ctrans, holder, j,cry1, cry2);  
         }
-       
        showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal,crvshift);
        }
-    
   } 
-
 
   /* function to hide all elements which are not PS,TS, DS */
   void REveMainWindow::SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV) {
@@ -108,7 +100,6 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     for(auto& i: substrings_crystal){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, false);
     }
-
 }
 
 
@@ -122,13 +113,10 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
           if(ie->GetName() == "disk1") mngXYCaloDisk1->ImportElements(ie, XYCaloDisk1EventScene);
           if(ie->GetName() == "disk2") mngXYCaloDisk2->ImportElements(ie, XYCaloDisk2EventScene);
        }
-     
-
  }
 
  void REveMainWindow::createProjectionStuff(REX::REveManager *eveMng)
  {
-
     // -------------------Tracker XY View ----------------------------------
     TrackerXYGeomScene  = eveMng->SpawnNewScene("TrackerXY Geometry","TrackerXY");
     TrackerXYEventScene = eveMng->SpawnNewScene("TrackerXY Event Data","TrackerXY");
@@ -170,9 +158,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
   
     XYCaloDisk2View = eveMng->SpawnNewViewer("XYCaloDisk2 View", "");
     XYCaloDisk2View->AddScene(XYCaloDisk2GeomScene);
-    XYCaloDisk2View->AddScene(XYCaloDisk2EventScene);
-    
-    
+    XYCaloDisk2View->AddScene(XYCaloDisk2EventScene); 
  }
 
 
@@ -196,13 +182,13 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     //... add MC:
     std::vector<const MCTrajectoryCollection*> mctrack_list = std::get<1>(data.mctrack_tuple);
     if(drawOpts.addMCTrajectories and mctrack_list.size() !=0) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  data.mctrack_tuple, eventScene, particleIds); 
-    // ... project these events onto geometry:
+    // ... project these events onto 2D geometry:
     projectEvents(eveMng);
  }
+ 
  void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV, std::string gdmlname)
  {
-
-    TGeoManager *geom = TGeoManager::Import(gdmlname.c_str()); //TODO - could this be a fcl parameter?
+    TGeoManager *geom = TGeoManager::Import(gdmlname.c_str()); 
     TGeoVolume* topvol = geom->GetTopVolume();
     gGeoManager->SetTopVolume(topvol);
     gGeoManager->SetTopVisible(kFALSE);
@@ -214,24 +200,13 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         eveMng->GetGlobalScene()->AddElement(holder);
         REX::REveTrans trans;
         SolenoidsOnly(topnode, trans, holder,8,0, addCRV);
-       
     }
 
-   try {
-     
-	 eveMng->Show();
-     
+    try {
+      eveMng->Show();
     } catch (...) {
-
        std::cout<< "Blocking window" << std::endl;
     }
    
  }
- 
-
-
-
-
-
-
 
