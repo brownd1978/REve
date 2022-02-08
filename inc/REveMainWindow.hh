@@ -47,18 +47,18 @@ namespace mu2e {
     
   struct DrawOptions{
       // data options
-      bool addCRVInfo = false;
       bool addCosmicTracks = false;
       bool addTracks = false;
       bool addClusters = false; 
       bool addComboHits = false;
+      bool addCRVInfo = false;
       bool addTimeClusters = false;
       bool addTrkHits = false;
       bool addMCTrajectories = false;
      
       DrawOptions(){};
-      DrawOptions(bool crv, bool cosmictracks, bool tracks, bool clusters, bool combohits, bool timeclusters, bool trkhits, bool mctraj) 
-      : addCRVInfo(crv), addCosmicTracks(cosmictracks), addTracks(tracks), addClusters(clusters), addComboHits(combohits), addTimeClusters(timeclusters), addTrkHits(trkhits), addMCTrajectories(mctraj){};
+      DrawOptions(bool cosmictracks, bool tracks, bool clusters, bool combohits, bool crv, bool timeclusters, bool trkhits, bool mctraj) 
+      : addCosmicTracks(cosmictracks), addTracks(tracks), addClusters(clusters), addComboHits(combohits), addCRVInfo(crv), addTimeClusters(timeclusters), addTrkHits(trkhits), addMCTrajectories(mctraj){};
      };
      
     class REveMainWindow  : public REX::REveElement {
@@ -72,7 +72,6 @@ namespace mu2e {
             void makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int j, bool crys1, bool crys2);
             void showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool shift, bool crystal, bool crvshift);
             void SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV); 
-            //void AddCRV(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level);  
             void makeGeometryScene(REX::REveManager *eveMng, bool addCRV, std::string filename);
             void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds);
             
@@ -100,4 +99,3 @@ namespace mu2e {
 
 }
 #endif
-
