@@ -171,6 +171,11 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
       if(combohit_list.size() !=0 ) pass_data->AddComboHits(eveMng, firstLoop, data.combohit_tuple, eventScene);
     }
+    if(drawOpts.addCRVInfo){
+       std::vector<const CrvRecoPulseCollection*> crvpulse_list = std::get<1>(data.crvpulse_tuple);
+       if(crvpulse_list.size() !=0) pass_data->AddCRVInfo(eveMng, firstLoop, data.crvpulse_tuple, eventScene);
+    }
+
     if(drawOpts.addClusters){
       std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(data.calocluster_tuple);
       if(calocluster_list.size() !=0 ) pass_data->AddCaloClusters(eveMng, firstLoop, data.calocluster_tuple, eventScene);
@@ -209,4 +214,3 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     }
    
  }
-
