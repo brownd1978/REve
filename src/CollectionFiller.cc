@@ -10,11 +10,13 @@ namespace mu2e{
     CollectionFiller::CollectionFiller(const Config& conf) :
         chTag_(conf.chTag()),
         tcTag_(conf.tcTag()),
+        crvcoinTag_(conf.crvcoinTag()),
         cluTag_(conf.cluTag()),
-        kalSeedTag_(conf.kalSeedTag()),
+	    kalSeedTag_(conf.kalSeedTag()),
         cosmicTrackSeedTag_(conf.cosmicTrackSeedTag()),
         MCTrajTag_(conf.MCTrajTag()),
         addHits_(conf.addHits()),
+        addCrvHits_(conf.addCrvHits()),
         addTimeClusters_(conf.addTimeClusters()),
         addTrkHits_(conf.addTrkHits()),
         addClusters_(conf.addClusters()),
@@ -34,7 +36,7 @@ namespace mu2e{
 
     void CollectionFiller::FillRecoCollections(const art::Event& evt, DataCollections &data, RecoDataProductName CollectionName){
         if(FillAll_  or (CollectionName == ComboHits)){ 
-            for(const auto &tag : chTag_){
+            for(const auto &tag : chTag_){ 
                 auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(tag);
                 data.chcol = chH.product();
                 data.combohit_list.push_back(data.chcol);
@@ -43,6 +45,17 @@ namespace mu2e{
                 data.combohit_labels.push_back(name);
             }
             data.combohit_tuple = std::make_tuple(data.combohit_labels,data.combohit_list);
+        }
+        if(FillAll_ or (addCrvHits_ and CollectionName==CRVRecoPulses)){
+          for(const auto &tag : crvcoinTag_){ 
+           auto chH = evt.getValidHandle<mu2e::CrvRecoPulseCollection>(tag);
+           data.crvcoincol = chH.product();
+            data.crvpulse_list.push_back(data.crvcoincol);
+                std::string name = TurnNameToString(tag);
+                std::cout<<"Plotting CRV Instance: "<<name<<"  "<<data.crvpulse_list.size()<<std::endl;
+                data.crvpulse_labels.push_back(name);
+          }
+            data.crvpulse_tuple = std::make_tuple(data.crvpulse_labels,data.crvpulse_list);
         }
         if(FillAll_  or (CollectionName == TimeClusters)){ 
            auto chH = evt.getValidHandle<mu2e::TimeClusterCollection>(tcTag_);
