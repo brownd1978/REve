@@ -77,6 +77,35 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
     std::cout<<"[REveMu2eDataInterface] AddComboHits end"<<std::endl;
 }
 
+/*------------Function to add CRV information to the display:-------------*/
+  void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CrvRecoPulseCollection*>>  crvpulse_tuple, REX::REveElement* &scene){
+    std::cout<<"[REveMu2eDataInterface] AddCRVInfo start"<<std::endl;
+    std::vector<const CrvRecoPulseCollection*> crvpulse_list = std::get<1>(crvpulse_tuple);
+    std::vector<std::string> names = std::get<0>(crvpulse_tuple);
+	  GeomHandle<CosmicRayShield> CRS;
+    if(crvpulse_list.size() !=0){
+      for(unsigned int i=0; i <crvpulse_list.size(); i++){
+        const CrvRecoPulseCollection* crvRecoPulse = crvpulse_list[i];
+	if(crvRecoPulse->size() !=0){
+          auto ps1 = new REX::REvePointSet("CRVRecoPulse", "",0);
+	  for(unsigned int j=0; j< crvRecoPulse->size(); j++){
+	    mu2e::CrvRecoPulse const &crvpulse = (*crvRecoPulse)[j];
+	    const CRSScintillatorBarIndex &crvBarIndex = crvpulse.GetScintillatorBarIndex();
+            const CRSScintillatorBar &crvCounter = CRS->getBar(crvBarIndex);
+            CLHEP::Hep3Vector crvCounterPos = crvCounter.getPosition();
+	    CLHEP::Hep3Vector HitPos(crvCounterPos.x(), crvCounterPos.y(), crvCounterPos.z());
+            ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10);
+	  }
+	  ps1->SetMarkerColor(kBlue);
+          ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+          ps1->SetMarkerSize(REveMu2eDataInterface::msize);
+          if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
+	}
+      }
+    }
+    std::cout<<"[REveMu2eDataInterface] AddCRVRecoPulse end"<<std::endl;
+  }
+
 
 /*------------Function to add TimeCluster Collection in 3D and 2D displays:-------------*/
   void REveMu2eDataInterface::AddTimeClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::TimeClusterCollection *tccol, REX::REveElement* &scene){
