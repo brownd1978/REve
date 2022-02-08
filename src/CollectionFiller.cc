@@ -12,7 +12,7 @@ namespace mu2e{
         tcTag_(conf.tcTag()),
         crvcoinTag_(conf.crvcoinTag()),
         cluTag_(conf.cluTag()),
-	    kalSeedTag_(conf.kalSeedTag()),
+	kalSeedTag_(conf.kalSeedTag()),
         cosmicTrackSeedTag_(conf.cosmicTrackSeedTag()),
         MCTrajTag_(conf.MCTrajTag()),
         addHits_(conf.addHits()),
@@ -58,8 +58,15 @@ namespace mu2e{
             data.crvpulse_tuple = std::make_tuple(data.crvpulse_labels,data.crvpulse_list);
         }
         if(FillAll_  or (CollectionName == TimeClusters)){ 
-           auto chH = evt.getValidHandle<mu2e::TimeClusterCollection>(tcTag_);
-           data.tccol = chH.product();
+          for(const auto &tag : tcTag_){ 
+	     auto chH = evt.getValidHandle<mu2e::TimeClusterCollection>(tag);
+             data.tccol = chH.product();
+	     data.timecluster_list.push_back(data.tccol);
+             std::string name = TurnNameToString(tag);
+             std::cout<<"Plotting TimeCluster Instance: "<<name<<std::endl;
+             data.timecluster_labels.push_back(name);
+            }
+            data.timecluster_tuple = std::make_tuple(data.timecluster_labels,data.timecluster_list);
         }
         if(FillAll_ or (addTrkHits_ and CollectionName == TrkHits)){ 
 
@@ -68,7 +75,7 @@ namespace mu2e{
                 data.chcol = chH.product();
                 data.combohit_list.push_back(data.chcol);
                 std::string name = TurnNameToString(tag);
-                std::cout<<"Plotting ComboHit Instance: "<<name<<std::endl;
+                std::cout<<"Plotting TrkHit Instance: "<<name<<std::endl;
                 data.combohit_labels.push_back(name);
             }
             data.combohit_tuple = std::make_tuple(data.combohit_labels,data.combohit_list);
