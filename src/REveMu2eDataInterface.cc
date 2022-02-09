@@ -114,14 +114,14 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
       std::vector<std::string> names = std::get<0>(timecluster_tuple);
       if(timecluster_list.size() !=0){
         for(unsigned int i=0; i <timecluster_list.size(); i++){
-          const TimeClusterCollection* tccol = timecluster_list[j];
+          const TimeClusterCollection* tccol = timecluster_list[i];
           if(tccol->size() != 0){    
             if(!firstLoop_){
               scene->DestroyElements();;
             }
 	  auto ps1 = new REX::REvePointSet("TimeClusters", "TimeCluster", 0); // TODO - add in descriptive label
-          for(size_t i=0; i<tccol->size();i++){
-            mu2e::TimeCluster const  &tclust= (*tccol)[i];
+          for(size_t j=0; j<tccol->size();j++){
+            mu2e::TimeCluster const  &tclust= (*tccol)[j];
 	    CLHEP::Hep3Vector HitPos(tclust._pos.x(), tclust._pos.y(), tclust._pos.z());
             ps1->SetNextPoint(HitPos.x(), HitPos.y() +1000, HitPos.z()); 
 	  }
