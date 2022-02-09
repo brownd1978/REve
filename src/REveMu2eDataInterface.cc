@@ -108,23 +108,31 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
 
 
 /*------------Function to add TimeCluster Collection in 3D and 2D displays:-------------*/
-  void REveMu2eDataInterface::AddTimeClusters(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::TimeClusterCollection *tccol, REX::REveElement* &scene){
+  void REveMu2eDataInterface::AddTimeClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const TimeClusterCollection*>>  timecluster_tuple, REX::REveElement* &scene){
       std::cout<<"[REveMu2eDataInterface] AddTimeClusters "<<std::endl;
-      if(tccol!=0){
-        auto ps1 = new REX::REvePointSet("TimeClusters", "TimeCluster", 0); // TODO - add in descriptive label
-        if(!firstLoop_){
-          scene->DestroyElements();;
-        }
-        for(size_t i=0; i<tccol->size();i++){
-          mu2e::TimeCluster const  &tclust= (*tccol)[i];
-          CLHEP::Hep3Vector HitPos(tclust._pos.x(), tclust._pos.y(), tclust._pos.z());
-          ps1->SetNextPoint(HitPos.x(), HitPos.y() +1000, HitPos.z()); 
-        }
-        ps1->SetMarkerColor(kGreen);
-        ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
-        ps1->SetMarkerSize(REveMu2eDataInterface::msize);
-        if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
+      std::vector<const TimeClusterCollection*> timecluster_list = std::get<1>(timecluster_tuple);
+      std::vector<std::string> names = std::get<0>(timecluster_tuple);
+      if(timecluster_list.size() !=0){
+        for(unsigned int i=0; i <timecluster_list.size(); i++){
+          const TimeClusterCollection* tccol = timecluster_list[j];
+          if(tccol->size() != 0){    
+            if(!firstLoop_){
+              scene->DestroyElements();;
+            }
+	  auto ps1 = new REX::REvePointSet("TimeClusters", "TimeCluster", 0); // TODO - add in descriptive label
+          for(size_t i=0; i<tccol->size();i++){
+            mu2e::TimeCluster const  &tclust= (*tccol)[i];
+	    CLHEP::Hep3Vector HitPos(tclust._pos.x(), tclust._pos.y(), tclust._pos.z());
+            ps1->SetNextPoint(HitPos.x(), HitPos.y() +1000, HitPos.z()); 
+	  }
+          ps1->SetMarkerColor(kGreen);
+          ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+          ps1->SetMarkerSize(REveMu2eDataInterface::msize);
+          if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
+	  }
+	}
       }
+      std::cout<<"[REveMu2eDataInterface] AddTimeClusters end"<<std::endl;
   }
 	
 /*------------Function to color code the Tracker hits in 3D and 2D displays:-------------*/
