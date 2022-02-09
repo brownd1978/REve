@@ -27,7 +27,7 @@ namespace mu2e{
           using Comment=fhicl::Comment;
           fhicl::Atom<int> diagLevel{Name("diagLevel"), Comment("for info"),0};
           fhicl::Sequence<art::InputTag>chTag{Name("ComboHitCollection"),Comment("chTag")};
-          fhicl::Atom<art::InputTag>tcTag{Name("TimeClusterCollection"),Comment("ttcTag"), "makePH"};
+          fhicl::Sequence<art::InputTag>tcTag{Name("TimeClusterCollection"),Comment("ttcTag"), "makePH"};
           fhicl::Sequence<art::InputTag>crvcoinTag{Name("CrvRecoPulseCollection"),Comment("crvTag")};
           fhicl::Sequence<art::InputTag>cluTag{Name("CaloClusterCollection"),Comment("cluTag")};
 	  fhicl::Sequence<art::InputTag>kalSeedTag{Name("KalSeedCollection"),Comment("kalseedTag")};
@@ -49,7 +49,7 @@ namespace mu2e{
         CollectionFiller& operator=(const CollectionFiller &);
 
         std::vector<art::InputTag> chTag_;
-        art::InputTag tcTag_; //TODO - make in same style as others
+        std::vector<art::InputTag> tcTag_; //TODO - make in same style as others
         std::vector<art::InputTag> crvcoinTag_;
         std::vector<art::InputTag> cluTag_;
         std::vector<art::InputTag> kalSeedTag_;
