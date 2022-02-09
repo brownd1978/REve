@@ -183,7 +183,10 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
     if(drawOpts.addTracks and track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
     if(drawOpts.addCosmicTracks) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
-    if(drawOpts.addTimeClusters and data.tccol->size() !=0) pass_data->AddTimeClusters(eveMng, firstLoop, data.tccol, eventScene); //TODO - put in same style
+    if(drawOpts.addTimeClusters){
+     std::vector<const TimeClusterCollection*> timecluster_list = std::get<1>(data.timecluster_tuple);
+     if(timecluster_list.size() !=0) pass_data->AddTimeClusters(eveMng, firstLoop, data.timecluster_tuple, eventScene);
+    }
     //... add MC:
     std::vector<const MCTrajectoryCollection*> mctrack_list = std::get<1>(data.mctrack_tuple);
     if(drawOpts.addMCTrajectories and mctrack_list.size() !=0) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  data.mctrack_tuple, eventScene, particleIds); 
