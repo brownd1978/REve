@@ -7,7 +7,7 @@ REveEventDisplay : {
     diagLevel : 0
     ComboHitCollection : ["makeSH"]
     CrvRecoPulseCollection : ["SelectRecoMC"]
-    TimeClusterCollection : "MHDeM"
+    TimeClusterCollection : ["MHDeM"]
     CaloClusterCollection : ["CaloClusterFast"]
     KalSeedCollection : ["KFFDeM"]
     CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
