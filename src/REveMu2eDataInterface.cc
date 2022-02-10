@@ -82,7 +82,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
 	    double ct=cos(d.theta());
 	    double sp=sin(d.phi()+TMath::Pi()/2.0);
 	    double cp=cos(d.phi()+TMath::Pi()/2.0);
-	    if(sid < 20000){
+	    if(sid < 20000){      //This needs to be FIXED
             double x1=x+l*st*sp;
             double y1=y-l*st*cp;
             double z1=z+l*ct;
