@@ -54,6 +54,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
 
 void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const ComboHitCollection*>> combohit_tuple, REX::REveElement* &scene){
     std::cout<<"[REveMu2eDataInterface] AddComboHits start"<<std::endl;
+    bool strawdisplay = true; // Set to true to view the "hit" straws
     std::vector<const ComboHitCollection*> combohit_list = std::get<1>(combohit_tuple);
     std::vector<std::string> names = std::get<0>(combohit_tuple);
     std::vector<int> colour;
@@ -61,13 +62,53 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
       const ComboHitCollection* chcol = combohit_list[j];
       colour.push_back(j+3);
       if(chcol->size() !=0 ){
-          auto ps1 = new REX::REvePointSet("ComboHits ", "",0); 
-          
-          for(unsigned int i=0; i< chcol->size(); i++){
-              mu2e::ComboHit const  &hit= (*chcol)[i];
-              CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
-              ps1->SetNextPoint(HitPos.x(), HitPos.y() +1000, HitPos.z()); //TODO - function
-          }
+        auto ps1 = new REX::REvePointSet("ComboHits ", "",0); 
+	std::cout<<"chcol size = "<<chcol->size()<<std::endl;
+        for(unsigned int i=0; i< chcol->size(); i++){
+          mu2e::ComboHit const  &hit= (*chcol)[i];
+          if(strawdisplay){
+            mu2e::GeomHandle<mu2e::Tracker> tracker;
+            const auto& allStraws = tracker->getStraws();
+            int sid = hit._sid.asUint16();
+	    CLHEP::Hep3Vector sposi(0.0,0.0,0.0), sposf(0.0,0.0,0.0);
+	    const mu2e::Straw& s = allStraws[sid];
+            const CLHEP::Hep3Vector& p = s.getMidPoint();
+            const CLHEP::Hep3Vector& d = s.getDirection();
+            double x = p.x();
+            double y = p.y();
+            double z = p.z();
+            double l = s.halfLength();
+            double st=sin(d.theta());
+	    double ct=cos(d.theta());
+	    double sp=sin(d.phi()+TMath::Pi()/2.0);
+	    double cp=cos(d.phi()+TMath::Pi()/2.0);
+	    if(sid < 20000){
+            double x1=x+l*st*sp;
+            double y1=y-l*st*cp;
+            double z1=z+l*ct;
+	    double x2=x-l*st*sp;
+            double y2=y+l*st*cp;
+            double z2=z-l*ct;
+            std::string strawtitle;
+            int idStraw =  s.id().getStraw();
+            int idPanel =  s.id().getPanel();
+            int idPlane =  s.id().getPlane();
+            int colorid = idPlane + idPanel;
+            strawtitle =Form("Straw %i Panel %i  Plane %i",idStraw,idPanel,idPlane);
+	    sposi.set(x1, y1, z1);
+            sposf.set(x2, y2, z2);
+            if(sposi.x()!=0){ auto strawline = new REX::REveLine("StrawHit ",strawtitle,1); 
+              strawline->SetPoint(0,sposi.x(),sposi.y()+1000,sposi.z());
+              strawline->SetNextPoint(sposf.x(),sposf.y()+1000,sposf.z());            
+	      strawline->SetLineWidth(1);
+              strawline->SetLineColor(colorid);
+              if(strawline->GetSize() !=0 ) scene->AddElement(strawline);  
+	      }
+	    }
+	  }
+          CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
+          ps1->SetNextPoint(HitPos.x(), HitPos.y() +1000, HitPos.z()); //TODO - function
+        }
         ps1->SetMarkerColor(kBlue);
         ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
         ps1->SetMarkerSize(REveMu2eDataInterface::msize);
@@ -76,6 +117,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
     }
     std::cout<<"[REveMu2eDataInterface] AddComboHits end"<<std::endl;
 }
+
 
 /*------------Function to add CRV information to the display:-------------*/
   void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CrvRecoPulseCollection*>>  crvpulse_tuple, REX::REveElement* &scene){
@@ -94,7 +136,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
             const CRSScintillatorBar &crvCounter = CRS->getBar(crvBarIndex);
             CLHEP::Hep3Vector crvCounterPos = crvCounter.getPosition();
 	    CLHEP::Hep3Vector HitPos(crvCounterPos.x(), crvCounterPos.y(), crvCounterPos.z());
-            ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10);
+            ps1->SetNextPoint(HitPos.x(), HitPos.y() + 1000, HitPos.z());
 	  }
 	  ps1->SetMarkerColor(kBlue);
           ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
