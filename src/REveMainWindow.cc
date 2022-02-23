@@ -4,8 +4,14 @@ namespace REX = ROOT::Experimental;
 using namespace std;
 using namespace mu2e;
 
-double disk1_center = -49.4705;//FIXME - hardcoded number
-double disk2_center = 20.95295;//FIXME - hardcoded number
+//TODO the following numbers should be placed in a Util somewhere and extracted from the GeometryService
+double disk1_center = -49.4705;
+double disk2_center = 20.95295;
+double nCrystals = 674; 
+double dz = 2360; //FIXME =CaloCenter-TrackerCenter= 2360 mm
+double crvheight = 1.5*45000; 
+double detector_x = 3904; 
+
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2)
  {
     auto gss = n->GetVolume()->GetShape();
@@ -21,7 +27,7 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     }if(crystal2){//val == 28772){
         mngXYCaloDisk2->ImportElements(b1s, XYCaloDisk2GeomScene);
     }
-    if(val == 41612){//FIXME - hardcoded number
+    if(val == 41612){ //FIXME - hardcoded number
         mngTrackerXY->ImportElements(b1s, TrackerXYGeomScene); //shows only one plane for simplicity
     }
     mngRhoZ  ->ImportElements(b1s, rhoZGeomScene); 
@@ -42,10 +48,8 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     int ndau = n->GetNdaughters();
     for ( int i=0; i<ndau; ++i ){
         TGeoNode * pn = n->GetDaughter(i);
-        
         if (name.find(str)!= std::string::npos and i==0 ){ //To make the geometry translucant we only add i==0
             //std::cout<<j<<" "<<name<<std::endl;
-            
             REX::REveTrans ctrans;
             ctrans.SetFrom(trans.Array());
             {
@@ -60,21 +64,21 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 if(caloshift){
                     fp++;
                     double d = 0;
-                    if(fp < 674) { d = disk1_center; }
+                    if(fp < nCrystals) { d = disk1_center; }
                     else { d = disk2_center; }
-                    if(crystal) { t(1,4) = tv[0]; t(2,4) = tv[1] + 1000; t(3,4) = tv[2] + 2360 + d*10; } //dz=CaloCenter-TrackerCenter= 2360 mm FIXME
-                    else { t(1,4) = tv[0]; t(2,4) = tv[1] + 1000; t(3,4) = tv[2] + 2360; } //FIXME
-                    if (fp < 674 and crystal) cry1 = true; //FIXME - hardcoded number
-                    if (fp >= 674 and crystal) cry2 = true; //FIXME - hardcoded number
+                    if(crystal) { t(1,4) = tv[0]; t(2,4) = tv[1] + 1000; t(3,4) = tv[2] + dz + d*10; } 
+                    else { t(1,4) = tv[0]; t(2,4) = tv[1] + 1000; t(3,4) = tv[2] + dz; } 
+                    if (fp < nCrystals and crystal) cry1 = true; 
+                    if (fp >= nCrystals and crystal) cry2 = true; 
                 } else if( !crvshift){
                     t(1,4) = tv[0]; t(2,4) = tv[1] + 1000 ; t(3,4) = tv[2];
                 } else if (crvshift){
-                    t(1,4) = tv[0] + 3904; t(2,4) = tv[1] + 1000 + 1.5*45000; t(3,4) = tv[2]; //FIXME - hardcoded number
+                    t(1,4) = tv[0] + detector_x; t(2,4) = tv[1] + 1000 + crvheight; t(3,4) = tv[2]; 
                 }
                 ctrans *= t;
             }
             n->ls();
-            makeEveGeoShape(n, ctrans, holder, j,cry1, cry2);  
+            makeEveGeoShape(n, ctrans, holder, j, cry1, cry2);  
         }
        showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal,crvshift);
        }
@@ -85,7 +89,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     if(addCRV){
       static std::vector <std::string> substrings_crv  {"CRS"};  
         for(auto& i: substrings_crv){
-          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true);
+          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true); //TODO remove these arguements and make it easier
         }
     }
     static std::vector <std::string> substrings_disk  {"caloDisk"}; 
@@ -178,7 +182,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
     if(drawOpts.addTracks and track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
     if(drawOpts.addCosmicTracks) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
-    if(drawOpts.addTimeClusters and data.tccol->size() !=0) pass_data->AddTimeClusters(eveMng, firstLoop, data.tccol, eventScene); //TODO - put in same style
+    if(drawOpts.addTimeClusters and data.tccol->size() !=0) pass_data->AddTimeClusters(eveMng, firstLoop, data.tccol, eventScene); 
     //... add MC:
     std::vector<const MCTrajectoryCollection*> mctrack_list = std::get<1>(data.mctrack_tuple);
     if(drawOpts.addMCTrajectories and mctrack_list.size() !=0) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  data.mctrack_tuple, eventScene, particleIds); 
