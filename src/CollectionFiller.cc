@@ -8,21 +8,23 @@ using namespace mu2e;
 namespace mu2e{
 
     CollectionFiller::CollectionFiller(const Config& conf) :
-        chTag_(conf.chTag()),
-        tcTag_(conf.tcTag()),
-        cluTag_(conf.cluTag()),
-        kalSeedTag_(conf.kalSeedTag()),
-        cosmicTrackSeedTag_(conf.cosmicTrackSeedTag()),
-        MCTrajTag_(conf.MCTrajTag()),
-        addHits_(conf.addHits()),
-        addTimeClusters_(conf.addTimeClusters()),
-        addTrkHits_(conf.addTrkHits()),
-        addClusters_(conf.addClusters()),
-        addKalSeeds_(conf.addKalSeeds()),
-        addCosmicTrackSeeds_(conf.addCosmicTrackSeeds()),
-        addMCTraj_(conf.addMCTraj()),
-        FillAll_(conf.FillAll())
-        {}
+      chTag_(conf.chTag()),
+      tcTag_(conf.tcTag()),
+      crvcoinTag_(conf.crvcoinTag()),
+      cluTag_(conf.cluTag()),
+      kalSeedTag_(conf.kalSeedTag()),
+      cosmicTrackSeedTag_(conf.cosmicTrackSeedTag()),
+      MCTrajTag_(conf.MCTrajTag()),
+      addHits_(conf.addHits()),
+      addCrvHits_(conf.addCrvHits()),
+      addTimeClusters_(conf.addTimeClusters()),
+      addTrkHits_(conf.addTrkHits()),
+      addClusters_(conf.addClusters()),
+      addKalSeeds_(conf.addKalSeeds()),
+      addCosmicTrackSeeds_(conf.addCosmicTrackSeeds()),
+      addMCTraj_(conf.addMCTraj()),
+      FillAll_(conf.FillAll())
+      {}
 
     template <typename T> std::string TurnNameToString( const T& value )
     {
@@ -34,7 +36,7 @@ namespace mu2e{
 
     void CollectionFiller::FillRecoCollections(const art::Event& evt, DataCollections &data, RecoDataProductName CollectionName){
         if(FillAll_  or (CollectionName == ComboHits)){ 
-            for(const auto &tag : chTag_){
+            for(const auto &tag : chTag_){ 
                 auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(tag);
                 data.chcol = chH.product();
                 data.combohit_list.push_back(data.chcol);
@@ -44,9 +46,27 @@ namespace mu2e{
             }
             data.combohit_tuple = std::make_tuple(data.combohit_labels,data.combohit_list);
         }
+        if(FillAll_ or (addCrvHits_ and CollectionName==CRVRecoPulses)){
+          for(const auto &tag : crvcoinTag_){ 
+           auto chH = evt.getValidHandle<mu2e::CrvRecoPulseCollection>(tag);
+           data.crvcoincol = chH.product();
+            data.crvpulse_list.push_back(data.crvcoincol);
+                std::string name = TurnNameToString(tag);
+                std::cout<<"Plotting CRV Instance: "<<name<<"  "<<data.crvpulse_list.size()<<std::endl;
+                data.crvpulse_labels.push_back(name);
+          }
+            data.crvpulse_tuple = std::make_tuple(data.crvpulse_labels,data.crvpulse_list);
+        }
         if(FillAll_  or (CollectionName == TimeClusters)){ 
-           auto chH = evt.getValidHandle<mu2e::TimeClusterCollection>(tcTag_);
-           data.tccol = chH.product();
+          for(const auto &tag : tcTag_){ 
+            auto chH = evt.getValidHandle<mu2e::TimeClusterCollection>(tag);
+            data.tccol = chH.product();
+            data.timecluster_list.push_back(data.tccol);
+            std::string name = TurnNameToString(tag);
+            std::cout<<"Plotting TimeCluster Instance: "<<name<<std::endl;
+            data.timecluster_labels.push_back(name);
+          }
+          data.timecluster_tuple = std::make_tuple(data.timecluster_labels,data.timecluster_list);
         }
         if(FillAll_ or (addTrkHits_ and CollectionName == TrkHits)){ 
 
@@ -55,7 +75,7 @@ namespace mu2e{
                 data.chcol = chH.product();
                 data.combohit_list.push_back(data.chcol);
                 std::string name = TurnNameToString(tag);
-                std::cout<<"Plotting ComboHit Instance: "<<name<<std::endl;
+                std::cout<<"Plotting TrkHit Instance: "<<name<<std::endl;
                 data.combohit_labels.push_back(name);
             }
             data.combohit_tuple = std::make_tuple(data.combohit_labels,data.combohit_list);

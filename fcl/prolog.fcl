@@ -2,25 +2,28 @@ BEGIN_PROLOG
 			
 REveEventDisplay : {
     module_type : REveEventDisplay  
-    showCRV : true
+    showCRV : false
     filler : {
     diagLevel : 0
     ComboHitCollection : ["makeSH"]
-    TimeClusterCollection : "MHDeM"
+    CrvRecoPulseCollection : ["SelectRecoMC"]
+    TimeClusterCollection : ["MHDeM"]
     CaloClusterCollection : ["CaloClusterFast"]
     KalSeedCollection : ["KFFDeM"]
     CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
     MCTrajectoryCollection : ["compressDigiMCs"]
-    addHits : true
-    addTimeClusters : true
-    addTrkHits : true
-    addClusters : true
+    addHits : false
+    addCrvHits : true
+    addTimeClusters : false
+    addTrkHits : false
+    addClusters : false
     addKalSeeds : true
     addCosmicTrackSeeds : false
     addMCTraj : false
     FillAll : false
     }
     particles :   [11,13,2212,2112,211,22,212]
+    strawdisplay : true
     gdmlname : "REve/mu2e.gdml"
 }  
 

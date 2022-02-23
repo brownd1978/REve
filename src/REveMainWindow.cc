@@ -8,7 +8,7 @@ using namespace mu2e;
 double disk1_center = -49.4705;
 double disk2_center = 20.95295;
 double nCrystals = 674; 
-double dz = 2360; //FIXME =CaloCenter-TrackerCenter= 2360 mm
+double dz = 2360; //=CaloCenter-TrackerCenter= 2360 mm
 double crvheight = 1.5*45000; 
 double detector_x = 3904; 
 
@@ -166,26 +166,45 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
  }
 
 
- void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds){
+ void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay){
     if(!firstLoop){
       eventScene->DestroyElements();;
     }
     //...addReco:
     if(drawOpts.addComboHits) {
       std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
-      if(combohit_list.size() !=0 ) pass_data->AddComboHits(eveMng, firstLoop, data.combohit_tuple, eventScene);
+      if(combohit_list.size() !=0 ) pass_data->AddComboHits(eveMng, firstLoop, data.combohit_tuple, eventScene, strawdisplay);
+    }
+    if(drawOpts.addCRVInfo){
+       std::vector<const CrvRecoPulseCollection*> crvpulse_list = std::get<1>(data.crvpulse_tuple);
+       if(crvpulse_list.size() !=0) pass_data->AddCRVInfo(eveMng, firstLoop, data.crvpulse_tuple, eventScene);
     }
     if(drawOpts.addClusters){
       std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(data.calocluster_tuple);
       if(calocluster_list.size() !=0 ) pass_data->AddCaloClusters(eveMng, firstLoop, data.calocluster_tuple, eventScene);
     }
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
-    if(drawOpts.addTracks and track_list.size() !=0) pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
-    if(drawOpts.addCosmicTracks) pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
-    if(drawOpts.addTimeClusters and data.tccol->size() !=0) pass_data->AddTimeClusters(eveMng, firstLoop, data.tccol, eventScene); 
+    if(drawOpts.addTracks and track_list.size() !=0) {
+      pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
+      if(drawOpts.addTrkHits) {
+        std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
+        pass_data->AddTrkHits(eveMng, firstLoop, data.combohit_tuple,data.track_tuple, eventScene);
+        }
+    }
+    if(drawOpts.addCosmicTracks){
+      pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
+    }
+    if(drawOpts.addTimeClusters){
+      std::vector<const TimeClusterCollection*> timecluster_list = std::get<1>(data.timecluster_tuple);
+      if(timecluster_list.size() !=0) pass_data->AddTimeClusters(eveMng, firstLoop, data.timecluster_tuple, eventScene);
+    }
+
     //... add MC:
     std::vector<const MCTrajectoryCollection*> mctrack_list = std::get<1>(data.mctrack_tuple);
-    if(drawOpts.addMCTrajectories and mctrack_list.size() !=0) pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  data.mctrack_tuple, eventScene, particleIds); 
+    if(drawOpts.addMCTrajectories and mctrack_list.size() !=0){
+      pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  data.mctrack_tuple, eventScene, particleIds);
+    } 
+    
     // ... project these events onto 2D geometry:
     projectEvents(eveMng);
  }
@@ -213,4 +232,3 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     }
    
  }
-

@@ -17,14 +17,14 @@ physics :
 }
 physics.analyzers.REveEventDisplay.showCRV : false
 physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
-physics.analyzers.REveEventDisplay.filler.addClusters : true
-physics.analyzers.REveEventDisplay.filler.addHits : true
+physics.analyzers.REveEventDisplay.filler.addClusters : false
+physics.analyzers.REveEventDisplay.filler.addHits : false
+physics.analyzers.REveEventDisplay.filler.addCrvHits : true
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
-physics.analyzers.REveEventDisplay.filler.addTrkHits :false
+physics.analyzers.REveEventDisplay.filler.addTrkHits :true
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
 physics.analyzers.REveEventDisplay.filler.addMCTraj : false
 physics.EndPath  : [ @sequence::REveDis.seqBase] 
 
 services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
-
 
