@@ -15,13 +15,13 @@ physics :
 {
  analyzers : { @table::REveDis.analyzers}
 }
-physics.analyzers.REveEventDisplay.showCRV : false
+physics.analyzers.REveEventDisplay.showCRV : true
 physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
 physics.analyzers.REveEventDisplay.filler.addClusters : false
 physics.analyzers.REveEventDisplay.filler.addHits : false
 physics.analyzers.REveEventDisplay.filler.addCrvHits : true
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
-physics.analyzers.REveEventDisplay.filler.addTrkHits :true
+physics.analyzers.REveEventDisplay.filler.addTrkHits :false
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
 physics.analyzers.REveEventDisplay.filler.addMCTraj : false
 physics.EndPath  : [ @sequence::REveDis.seqBase] 
