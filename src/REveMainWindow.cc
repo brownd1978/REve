@@ -9,7 +9,7 @@ double disk1_center = -49.4705;
 double disk2_center = 20.95295;
 double nCrystals = 674; 
 double dz = 2360; //=CaloCenter-TrackerCenter= 2360 mm
-double crvheight = 1.5*45000; 
+double crvheight = 2*3083;//shift of 2 *  maximum height of crv module taken from crv_counters07
 double detector_x = 3904; 
 
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2)
@@ -22,9 +22,9 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     b1s->SetMainColor(kCyan);
     b1s->SetMainTransparency(100);
     holder->AddElement(b1s);
-    if(crystal1){ //val == 24516){
+    if(crystal1){ 
         mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
-    }if(crystal2){//val == 28772){
+    }if(crystal2){
         mngXYCaloDisk2->ImportElements(b1s, XYCaloDisk2GeomScene);
     }
     if(val == 41612){ //FIXME - hardcoded number
@@ -57,23 +57,23 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 const Double_t *rm = gm->GetRotationMatrix();
                 const Double_t *tv = gm->GetTranslation();
                 REX::REveTrans t;
-                t(1,1) = rm[0]; t(1,2) = rm[1]; t(1,3) = rm[2];
-                t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
-                t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
+                t(1,1) = rm[0]/10; t(1,2) = rm[1]/10; t(1,3) = rm[2]/10;
+                t(2,1) = rm[3]/10; t(2,2) = rm[4]/10; t(2,3) = rm[5]/10;
+                t(3,1) = rm[6]/10; t(3,2) = rm[7]/10; t(3,3) = rm[8]/10;
                 
                 if(caloshift){
                     fp++;
                     double d = 0;
                     if(fp < nCrystals) { d = disk1_center; }
                     else { d = disk2_center; }
-                    if(crystal) { t(1,4) = tv[0]; t(2,4) = tv[1] + 1000; t(3,4) = tv[2] + dz + d*10; } 
-                    else { t(1,4) = tv[0]; t(2,4) = tv[1] + 1000; t(3,4) = tv[2] + dz; } 
+                    if(crystal) { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 1000/10; t(3,4) = tv[2]/10 + dz/10 + d*10/10; } 
+                    else { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 1000/10; t(3,4) = tv[2]/10 + dz/10; } 
                     if (fp < nCrystals and crystal) cry1 = true; 
                     if (fp >= nCrystals and crystal) cry2 = true; 
                 } else if( !crvshift){
-                    t(1,4) = tv[0]; t(2,4) = tv[1] + 1000 ; t(3,4) = tv[2];
+                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 1000/10 ; t(3,4) = tv[2]/10;
                 } else if (crvshift){
-                    t(1,4) = tv[0] + detector_x; t(2,4) = tv[1] + 1000 + crvheight; t(3,4) = tv[2]; 
+                    t(1,4) = tv[0]/10 + detector_x/10; t(2,4) = tv[1]/10 + 1000/10 + crvheight/10 ; t(3,4) = tv[2]/10; 
                 }
                 ctrans *= t;
             }
