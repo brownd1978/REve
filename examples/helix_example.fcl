@@ -17,11 +17,11 @@ physics :
 }
 physics.analyzers.REveEventDisplay.showCRV : false
 physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
-physics.analyzers.REveEventDisplay.filler.addClusters : true
+physics.analyzers.REveEventDisplay.filler.addClusters : false
 physics.analyzers.REveEventDisplay.filler.addHits : true
 physics.analyzers.REveEventDisplay.filler.addCrvHits : false
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
-physics.analyzers.REveEventDisplay.filler.addTrkHits :true
+physics.analyzers.REveEventDisplay.filler.addTrkHits :false
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
 physics.analyzers.REveEventDisplay.filler.addMCTraj : true
 physics.EndPath  : [ @sequence::REveDis.seqBase] 
