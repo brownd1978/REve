@@ -31,6 +31,8 @@ namespace mu2e{
           virtual ~REveMu2eMCInterface() = default;
           #ifndef __CINT__
           int Contains(std::vector<int> v, int x);
+          const char* GetParticleName(int PDGCode);
+          void SetLineColorPID(int PDGCode,REX::REveLine *line);
           void AddMCTrajectoryCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const MCTrajectoryCollection*>> track_tuple, REX::REveElement* &scene, std::vector<int> particles );
           #endif
           ClassDef(REveMu2eMCInterface, 0);
