@@ -8,10 +8,10 @@ REveEventDisplay : {
     ComboHitCollection : ["makeSH"]
     CrvRecoPulseCollection : ["SelectRecoMC"]
     TimeClusterCollection : ["MHDeM"]
-    CaloClusterCollection : ["CaloClusterFast"]
+    CaloClusterCollection : ["CaloClusterMaker"]
     KalSeedCollection : ["KFFDeM"]
     CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
-    MCTrajectoryCollection : ["compressDigiMCs"]
+    MCTrajectoryCollection : ["compressRecoMCs"]
     addHits : false
     addCrvHits : true
     addTimeClusters : false

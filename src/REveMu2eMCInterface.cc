@@ -6,12 +6,81 @@ namespace REX = ROOT::Experimental;
   {
     return std::count(v.begin(), v.end(), x);
   }
-
+  
+  const char* REveMu2eMCInterface::GetParticleName(int PDGCode){ 
+    const char* pid = "pid";
+    switch(PDGCode) {
+        case PDGCode::e_minus:
+            pid = "electron -";
+            break;
+        case PDGCode::e_plus:
+            pid = "positron +";
+            break;
+        case PDGCode::mu_minus:
+            pid = "muon - ";
+            break;
+        case PDGCode::mu_plus:
+            pid = "muon + ";
+            break;
+        case PDGCode::pi_minus:
+            pid = "pion -";
+            break;
+        case PDGCode::pi_plus:
+            pid = "pion +";
+            break;
+        case PDGCode::proton:
+            pid = "proton";
+            break;
+        case PDGCode::gamma:
+            pid = "gamma";
+            break;
+        default:
+            pid = "other";
+            break;
+        }
+    return pid;
+  }
+  
+  void REveMu2eMCInterface::SetLineColorPID(int PDGCode,REX::REveLine *line){
+    Color_t color;
+    switch(PDGCode) {
+      case PDGCode::e_minus:
+        color = kRed;
+        break;
+      case PDGCode::e_plus:
+        color = kYellow;
+        break;
+      case PDGCode::mu_minus:
+        color = kGreen;
+        break;
+      case PDGCode::mu_plus:
+        color = kRed-9;
+        break;
+      case PDGCode::pi_minus:
+        color = kMagenta;
+        break;
+      case PDGCode::pi_plus:
+        color = kViolet;
+        break;
+      case PDGCode::proton:
+        color = kBlue;
+        break;
+      case PDGCode::gamma:
+        color = kOrange;
+        break;
+      default:
+        color = kCyan;
+        break;
+    }
+    line->SetLineColor(color);
+  }
+  
   void REveMu2eMCInterface::AddMCTrajectoryCollection(REX::REveManager *&eveMng, bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const MCTrajectoryCollection *>> mctrack_tuple, REX::REveElement* &scene, std::vector<int> particleIds){
+    // extract the track and input tage:
     std::vector<const MCTrajectoryCollection*> track_list = std::get<1>(mctrack_tuple);
     std::vector<std::string> names = std::get<0>(mctrack_tuple);
     std::vector<int> colour;
-
+    // loop over tracks:
     for(unsigned int j=0; j< track_list.size(); j++){
       const MCTrajectoryCollection* trajcol = track_list[j];
       colour.push_back(j+3);
@@ -21,22 +90,26 @@ namespace REX = ROOT::Experimental;
 
             for(trajectoryIter=trajcol->begin(); trajectoryIter!=trajcol->end(); trajectoryIter++)
             { 
-              //check user defined list of particles to plot:
+              // check user defined list of particles to plot
               int x = Contains(particleIds,trajectoryIter->first->pdgId()); 
+              // get particle name
+              //const char* particlename = GetParticleName(trajectoryIter->first->pdgId());
               if(x == 1){
                 const std::vector<MCTrajectoryPoint> &points = trajectoryIter->second.points();
+                // make label
                 std::string energy = std::to_string(points[0].kineticEnergy());
                 const std::string title = " MCTrajectory "+ energy + " Creation code = " + std::to_string(trajectoryIter->first->creationCode()) + "Stopping code = " + std::to_string(trajectoryIter->first->stoppingCode()) + " End Global Time = " + std::to_string(trajectoryIter->first->endGlobalTime())  ;
+                // create line with the above label
                 auto line = new REX::REveLine(Form(title.c_str()), Form(title.c_str()),1); //TODO : add InputTag to name
-                for(unsigned int i=0; i<points.size();i++){
+                // add points
+                for(unsigned int i=0; i < points.size();i++){
                   CLHEP::Hep3Vector Pos(points[i].x(), points[i].y(), points[i].z());
                   GeomHandle<DetectorSystem> det;
-                  CLHEP::Hep3Vector HitPos2D = det->toDetector(Pos);
-                  line->SetNextPoint((Pos.x()),(Pos.y()),(Pos.z()));
-
+                  CLHEP::Hep3Vector HitPos = det->toDetector(Pos);
+                  line->SetNextPoint((HitPos.x())/10,(HitPos.y())/10+100,(HitPos.z()/10));
                 }
-
-                line->SetLineColor(kRed);
+                // set line colour
+                SetLineColorPID(trajectoryIter->first->pdgId(),line);
                 line->SetLineWidth(5);
                 scene->AddElement(line); 
               } else std::cout<<"Warning: No Particles of User-Specified Type In File "<<std::endl;
