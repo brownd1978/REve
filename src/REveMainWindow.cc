@@ -9,6 +9,7 @@ double disk1_center = -49.4705;
 double disk2_center = 20.95295;
 double nCrystals = 674; 
 double dz = 2360; //=CaloCenter-TrackerCenter= 2360 mm
+double STz = 5871-1635.1;//stoppingTarget.z0InMu2e-tracker.mother.halfLength;//stoppingTarget.z0InMu2e from CD3_34foils
 double crvheight = 2*3083;//shift of 2 *  maximum height of crv module taken from crv_counters07
 double detector_x = 3904; 
 
@@ -35,7 +36,7 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
  
 int fp = 0;
 int j = 0;
-void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, bool crvshift) {
+void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, bool crvshift, bool STshift) { //FIXME this function needs rewrting
     ++level;
     if (level > maxlevel){
        return;
@@ -74,13 +75,16 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                     t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 1000/10 ; t(3,4) = tv[2]/10;
                 } else if (crvshift){
                     t(1,4) = tv[0]/10 + detector_x/10; t(2,4) = tv[1]/10 + 1000/10 + crvheight/10 ; t(3,4) = tv[2]/10; 
+                } 
+                if (STshift){
+                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 1000/10 ; t(3,4) = tv[2]/10 - STz/10; 
                 }
                 ctrans *= t;
             }
             n->ls();
             makeEveGeoShape(n, ctrans, holder, j, cry1, cry2);  
         }
-       showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal,crvshift);
+       showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal, crvshift, STshift);
        }
   } 
 
@@ -89,20 +93,24 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     if(addCRV){
       static std::vector <std::string> substrings_crv  {"CRS"};  
         for(auto& i: substrings_crv){
-          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true); //TODO remove these arguements and make it easier
+          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true, false);
         }
     }
     static std::vector <std::string> substrings_disk  {"caloDisk"}; 
     for(auto& i: substrings_disk){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, false, false);
     }
-    static std::vector <std::string> substringst  {"TrackerPlaneEnvelope"};
-    for(auto& i: substringst){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, false);
+    static std::vector <std::string> substring_tracker  {"TrackerPlaneEnvelope"};
+    for(auto& i: substring_tracker){
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, false, false);
     }
-    static std::vector <std::string> substrings_crystal  {"caloCrystal"};  
-    for(auto& i: substrings_crystal){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, false);
+    static std::vector <std::string> substrings_stoppingtarget  {"StoppingTarget","Foil"};
+    for(auto& i: substrings_stoppingtarget){
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, false, true);
+    }
+    static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
+    for(auto& i: substrings_crystals){
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, false, false);
     }
 }
 

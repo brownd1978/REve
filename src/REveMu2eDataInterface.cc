@@ -33,8 +33,8 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
               auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
               auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
               
-              if(cluster.diskID() == 0) ps1->SetNextPoint(COG.x()/10, COG.y() +100, abs(pointInMu2e.z()/10)); 
-              if(cluster.diskID() == 1) ps2->SetNextPoint(COG.x()/10, COG.y() +100, abs(pointInMu2e.z())/10); 
+              if(cluster.diskID() == 0) ps1->SetNextPoint(COG.x()/10, COG.y()/10 +100, abs(pointInMu2e.z()/10)); 
+              if(cluster.diskID() == 1) ps2->SetNextPoint(COG.x()/10, COG.y()/10 +100, abs(pointInMu2e.z())/10); 
 
              ps1->SetMarkerColor(kRed);
             ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
@@ -62,7 +62,6 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
   colour.push_back(j+3);
   if(chcol->size() !=0 ){
     auto ps1 = new REX::REvePointSet("ComboHits ", "",0); 
-    std::cout<<"chcol size = "<<chcol->size()<<std::endl;
     for(unsigned int i=0; i< chcol->size(); i++){
     mu2e::ComboHit const  &hit= (*chcol)[i];
     if(strawdisplay){
@@ -108,7 +107,6 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
     }
     CLHEP::Hep3Vector HitPos(hit.pos().x()/10, hit.pos().y()/10, hit.pos().z()/10);
     ps1->SetNextPoint(HitPos.x(), HitPos.y() +100, HitPos.z()); //TODO - function
-    std::cout<<"ComboHit pos "<< HitPos.x()/10<<" "<<HitPos.y()/10<<" "<<HitPos.z()/10<<std::endl;
   }
   ps1->SetMarkerColor(kBlue);
   ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
