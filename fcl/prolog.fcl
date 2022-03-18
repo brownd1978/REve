@@ -11,7 +11,7 @@ REveEventDisplay : {
     CaloClusterCollection : ["CaloClusterFast"]
     KalSeedCollection : ["KFFDeM"]
     CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
-    MCTrajectoryCollection : ["compressDigiMCs"]
+    MCTrajectoryCollection : ["compressRecoMCs"]
     addHits : false
     addCrvHits : true
     addTimeClusters : false
@@ -23,7 +23,7 @@ REveEventDisplay : {
     FillAll : false
     }
     particles :   [11,13,2212,2112,211,22,212]
-    strawdisplay : true
+    strawdisplay : false
     gdmlname : "REve/mu2e.gdml"
 }  
 

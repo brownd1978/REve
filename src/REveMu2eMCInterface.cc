@@ -4,7 +4,7 @@ namespace REX = ROOT::Experimental;
 
   int REveMu2eMCInterface::Contains(std::vector<int> v, int x)
   {
-    return std::count(v.begin(), v.end(), x);
+    return std::count(v.begin(), v.end(), abs(x));
   }
   
   const char* REveMu2eMCInterface::GetParticleName(int PDGCode){ 

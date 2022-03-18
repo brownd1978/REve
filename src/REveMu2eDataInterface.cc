@@ -124,6 +124,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
     std::vector<const CrvRecoPulseCollection*> crvpulse_list = std::get<1>(crvpulse_tuple);
     std::vector<std::string> names = std::get<0>(crvpulse_tuple);
     GeomHandle<CosmicRayShield> CRS;
+    GeomHandle<DetectorSystem> det;
     if(crvpulse_list.size() !=0){
       for(unsigned int i=0; i <crvpulse_list.size(); i++){
       const CrvRecoPulseCollection* crvRecoPulse = crvpulse_list[i];
@@ -134,8 +135,10 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           const CRSScintillatorBarIndex &crvBarIndex = crvpulse.GetScintillatorBarIndex();
           const CRSScintillatorBar &crvCounter = CRS->getBar(crvBarIndex);
           CLHEP::Hep3Vector crvCounterPos = crvCounter.getPosition();
-          CLHEP::Hep3Vector HitPos(crvCounterPos.x(), crvCounterPos.y(), crvCounterPos.z());
-          ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 + 100, HitPos.z()/10);
+          CLHEP::Hep3Vector HitPos(crvCounterPos.x(), crvCounterPos.y(), crvCounterPos.z());//TODO this should be the RecoPulse position
+          
+          CLHEP::Hep3Vector pointInMu2e = det-> toDetector(crvCounterPos);
+          ps1->SetNextPoint(pointInMu2e.x()/10, pointInMu2e.y()/10 + 100, pointInMu2e.z()/10);
         }
         
         ps1->SetMarkerColor(kBlue);
