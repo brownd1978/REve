@@ -236,7 +236,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     projectEvents(eveMng);
  }
  
- void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV, std::string gdmlname)
+ void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV, bool addPS, bool addTS, std::string gdmlname)
  {
     TGeoManager *geom = TGeoManager::Import(gdmlname.c_str()); 
     TGeoVolume* topvol = geom->GetTopVolume();
