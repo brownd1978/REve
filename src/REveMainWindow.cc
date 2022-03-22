@@ -36,7 +36,7 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
  
 int fp = 0;
 int j = 0;
-void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, bool crvshift, bool STshift) { //FIXME this function needs rewrting
+void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, bool crvshift, bool STshift, bool PSshift, bool TSshift) { //FIXME this function needs rewrting
     ++level;
     if (level > maxlevel){
        return;
@@ -79,38 +79,56 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 if (STshift){
                     t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 1000/10 ; t(3,4) = tv[2]/10 - STz/10; 
                 }
+                if (TSshift){
+                    t(1,4) = tv[0]/10 + detector_x/10 + 91; t(2,4) = tv[1]/10 + 6750/10 + 20; t(3,4) = tv[2]/10 - STz/10; 
+                }
+                if (PSshift){
+                    t(1,4) = tv[0]/10 +490; t(2,4) = tv[1]/10+693; t(3,4) = tv[2]/10-250;  
+                }
                 ctrans *= t;
             }
             n->ls();
             makeEveGeoShape(n, ctrans, holder, j, cry1, cry2);  
         }
-       showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal, crvshift, STshift);
+       showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal, crvshift, STshift, PSshift, TSshift);
        }
   } 
 
   /* function to hide all elements which are not PS,TS, DS */
-  void REveMainWindow::SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV) {
+  void REveMainWindow::SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV, bool addPS, bool addTS){
     if(addCRV){
       static std::vector <std::string> substrings_crv  {"CRS"};  
         for(auto& i: substrings_crv){
-          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true, false);
+          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true, false, false, false);
+        }
+    }
+    if(addTS){
+      static std::vector <std::string> substrings_ts  {"TS"};  
+        for(auto& i: substrings_ts){
+          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true, false, false, true);
+        }
+    }
+    if(addPS){
+      static std::vector <std::string> substrings_ps  {"PSVacuum"};  
+        for(auto& i: substrings_ps){
+          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, true, false, true, false);
         }
     }
     static std::vector <std::string> substrings_disk  {"caloDisk"}; 
     for(auto& i: substrings_disk){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, false, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, false, false, false, false);
     }
     static std::vector <std::string> substring_tracker  {"TrackerPlaneEnvelope"};
     for(auto& i: substring_tracker){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, false, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, false, false, false, false);
     }
     static std::vector <std::string> substrings_stoppingtarget  {"StoppingTarget","Foil"};
     for(auto& i: substrings_stoppingtarget){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, false, true);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, false, true, false, false);
     }
     static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
     for(auto& i: substrings_crystals){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, false, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, false, false, false, false);
     }
 }
 
@@ -230,7 +248,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         auto holder = new REX::REveElement("Inside DS");
         eveMng->GetGlobalScene()->AddElement(holder);
         REX::REveTrans trans;
-        SolenoidsOnly(topnode, trans, holder,8,0, addCRV);
+        SolenoidsOnly(topnode, trans, holder,8,0, addCRV, addPS, addTS);
     }
 
     try {
