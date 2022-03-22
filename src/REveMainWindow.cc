@@ -12,7 +12,8 @@ double dz = 2360; //=CaloCenter-TrackerCenter= 2360 mm
 double STz = 5871-1635.1;//stoppingTarget.z0InMu2e-tracker.mother.halfLength;//stoppingTarget.z0InMu2e from CD3_34foils
 double crvheight = 2*3083;//shift of 2 *  maximum height of crv module taken from crv_counters07
 double detector_x = 3904; 
-
+double psts_x = 482;
+double psts_y = 692; 
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2)
  {
     auto gss = n->GetVolume()->GetShape();
@@ -76,14 +77,14 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 } else if (crvshift){
                     t(1,4) = tv[0]/10 + detector_x/10; t(2,4) = tv[1]/10 + 1000/10 + crvheight/10 ; t(3,4) = tv[2]/10; 
                 } 
-                if (STshift){
-                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 1000/10 ; t(3,4) = tv[2]/10 - STz/10; 
-                }
                 if (TSshift){
-                    t(1,4) = tv[0]/10 + detector_x/10 + 91; t(2,4) = tv[1]/10 + 6750/10 + 20; t(3,4) = tv[2]/10 - STz/10; 
+                    t(1,4) = tv[0]/10 + psts_x; t(2,4) = tv[1]/10 + psts_y; t(3,4) = tv[2]/10 - dz/10; 
                 }
                 if (PSshift){
-                    t(1,4) = tv[0]/10 +490; t(2,4) = tv[1]/10+693; t(3,4) = tv[2]/10-250;  
+                    t(1,4) = tv[0]/10 + psts_x; t(2,4) = tv[1]/10 + psts_y; t(3,4) = tv[2]/10 - STz/10;  
+                }
+                if (STshift){
+                    t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 1000/10 ; t(3,4) = tv[2]/10 - STz/10; 
                 }
                 ctrans *= t;
             }
