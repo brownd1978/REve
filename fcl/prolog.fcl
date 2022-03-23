@@ -3,6 +3,8 @@ BEGIN_PROLOG
 REveEventDisplay : {
     module_type : REveEventDisplay  
     showCRV : false
+    showPS : true
+    showTS : true
     filler : {
     diagLevel : 0
     ComboHitCollection : ["makeSH"]
@@ -11,15 +13,15 @@ REveEventDisplay : {
     CaloClusterCollection : ["CaloClusterFast"]
     KalSeedCollection : ["KFFDeM"]
     CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
-    MCTrajectoryCollection : ["compressRecoMCs"]
+    MCTrajectoryCollection :  ["g4run"] #["compressRecoMCs"]
     addHits : false
-    addCrvHits : true
+    addCrvHits : false
     addTimeClusters : false
     addTrkHits : false
     addClusters : false
-    addKalSeeds : true
+    addKalSeeds : false
     addCosmicTrackSeeds : false
-    addMCTraj : false
+    addMCTraj : true
     FillAll : false
     }
     particles :   [11,13,2212,2112,211,22,212]
