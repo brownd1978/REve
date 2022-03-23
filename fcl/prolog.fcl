@@ -6,23 +6,23 @@ REveEventDisplay : {
     showPS : true
     showTS : true
     filler : {
-    diagLevel : 0
-    ComboHitCollection : ["makeSH"]
-    CrvRecoPulseCollection : ["SelectRecoMC"]
-    TimeClusterCollection : ["MHDeM"]
-    CaloClusterCollection : ["CaloClusterFast"]
-    KalSeedCollection : ["KFFDeM"]
-    CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
-    MCTrajectoryCollection :  ["g4run"] #["compressRecoMCs"]
-    addHits : false
-    addCrvHits : false
-    addTimeClusters : false
-    addTrkHits : false
-    addClusters : false
-    addKalSeeds : false
-    addCosmicTrackSeeds : false
-    addMCTraj : true
-    FillAll : false
+      diagLevel : 0
+      ComboHitCollection : ["makeSH"]
+      CrvRecoPulseCollection : ["SelectRecoMC"]
+      TimeClusterCollection : ["MHDeM"]
+      CaloClusterCollection : ["CaloClusterFast"]
+      KalSeedCollection : ["KFFDeM"]
+      CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
+      MCTrajectoryCollection :  ["compressRecoMCs"]
+      addHits : false
+      addCrvHits : false
+      addTimeClusters : false
+      addTrkHits : false
+      addClusters : false
+      addKalSeeds : false
+      addCosmicTrackSeeds : false
+      addMCTraj : true
+      FillAll : false
     }
     particles :   [11,13,2212,2112,211,22,212]
     strawdisplay : false
