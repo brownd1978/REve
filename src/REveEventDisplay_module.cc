@@ -55,6 +55,7 @@
 #include "REve/inc/EventDisplayManager.hh"
 #include "REve/inc/CollectionFiller.hh"
 #include "REve/inc/DataCollections.hh"
+#include "REve/inc/REveMu2eGUI.hh"
 
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
@@ -258,9 +259,14 @@ namespace mu2e
       eveMng_ = REX::REveManager::Create();
 
       eventMgr_ = new EventDisplayManager{eveMng_, cv_, m_};
+      
+     // REveMu2eGUI *fGui = new REveMu2eGUI();
+      //fGui->SetName("WebGuiInfo");
+ 
       auto world = eveMng_->GetWorld();
       assert(world);
       world->AddElement(eventMgr_);
+     // world->AddElement(fGui);
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
       frame_ = new REveMainWindow();

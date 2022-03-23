@@ -8,6 +8,9 @@
 #include <mutex>
 #include <stdexcept>
 #include <iostream>
+#include "REve/inc/REveMu2eGUI.hh"
+#include "nlohmann/json.hpp"
+
 namespace ROOT::Experimental {
   class REveManager;
 }
@@ -24,14 +27,17 @@ namespace mu2e {
                                        std::condition_variable& cv,
                                        std::mutex& m);
 
-      void NextEvent();
-      void QuitRoot();
+    void NextEvent();
+    void QuitRoot();
+
+    //void InitGuiInfo();
 
     private:
       ROOT::Experimental::REveManager* eveMng_{nullptr};
       std::condition_variable* cv_{nullptr};
       std::mutex* m_{nullptr};
       bool doneProcessingEvents_{false};
+      //REveMu2eGUI *fGui{nullptr};
     };
 }
 
