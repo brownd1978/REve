@@ -268,7 +268,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     projectEvents(eveMng);
  }
  
- void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV, bool addPS, bool addTS, std::string gdmlname)
+ void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV, bool addPS, bool addTS, bool addDS, std::string gdmlname)
  {
     TGeoManager *geom = TGeoManager::Import(gdmlname.c_str()); 
     TGeoVolume* topvol = geom->GetTopVolume();
@@ -281,7 +281,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         auto holder = new REX::REveElement("Inside DS");
         eveMng->GetGlobalScene()->AddElement(holder);
         REX::REveTrans trans;
-        SolenoidsOnly(topnode, trans, holder,8,0, addCRV, addPS, addTS);
+        GeomDrawer(topnode, trans, holder,8,0, addCRV, addPS, addTS);
     }
 
     try {

@@ -94,8 +94,9 @@ namespace mu2e
           using Comment=fhicl::Comment;
           fhicl::Atom<int> diagLevel{Name("diagLevel"), Comment("for info"),0};
           fhicl::Atom<bool> showCRV{Name("showCRV"), Comment("set false if you just want to see DS"),false};
-          fhicl::Atom<bool> showPS{Name("showPS"), Comment("set false if you just want to see DS"),false};     
-          fhicl::Atom<bool> showTS{Name("showTS"), Comment("set false if you just want to see DS"),false};     
+          fhicl::Atom<bool> showPS{Name("showPS"), Comment("set false if you just want to see inside DS"),false};     
+          fhicl::Atom<bool> showTS{Name("showTS"), Comment("set false if you just want to see inside DS"),false}; 
+          fhicl::Atom<bool> showTS{Name("showDS"), Comment("set false if you just want to see inside DS"),false};    
           fhicl::Atom<bool> show2D{Name("show2D"), Comment(""),true};   
           fhicl::Table<CollectionFiller::Config> filler{Name("filler"),Comment("fill collections")};
           fhicl::Sequence<int>particles{Name("particles"),Comment("PDGcodes to plot")};
@@ -118,6 +119,7 @@ namespace mu2e
         bool showCRV_;
         bool showPS_;
         bool showTS_;   
+        bool showDS_;
         
         void setup_eve();
         void run_application();
@@ -154,6 +156,7 @@ namespace mu2e
     showCRV_(conf().showCRV()),
     showPS_(conf().showPS()),
     showTS_(conf().showTS()),
+    showDS_(conf().showDS()),
     filler_(conf().filler()),
     particles_(conf().particles()),
     gdmlname_(conf().gdmlname()),
@@ -191,8 +194,6 @@ namespace mu2e
 
 
   void REveEventDisplay::beginRun(const art::Run&){
-
-
   }
 
   void REveEventDisplay::printOpts(){
@@ -276,7 +277,7 @@ namespace mu2e
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
       frame_ = new REveMainWindow();
-      frame_->makeGeometryScene(eveMng_,showCRV_,showPS_,showTS_,gdmlname_);
+      frame_->makeGeometryScene(eveMng_,showCRV_,showPS_,showTS_,showDS_,gdmlname_);
 
       std::unique_lock lock{m_};
       cv_.notify_all();
