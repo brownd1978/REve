@@ -12,8 +12,8 @@ double dz = 2360; //=CaloCenter-TrackerCenter= 2360 mm
 double STz = 5871-1635.1;//stoppingTarget.z0InMu2e-tracker.mother.halfLength;//stoppingTarget.z0InMu2e from CD3_34foils
 double crvheight = 2*3083;//shift of 2 *  maximum height of crv module taken from crv_counters07
 double detector_x = 3904; 
-double psts_x = 482;
-double psts_y = 692; 
+double psts_x = 482; //Stopping Target-TS5 x coordinate
+double psts_y = 692; //Stopping Target-TS5 y coordinate
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2)
  {
     auto gss = n->GetVolume()->GetShape();
