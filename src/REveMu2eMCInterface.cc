@@ -51,7 +51,7 @@ namespace REX = ROOT::Experimental;
         color = kYellow;
         break;
       case PDGCode::mu_minus:
-        color = kGreen;
+        color = kOrange-7;
         break;
       case PDGCode::mu_plus:
         color = kRed-9;
