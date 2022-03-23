@@ -3,8 +3,9 @@ BEGIN_PROLOG
 REveEventDisplay : {
     module_type : REveEventDisplay  
     showCRV : false
-    showPS : true
-    showTS : true
+    showPS : false
+    showTS : false
+    showTS : false
     filler : {
       diagLevel : 0
       ComboHitCollection : ["makeSH"]

@@ -96,7 +96,7 @@ namespace mu2e
           fhicl::Atom<bool> showCRV{Name("showCRV"), Comment("set false if you just want to see DS"),false};
           fhicl::Atom<bool> showPS{Name("showPS"), Comment("set false if you just want to see inside DS"),false};     
           fhicl::Atom<bool> showTS{Name("showTS"), Comment("set false if you just want to see inside DS"),false}; 
-          fhicl::Atom<bool> showTS{Name("showDS"), Comment("set false if you just want to see inside DS"),false};    
+          fhicl::Atom<bool> showDS{Name("showDS"), Comment("set false if you just want to see inside DS"),false};    
           fhicl::Atom<bool> show2D{Name("show2D"), Comment(""),true};   
           fhicl::Table<CollectionFiller::Config> filler{Name("filler"),Comment("fill collections")};
           fhicl::Sequence<int>particles{Name("particles"),Comment("PDGcodes to plot")};

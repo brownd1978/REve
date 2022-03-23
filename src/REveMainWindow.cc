@@ -11,7 +11,7 @@ double nCrystals = 674;
 double dz = 2360; //= CaloCenter-TrackerCenter = 2360 mm
 double STz = 5871-1635.1;//stoppingTarget.z0InMu2e-tracker.mother.halfLength;//stoppingTarget.z0InMu2e from CD3_34foils
 double crvheight = 2*3083;//shift of 2 *  maximum height of crv module taken from crv_counters07
-double psts_x = 4817.5; //Stopping Target-TS5 x coordinate
+double psts_x = 4818; //From GDML
 double psts_y = 5917; //From the GDML
 double psts_z = -5953; //From the GDML
 
@@ -93,7 +93,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
   
   
   /* function to hide all elements which are not PS,TS, DS */
- void REveMainWindow::SolenoidsOnly(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV, bool addPS, bool addTS, boold addDS){
+ void REveMainWindow::GeomDrawer(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV, bool addPS, bool addTS, bool addDS){
     std::vector<double> shift;
     shift.push_back(0);
     shift.push_back(0);
@@ -281,7 +281,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         auto holder = new REX::REveElement("Inside DS");
         eveMng->GetGlobalScene()->AddElement(holder);
         REX::REveTrans trans;
-        GeomDrawer(topnode, trans, holder,8,0, addCRV, addPS, addTS);
+        GeomDrawer(topnode, trans, holder,8,0, addCRV, addPS, addTS, addDS);
     }
 
     try {
