@@ -138,7 +138,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           CLHEP::Hep3Vector HitPos(crvCounterPos.x(), crvCounterPos.y(), crvCounterPos.z());//TODO this should be the RecoPulse position
           
           CLHEP::Hep3Vector pointInMu2e = det-> toDetector(crvCounterPos);
-          ps1->SetNextPoint(pointInMu2e.x()/10, pointInMu2e.y()/10 + 100, pointInMu2e.z()/10);
+          ps1->SetNextPoint(pointInMu2e.x()/10, pointInMu2e.y()/10 , pointInMu2e.z()/10);
         }
         
         ps1->SetMarkerColor(kBlue);
@@ -222,7 +222,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
               trkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
               trkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
               trkhit ->SetMarkerColor(kGreen-4);
-              trkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 + 100,HitPos.z()/10);
+              trkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 ,HitPos.z()/10);
               if(trkhit->GetSize() !=0 ) scene->AddElement(trkhit); 
               }
             }
@@ -235,7 +235,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
             auto notusedtrkhit = new REX::REvePointSet("NotTrkHits", "nottrkhit",0); 
             notusedtrkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
             notusedtrkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
-            notusedtrkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 + 100,HitPos.z()/10);
+            notusedtrkhit ->SetNextPoint(HitPos.x()/10,HitPos.y()/10 ,HitPos.z()/10);
             notusedtrkhit ->SetMarkerColor(kRed-4);
             if(notusedtrkhit->GetSize() !=0 ) scene->AddElement(notusedtrkhit); 
           }
@@ -309,8 +309,8 @@ void REveMu2eDataInterface::AddCosmicTrackFit(REX::REveManager *&eveMng, bool fi
               double tx2 = st.MinuitParams.A0  - st.MinuitParams.A1*ty2;
               double tz1 = st.MinuitParams.B0  - st.MinuitParams.B1*ty1;
               double tz2 = st.MinuitParams.B0  - st.MinuitParams.B1*ty2; 	
-              line->SetNextPoint((tx1)/10, (ty1)/10 + 100, (tz1)/10);
-              line->SetNextPoint((tx2)/10, (ty2)/10 + 100, (tz2)/10);
+              line->SetNextPoint((tx1)/10, (ty1)/10 , (tz1)/10);
+              line->SetNextPoint((tx2)/10, (ty2)/10 , (tz2)/10);
           }
     
           line->SetLineColor(kGreen);
