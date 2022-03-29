@@ -106,7 +106,7 @@ namespace REX = ROOT::Experimental;
                   CLHEP::Hep3Vector Pos(points[i].x(), points[i].y(), points[i].z());
                   GeomHandle<DetectorSystem> det;
                   CLHEP::Hep3Vector HitPos = det->toDetector(Pos);
-                  line->SetNextPoint((HitPos.x())/10,(HitPos.y())/10+100,(HitPos.z()/10));
+                  line->SetNextPoint((HitPos.x())/10,(HitPos.y())/10,(HitPos.z()/10));
                 }
                 // set line colour
                 SetLineColorPID(trajectoryIter->first->pdgId(),line);

@@ -61,11 +61,11 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 const Double_t *rm = gm->GetRotationMatrix();
                 const Double_t *tv = gm->GetTranslation();
                 REX::REveTrans t;
-                t(1,1) = rm[0]/10; t(1,2) = rm[1]/10; t(1,3) = rm[2]/10;
-                t(2,1) = rm[3]/10; t(2,2) = rm[4]/10; t(2,3) = rm[5]/10;
-                t(3,1) = rm[6]/10; t(3,2) = rm[7]/10; t(3,3) = rm[8]/10;
-                t(1,4) = tv[0]/10 + shift[0]/10; t(2,4) = tv[1]/10 + 1000/10 + shift[1]/10; t(3,4) = tv[2]/10 + shift[2]/10;
-                if(print) std::cout<<j<<" "<<name<<" "<<tv[0]/10<<" "<<tv[1]/10<<" "<<tv[2]/10<<std::endl;
+                t(1,1) = rm[0]; t(1,2) = rm[1]; t(1,3) = rm[2];
+                t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
+                t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
+                t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
+                if(print) std::cout<<j<<" "<<name<<" "<<tv[0]<<" "<<tv[1]<<" "<<tv[2]<<std::endl;
                 if(name == "caloDisk_00x3d71700") {
                   disk1_center = tv[2];
                  }
@@ -77,8 +77,8 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                     double d = 0;
                     if(fp < nCrystals) { d = disk1_center; }
                     else { d = disk2_center; }
-                    if(crystal) { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 1000/10; t(3,4) = tv[2]/10 + dz/10 + d/10; } 
-                    else { t(1,4) = tv[0]/10; t(2,4) = tv[1]/10 + 1000/10; t(3,4) = tv[2]/10 + dz/10; } 
+                    if(crystal) { t(1,4) = tv[0]; t(2,4) = tv[1] ; t(3,4) = tv[2] + dz/10 + d; } 
+                    else { t(1,4) = tv[0]; t(2,4) = tv[1]; t(3,4) = tv[2] + dz/10; } 
                     if (fp < nCrystals and crystal) cry1 = true; 
                     if (fp >= nCrystals and crystal) cry2 = true; 
                 } 
@@ -101,18 +101,18 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
 
     if(addTS){
       static std::vector <std::string> substrings_ts  {"TS"};  
-      shift.at(0) = psts_x;  
-      shift.at(1) = psts_y;
-      shift.at(2) = psts_z;
+      shift.at(0) = psts_x/10;  
+      shift.at(1) = psts_y/10;
+      shift.at(2) = psts_z/10;
       for(auto& i: substrings_ts){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, true);
       }
     }
     if(addPS){
       static std::vector <std::string> substrings_ps  {"PSVacuum"};  
-      shift.at(0) = psts_x;  
-      shift.at(1) = psts_y;
-      shift.at(2) = psts_z ;
+      shift.at(0) = psts_x/10;  
+      shift.at(1) = psts_y/10;
+      shift.at(2) = psts_z/10;
       for(auto& i: substrings_ps){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, true);
       }
@@ -120,9 +120,9 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     if(addDS){
       static std::vector <std::string> substrings_ds {"DS1Vacuum","DS2Vacuum","DS3Vacuum"}; 
       for(auto& i: substrings_ds){
-        shift.at(0) = psts_x;  
-        shift.at(1) = psts_y;
-        shift.at(2) = psts_z;
+        shift.at(0) = psts_x/10;  
+        shift.at(1) = psts_y/10;
+        shift.at(2) = psts_z/10;
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true);
       }
      }
@@ -152,7 +152,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     static std::vector <std::string> substrings_stoppingtarget  {"StoppingTarget","Foil"};
     shift.at(0) = 0;  
     shift.at(1) = 0;
-    shift.at(2) = -1*STz;
+    shift.at(2) = -1*STz/10;
     for(auto& i: substrings_stoppingtarget){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true);
     }
@@ -190,14 +190,14 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     TrackerXYView->AddScene(TrackerXYGeomScene);
     TrackerXYView->AddScene(TrackerXYEventScene);
   
-    // --------------------Tracker + Calo XZ View ------------------------------
+    // --------------------Tracker + Calo YZ View ------------------------------
   
-    rhoZGeomScene  = eveMng->SpawnNewScene("RhoZ Geometry", "RhoZ");
-    rhoZEventScene = eveMng->SpawnNewScene("RhoZ Event Data","RhoZ");
+    rhoZGeomScene  = eveMng->SpawnNewScene("ZY Detector Geometry", "ZY");
+    rhoZEventScene = eveMng->SpawnNewScene("ZY Event Data","YZ");
   
-    mngRhoZ = new REX::REveProjectionManager(REX::REveProjection::kPT_RhoZ );
+    mngRhoZ = new REX::REveProjectionManager(REX::REveProjection::kPT_ZY );
   
-    rhoZView = eveMng->SpawnNewViewer("RhoZ View", "");
+    rhoZView = eveMng->SpawnNewViewer("ZY Detector View", "");
     rhoZView->AddScene(rhoZGeomScene);
     rhoZView->AddScene(rhoZEventScene);
     
@@ -278,7 +278,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     createProjectionStuff(eveMng);
     std::string name(topnode->GetName());
     {
-        auto holder = new REX::REveElement("Inside DS");
+        auto holder = new REX::REveElement("Mu2e World");
         eveMng->GetGlobalScene()->AddElement(holder);
         REX::REveTrans trans;
         GeomDrawer(topnode, trans, holder,8,0, addCRV, addPS, addTS, addDS);

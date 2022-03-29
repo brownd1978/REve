@@ -16,8 +16,8 @@ physics :
  analyzers : { @table::REveDis.analyzers}
 }
 physics.analyzers.REveEventDisplay.showCRV : false
-physics.analyzers.REveEventDisplay.showPS : true
-physics.analyzers.REveEventDisplay.showTS : true
+physics.analyzers.REveEventDisplay.showPS : false
+physics.analyzers.REveEventDisplay.showTS : false
 physics.analyzers.REveEventDisplay.filler.addKalSeeds : false
 physics.analyzers.REveEventDisplay.filler.addClusters : false
 physics.analyzers.REveEventDisplay.filler.addHits : false
