@@ -147,6 +147,8 @@ namespace mu2e
         std::vector<int> particles_;
         std::string gdmlname_;
         bool strawdisplay_;
+        // init the GUI
+        REveMu2eGUI *fGui{nullptr};
         
     };
 
@@ -265,20 +267,31 @@ namespace mu2e
       REX::RWebWindowsManager::AssignMainThrd();
       eveMng_ = REX::REveManager::Create();
 
-      eventMgr_ = new EventDisplayManager{eveMng_, cv_, m_};
+      // InitGuiInfo()
+      fGui = new REveMu2eGUI();
+      fGui->SetName("WebGuiInfo");
       
-     // REveMu2eGUI *fGui = new REveMu2eGUI();
-      //fGui->SetName("WebGuiInfo");
- 
+      // call manager
+      eventMgr_ = new EventDisplayManager{eveMng_, cv_, m_, fGui};
+      
+      // access the world
       auto world = eveMng_->GetWorld();
+      
+      
       assert(world);
       world->AddElement(eventMgr_);
-     // world->AddElement(fGui);
-      world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
-      world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
+      
+      
       frame_ = new REveMainWindow();
       frame_->makeGeometryScene(eveMng_,showCRV_,showPS_,showTS_,showDS_,gdmlname_);
-
+      
+      eveMng_->AddLocation("mydir/", "/mu2e/app/users/sophie/Offline_October/REve/htmlcode");
+      eveMng_->SetDefaultHtmlPage("file:mydir/eventDisplay.html");
+   
+      // InitGuiInfo() cont'd
+      world->AddElement(fGui);
+      world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
+      world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
       std::unique_lock lock{m_};
       cv_.notify_all();
  

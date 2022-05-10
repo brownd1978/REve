@@ -25,7 +25,8 @@ namespace mu2e {
 
       explicit EventDisplayManager(ROOT::Experimental::REveManager* eveMgr,
                                        std::condition_variable& cv,
-                                       std::mutex& m);
+                                       std::mutex& m,
+                                       REveMu2eGUI *fGui);
 
     void NextEvent();
     void QuitRoot();
@@ -37,7 +38,7 @@ namespace mu2e {
       std::condition_variable* cv_{nullptr};
       std::mutex* m_{nullptr};
       bool doneProcessingEvents_{false};
-      //REveMu2eGUI *fGui{nullptr};
+      REveMu2eGUI *fGui_{nullptr};
     };
 }
 
