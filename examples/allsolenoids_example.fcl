@@ -1,0 +1,25 @@
+# author : Sophie Middleton 
+# purpose : example for helix tracks
+#include "Offline/fcl/minimalMessageService.fcl"
+#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/fcl/standardServices.fcl"
+#include "REve/fcl/prolog.fcl"
+
+services : @local::Services.Reco
+
+process_name : SolED
+
+source : { module_type : RootInput }
+
+physics :
+{
+ analyzers : { @table::REveDis.analyzers}
+}
+physics.analyzers.REveEventDisplay.showCRV : false
+physics.analyzers.REveEventDisplay.showPS : true
+physics.analyzers.REveEventDisplay.showTS : true
+physics.analyzers.REveEventDisplay.showDS : true
+physics.EndPath  : [ @sequence::REveDis.seqBase] 
+
+services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
+
