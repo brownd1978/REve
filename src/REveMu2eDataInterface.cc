@@ -33,8 +33,8 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
               auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
               auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
               
-              if(cluster.diskID() == 0) ps1->SetNextPoint(COG.x()/10, COG.y()/10 +100, abs(pointInMu2e.z()/10)); 
-              if(cluster.diskID() == 1) ps2->SetNextPoint(COG.x()/10, COG.y()/10 +100, abs(pointInMu2e.z())/10); 
+              if(cluster.diskID() == 0) ps1->SetNextPoint(COG.x()/10, COG.y()/10 , abs(pointInMu2e.z()/10)); 
+              if(cluster.diskID() == 1) ps2->SetNextPoint(COG.x()/10, COG.y()/10 , abs(pointInMu2e.z())/10); 
 
              ps1->SetMarkerColor(kRed);
             ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
@@ -97,8 +97,8 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
         sposf.set(x2, y2, z2);
         if(sposi.x()!=0){ 
           auto strawline = new REX::REveLine("StrawHit ",strawtitle,1); 
-          strawline->SetPoint(0,sposi.x()/10,sposi.y()/10+100,sposi.z()/10);
-          strawline->SetNextPoint(sposf.x()/10,sposf.y()/10+100,sposf.z()/10);            
+          strawline->SetPoint(0,sposi.x()/10,sposi.y()/10,sposi.z()/10);
+          strawline->SetNextPoint(sposf.x()/10,sposf.y()/10,sposf.z()/10);            
           strawline->SetLineWidth(1);
           strawline->SetLineColor(colorid);
           if(strawline->GetSize() !=0 ) scene->AddElement(strawline);  
@@ -106,7 +106,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
       }
     }
     CLHEP::Hep3Vector HitPos(hit.pos().x()/10, hit.pos().y()/10, hit.pos().z()/10);
-    ps1->SetNextPoint(HitPos.x(), HitPos.y() +100, HitPos.z()); //TODO - function
+    ps1->SetNextPoint(HitPos.x(), HitPos.y() , HitPos.z()); //TODO - function
   }
   ps1->SetMarkerColor(kBlue);
   ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
@@ -168,7 +168,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
       for(size_t j=0; j<tccol->size();j++){
         mu2e::TimeCluster const  &tclust= (*tccol)[j];
         CLHEP::Hep3Vector HitPos(tclust._pos.x(), tclust._pos.y(), tclust._pos.z());
-        ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 +100, HitPos.z()/10); 
+        ps1->SetNextPoint(HitPos.x()/10, HitPos.y()/10 , HitPos.z()/10); 
       }
       ps1->SetMarkerColor(kGreen);
       ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
@@ -283,7 +283,7 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
               XYZVectorF pos;
               segment.helix().position(fltL,pos);
               CLHEP::Hep3Vector p =  GenVector::Hep3Vec(pos);
-              line->SetNextPoint((p.x())/10, (p.y())/10 +100, (p.z())/10);
+              line->SetNextPoint((p.x())/10, (p.y())/10 , (p.z())/10);
             }
           }
         line->SetLineColor(kBlack);
