@@ -105,7 +105,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = psts_y/10;
       shift.at(2) = psts_z/10;
       for(auto& i: substrings_ts){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, true);
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
       }
     }
     if(addPS){
@@ -114,7 +114,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = psts_y/10;
       shift.at(2) = psts_z/10;
       for(auto& i: substrings_ps){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, true);
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
       }
     }
     if(addDS){
@@ -123,7 +123,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         shift.at(0) = psts_x/10;  
         shift.at(1) = psts_y/10;
         shift.at(2) = psts_z/10;
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true);
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false);
       }
      }
     if(addCRV){
@@ -140,21 +140,21 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(0) = 0;  
       shift.at(1) = 0;
       shift.at(2) = 0;
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, shift, true);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, shift, false);
     }
     static std::vector <std::string> substring_tracker  {"TrackerPlaneEnvelope"};
     for(auto& i: substring_tracker){
       shift.at(0) = 0;  
       shift.at(1) = 0;
       shift.at(2) = 0;
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false);
     }
     static std::vector <std::string> substrings_stoppingtarget  {"StoppingTarget","Foil"};
     shift.at(0) = 0;  
     shift.at(1) = 0;
     shift.at(2) = -1*STz/10;
     for(auto& i: substrings_stoppingtarget){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false);
     }
     static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
     for(auto& i: substrings_crystals){
@@ -245,7 +245,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
     if(drawOpts.addTracks and track_list.size() !=0) {
       pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
-      if(drawOpts.addTrkHits) {
+      if(drawOpts.addTrkHits) {   
         std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
         pass_data->AddTrkHits(eveMng, firstLoop, data.combohit_tuple,data.track_tuple, eventScene);
         }
