@@ -6,14 +6,18 @@ namespace mu2e {
   EventDisplayManager::EventDisplayManager(
     ROOT::Experimental::REveManager* eveMgr,
     std::condition_variable& cv,
-    std::mutex& m)
-    : REveElement{"EventManager"}, eveMng_{eveMgr}, cv_{&cv}, m_{&m}
+    std::mutex& m,
+    REveMu2eGUI *fGui)
+    : REveElement{"EventManager"}, eveMng_{eveMgr}, cv_{&cv}, m_{&m}, fGui_(fGui)
   {}
 
   void
   EventDisplayManager::NextEvent()
   {
     std::unique_lock lock{*m_};
+    //fGui_->fCount++;
+    //fGui_->StampObjProps();
+    printf("At event %d\n", fGui_->fCount);
     cv_->notify_all();
   }
 
