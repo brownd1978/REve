@@ -41,6 +41,9 @@
 #include "REve/inc/DataCollections.hh"
 #include "REve/inc/REveMu2eDataInterface.hh"
 #include "REve/inc/REveMu2eMCInterface.hh"
+#include "REve/inc/REveGeomUtil.hh"
+#include "Offline/GeometryService/inc/GeomHandle.hh"
+#include "Offline/StoppingTargetGeom/inc/StoppingTarget.hh"
 namespace REX = ROOT::Experimental;
  
 namespace mu2e {
@@ -69,6 +72,7 @@ namespace mu2e {
             #ifndef __CINT__
             REveMu2eDataInterface *pass_data;
             REveMu2eMCInterface *pass_mc;
+
             void makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int j, bool crys1, bool crys2);
             void showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, std::vector<double> shift, bool print);
             void GeomDrawer(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV, bool addPS, bool addTS, bool addDS); 
@@ -92,6 +96,8 @@ namespace mu2e {
             REX::REveViewer *XYCaloDisk2View = nullptr;
             REX::REveViewer *rhoZView = nullptr;
 
+            
+            
             #endif
             ClassDef(REveMainWindow, 0);
 

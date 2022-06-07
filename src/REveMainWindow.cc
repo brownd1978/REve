@@ -15,6 +15,11 @@ double psts_x = 4818; //From GDML
 double psts_y = 5917; //From the GDML
 double psts_z = -5953; //From the GDML
 
+//Geometry tags:
+double ST_gdmltag = 82976 ;
+double Tracker_gdmltag = 42423; //TODO - needs to be a list
+// std::vector<double> Tracker_gdmltags = ;
+
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2)
  {
     auto gss = n->GetVolume()->GetShape();
@@ -25,12 +30,12 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     b1s->SetMainColor(kCyan);
     b1s->SetMainTransparency(100);
     holder->AddElement(b1s);
-    if(crystal1){ 
+    if( crystal1 ){ 
         mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
-    }if(crystal2){
+    }if( crystal2 ){
         mngXYCaloDisk2->ImportElements(b1s, XYCaloDisk2GeomScene);
     }
-    if(val == 41612){ //FIXME - hardcoded number
+    if( val == Tracker_gdmltag ){ 
         mngTrackerXY->ImportElements(b1s, TrackerXYGeomScene); //shows only one plane for simplicity
     }
     mngRhoZ  ->ImportElements(b1s, rhoZGeomScene); 
@@ -98,7 +103,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     shift.push_back(0);
     shift.push_back(0);
     shift.push_back(0); 
-
+    
     if(addTS){
       static std::vector <std::string> substrings_ts  {"TS"};  
       shift.at(0) = psts_x/10;  
@@ -147,14 +152,15 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(0) = 0;  
       shift.at(1) = 0;
       shift.at(2) = 0;
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true);
     }
     static std::vector <std::string> substrings_stoppingtarget  {"StoppingTarget","Foil"};
     shift.at(0) = 0;  
     shift.at(1) = 0;
-    shift.at(2) = -1*STz/10;
+    
+    shift.at(2) = -1*STz/10;//geomutils->FindStoppingTarget_z()/10;
     for(auto& i: substrings_stoppingtarget){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true);
     }
     static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
     for(auto& i: substrings_crystals){
