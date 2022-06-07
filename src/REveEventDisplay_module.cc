@@ -281,7 +281,8 @@ namespace mu2e
       assert(world);
       world->AddElement(eventMgr_);
       
-      
+      //TODO - make the geom util here?
+      //REveGeomUtil *geomutils = new REveGeomUtil();
       frame_ = new REveMainWindow();
       frame_->makeGeometryScene(eveMng_,showCRV_,showPS_,showTS_,showDS_,gdmlname_);
       
@@ -300,6 +301,10 @@ namespace mu2e
   // Actually interesting function responsible for drawing the current event
   void REveEventDisplay::process_single_event()
     { 
+       fGui->fCount++;
+    fGui->StampObjProps();
+    printf("At event %d\n", fGui->fCount);
+    
       std::cout<<"[REveEventDisplay : process_single_event] Start "<<std::endl;
       eveMng_->DisableRedraw();
       eveMng_->GetWorld()->BeginAcceptingChanges();

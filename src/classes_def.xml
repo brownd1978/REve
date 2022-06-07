@@ -4,4 +4,6 @@
   <class name="mu2e::EventDisplayManager"/>
   <class name="mu2e::DataCollections"/>
   <class name="mu2e::CollectionFiller"/>
+  <class name="mu2e::REveGeomUtil"/>
+  <class name="mu2e::REveMu2eGUI"/>
 </lcgdict>

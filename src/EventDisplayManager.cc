@@ -15,9 +15,7 @@ namespace mu2e {
   EventDisplayManager::NextEvent()
   {
     std::unique_lock lock{*m_};
-    //fGui_->fCount++;
-    //fGui_->StampObjProps();
-    printf("At event %d\n", fGui_->fCount);
+   
     cv_->notify_all();
   }
 
