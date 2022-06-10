@@ -233,6 +233,11 @@ namespace mu2e
       if(filler_.addMCTraj_)  filler_.FillMCCollections(event, data, MCTrajectories);
      
       std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
+      fGui->fCount++;
+      fGui->eventid = event.id().event();
+      fGui->runid = event.run();
+      fGui->StampObjProps();
+      printf("At event %d\n", fGui->fCount);
       XThreadTimer proc_timer([this]{ process_single_event(); });
       std::cout<<"[REveEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
       cv_.wait(lock);
@@ -269,14 +274,13 @@ namespace mu2e
 
       // InitGuiInfo()
       fGui = new REveMu2eGUI();
-      fGui->SetName("WebGuiInfo");
+      fGui->SetName("Mu2eGUI");
       
       // call manager
       eventMgr_ = new EventDisplayManager{eveMng_, cv_, m_, fGui};
       
       // access the world
       auto world = eveMng_->GetWorld();
-      
       
       assert(world);
       world->AddElement(eventMgr_);
@@ -293,6 +297,7 @@ namespace mu2e
       world->AddElement(fGui);
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
+      world->AddCommand("PrintEventInfo", "sap-icon://step", fGui, "PrintEventInfo()");
       std::unique_lock lock{m_};
       cv_.notify_all();
  
@@ -301,9 +306,7 @@ namespace mu2e
   // Actually interesting function responsible for drawing the current event
   void REveEventDisplay::process_single_event()
     { 
-       fGui->fCount++;
-    fGui->StampObjProps();
-    printf("At event %d\n", fGui->fCount);
+
     
       std::cout<<"[REveEventDisplay : process_single_event] Start "<<std::endl;
       eveMng_->DisableRedraw();
