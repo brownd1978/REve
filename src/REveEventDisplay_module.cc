@@ -233,11 +233,10 @@ namespace mu2e
       if(filler_.addMCTraj_)  filler_.FillMCCollections(event, data, MCTrajectories);
      
       std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
-      fGui->fCount++;
+      
       fGui->eventid = event.id().event();
       fGui->runid = event.run();
-      fGui->StampObjProps();
-      printf("At event %d\n", fGui->fCount);
+
       XThreadTimer proc_timer([this]{ process_single_event(); });
       std::cout<<"[REveEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
       cv_.wait(lock);
@@ -305,13 +304,14 @@ namespace mu2e
 
   // Actually interesting function responsible for drawing the current event
   void REveEventDisplay::process_single_event()
-    { 
-
-    
+    {    
       std::cout<<"[REveEventDisplay : process_single_event] Start "<<std::endl;
       eveMng_->DisableRedraw();
       eveMng_->GetWorld()->BeginAcceptingChanges();
       eveMng_->GetScenes()->AcceptChanges(true);
+      fGui->fCount++;
+      fGui->StampObjProps();
+      printf("At event %d\n", fGui->fCount);
       std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;
       REX::REveElement* scene = eveMng_->GetEventScene();
 
