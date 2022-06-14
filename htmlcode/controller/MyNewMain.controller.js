@@ -24,7 +24,7 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
          var world = this.mgr.childs[0].childs;
 
          world.forEach((item) => {
-            if (item._typename == "REveMu2eGUI") {
+            if (item._typename == "mu2e::REveMu2eGUI") {
                this.fw2gui = item;
                var pthis = this;
                this.mgr.UT_refresh_event_info = function () {
