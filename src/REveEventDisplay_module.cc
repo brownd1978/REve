@@ -285,8 +285,7 @@ namespace mu2e
       assert(world);
       world->AddElement(eventMgr_);
       
-      //TODO - make the geom util here?
-      //REveGeomUtil *geomutils = new REveGeomUtil();
+      
       frame_ = new REveMainWindow();
       frame_->makeGeometryScene(eveMng_,showCRV_,showPS_,showTS_,showDS_,gdmlname_);
       
@@ -311,11 +310,11 @@ namespace mu2e
       eveMng_->DisableRedraw();
       eveMng_->GetWorld()->BeginAcceptingChanges();
       eveMng_->GetScenes()->AcceptChanges(true);
-      //fGui->fCount++;
+
       fGui->feventid = eventid_;
       fGui->frunid = runid_;
       fGui->StampObjProps();
-      //printf("At event %d\n", fGui->fCount);
+
       std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;
       REX::REveElement* scene = eveMng_->GetEventScene();
 
