@@ -10,8 +10,8 @@ namespace mu2e {
 class REveMu2eGUI : public ROOT::Experimental::REveElement
 {
   public:
-     int fCount{0};
-     int fTotal{10};
+     //int fCount{0};
+     //int fTotal{10};
      int feventid{0};
      int frunid{0};
 

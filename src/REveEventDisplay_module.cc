@@ -146,9 +146,12 @@ namespace mu2e
         bool firstLoop_ = true; 
         std::vector<int> particles_;
         std::string gdmlname_;
-        bool strawdisplay_;
-        // init the GUI
+        bool strawdisplay_; 
+        
+        // Setup Custom GUI
         REveMu2eGUI *fGui{nullptr};
+        double eventid_;   
+        double runid_;   
         
     };
 
@@ -219,7 +222,9 @@ namespace mu2e
       
       // Update state relevant for displaying new event.
       displayedEventID_ = event.id();
-
+      eventid_ = event.id().event(); 
+      runid_ = event.run();
+     
       // Hand off control to display thread
       std::unique_lock lock{m_};
       std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
@@ -233,10 +238,6 @@ namespace mu2e
       if(filler_.addMCTraj_)  filler_.FillMCCollections(event, data, MCTrajectories);
      
       std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
-      
-      fGui->feventid = event.id().event();
-      fGui->frunid = event.run();
-
       XThreadTimer proc_timer([this]{ process_single_event(); });
       std::cout<<"[REveEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
       cv_.wait(lock);
@@ -289,7 +290,8 @@ namespace mu2e
       frame_ = new REveMainWindow();
       frame_->makeGeometryScene(eveMng_,showCRV_,showPS_,showTS_,showDS_,gdmlname_);
       
-      eveMng_->AddLocation("mydir/", "/mu2e/app/users/sophie/Offline_October/REve/htmlcode");
+      //add path to the custom GUI code here, this overrides ROOT GUI
+      eveMng_->AddLocation("mydir/", "/mu2e/app/users/sophie/Offline_October/REve/CustomGUI");
       eveMng_->SetDefaultHtmlPage("file:mydir/eventDisplay.html");
    
       // InitGuiInfo() cont'd
@@ -309,9 +311,11 @@ namespace mu2e
       eveMng_->DisableRedraw();
       eveMng_->GetWorld()->BeginAcceptingChanges();
       eveMng_->GetScenes()->AcceptChanges(true);
-      fGui->fCount++;
+      //fGui->fCount++;
+      fGui->feventid = eventid_;
+      fGui->frunid = runid_;
       fGui->StampObjProps();
-      printf("At event %d\n", fGui->fCount);
+      //printf("At event %d\n", fGui->fCount);
       std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;
       REX::REveElement* scene = eveMng_->GetEventScene();
 
