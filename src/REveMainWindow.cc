@@ -4,16 +4,14 @@ namespace REX = ROOT::Experimental;
 using namespace std;
 using namespace mu2e;
 
-double disk1_center = 0;
-double disk2_center = 0;
-double nCrystals = 674; 
-//TODO the following numbers should be placed in a Util somewhere and extracted from the GeometryService
-double dz = 2360; //= CaloCenter-TrackerCenter = 2360 mm
-double STz = 5871-1635.1;//stoppingTarget.z0InMu2e-tracker.mother.halfLength;//stoppingTarget.z0InMu2e from CD3_34foils
-double crvheight = 2*3083;//shift of 2 *  maximum height of crv module taken from crv_counters07
-double psts_x = 4818; //From GDML
-double psts_y = 5917; //From the GDML
-double psts_z = -5953; //From the GDML
+
+std::string calfilename("REve/config/geomutils.txt"); //TODO - a fcl parameter?
+SimpleConfig config(calfilename);
+    
+double disk1_center = config.getDouble("disk1_center");
+double disk2_center =config.getDouble("disk2_center");
+double nCrystals = config.getDouble("nCrystals"); 
+double dz = config.getDouble("CaloTrackerdz"); 
 
 //Geometry tags:
 double ST_gdmltag = 82976 ;
@@ -28,7 +26,7 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     b1s->RefMainTrans().SetFrom(trans.Array());
     b1s->SetShape(gss);
     b1s->SetMainColor(kCyan);
-    b1s->SetMainTransparency(100);
+    b1s->SetMainTransparency(100); //TODO - config parameter
     holder->AddElement(b1s);
     if( crystal1 ){ 
         mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
@@ -99,6 +97,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
   
   /* function to hide all elements which are not PS,TS, DS */
  void REveMainWindow::GeomDrawer(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV, bool addPS, bool addTS, bool addDS){
+
     std::vector<double> shift;
     shift.push_back(0);
     shift.push_back(0);
@@ -106,18 +105,18 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     
     if(addTS){
       static std::vector <std::string> substrings_ts  {"TS"};  
-      shift.at(0) = psts_x/10;  
-      shift.at(1) = psts_y/10;
-      shift.at(2) = psts_z/10;
+      shift.at(0) = config.getDouble("psts_x")/10;
+      shift.at(1) = config.getDouble("psts_y")/10;
+      shift.at(2) = config.getDouble("psts_z")/10;
       for(auto& i: substrings_ts){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
       }
     }
     if(addPS){
       static std::vector <std::string> substrings_ps  {"PSVacuum"};  
-      shift.at(0) = psts_x/10;  
-      shift.at(1) = psts_y/10;
-      shift.at(2) = psts_z/10;
+      shift.at(0) = config.getDouble("psts_x")/10;
+      shift.at(1) = config.getDouble("psts_y")/10;
+      shift.at(2) = config.getDouble("psts_z")/10;
       for(auto& i: substrings_ps){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
       }
@@ -125,16 +124,16 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     if(addDS){
       static std::vector <std::string> substrings_ds {"DS1Vacuum","DS2Vacuum","DS3Vacuum"}; 
       for(auto& i: substrings_ds){
-        shift.at(0) = psts_x/10;  
-        shift.at(1) = psts_y/10;
-        shift.at(2) = psts_z/10;
+        shift.at(0) = config.getDouble("psts_x")/10;
+        shift.at(1) = config.getDouble("psts_y")/10;
+        shift.at(2) = config.getDouble("psts_z")/10;
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false);
       }
      }
     if(addCRV){
       static std::vector <std::string> substrings_crv  {"CRS"};
       shift.at(0) = 0;  
-      shift.at(1) = crvheight; 
+      shift.at(1) = config.getDouble("crvheight"); 
       shift.at(2) = 0;
       for(auto& i: substrings_crv){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
@@ -157,8 +156,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     static std::vector <std::string> substrings_stoppingtarget  {"StoppingTarget","Foil"};
     shift.at(0) = 0;  
     shift.at(1) = 0;
-    
-    shift.at(2) = -1*STz/10;//geomutils->FindStoppingTarget_z()/10;
+    shift.at(2) = -1*config.getDouble("STz")/10; 
     for(auto& i: substrings_stoppingtarget){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true);
     }

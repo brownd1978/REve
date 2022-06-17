@@ -1,0 +1,16 @@
+// this file lists all gdml conversions:
+
+double disk1_center = 0;
+double disk2_center = 0;
+double nCrystals = 674; 
+
+double CaloTrackerdz = 2360; //= CaloCenter-TrackerCenter = 2360 mm
+double STz = 4236; // 5871-1635.1, stoppingTarget.z0InMu2e-tracker.mother.halfLength; stoppingTarget.z0InMu2e from CD3_34foils
+double crvheight = 6166; //shift of 2 *  maximum height of crv module taken from crv_counters07, 2*3083
+double psts_x = 4818; //From GDML
+double psts_y = 5917; //From the GDML
+double psts_z = -5953; //From the GDML
+
+double ST_gdmltag = 82976;
+vector<double> Tracker_gdmltag = {42423,43072,43725,44378,45027,45676,46329,46982,47631,48280,48933,49586,50235,50884,51537,52190,52839,53488,54141,54794,55443,56092,
+56745,57398,58047,58696,59349,60002,60651,61300,61953,62606,63255,63904,64557,65210}; 
