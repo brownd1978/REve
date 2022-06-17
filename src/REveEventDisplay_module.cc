@@ -146,9 +146,12 @@ namespace mu2e
         bool firstLoop_ = true; 
         std::vector<int> particles_;
         std::string gdmlname_;
-        bool strawdisplay_;
-        // init the GUI
+        bool strawdisplay_; 
+        
+        // Setup Custom GUI
         REveMu2eGUI *fGui{nullptr};
+        double eventid_;   
+        double runid_;   
         
     };
 
@@ -219,7 +222,9 @@ namespace mu2e
       
       // Update state relevant for displaying new event.
       displayedEventID_ = event.id();
-
+      eventid_ = event.id().event(); 
+      runid_ = event.run();
+     
       // Hand off control to display thread
       std::unique_lock lock{m_};
       std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
@@ -269,14 +274,13 @@ namespace mu2e
 
       // InitGuiInfo()
       fGui = new REveMu2eGUI();
-      fGui->SetName("WebGuiInfo");
+      fGui->SetName("Mu2eGUI");
       
       // call manager
       eventMgr_ = new EventDisplayManager{eveMng_, cv_, m_, fGui};
       
       // access the world
       auto world = eveMng_->GetWorld();
-      
       
       assert(world);
       world->AddElement(eventMgr_);
@@ -286,13 +290,15 @@ namespace mu2e
       frame_ = new REveMainWindow();
       frame_->makeGeometryScene(eveMng_,showCRV_,showPS_,showTS_,showDS_,gdmlname_);
       
-      eveMng_->AddLocation("mydir/", "/mu2e/app/users/sophie/Offline_October/REve/htmlcode");
+      //add path to the custom GUI code here, this overrides ROOT GUI
+      eveMng_->AddLocation("mydir/", "/mu2e/app/users/sophie/Offline_October/REve/CustomGUI");
       eveMng_->SetDefaultHtmlPage("file:mydir/eventDisplay.html");
    
       // InitGuiInfo() cont'd
       world->AddElement(fGui);
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
+      world->AddCommand("PrintEventInfo", "sap-icon://step", fGui, "PrintEventInfo()");
       std::unique_lock lock{m_};
       cv_.notify_all();
  
@@ -300,15 +306,16 @@ namespace mu2e
 
   // Actually interesting function responsible for drawing the current event
   void REveEventDisplay::process_single_event()
-    { 
-       fGui->fCount++;
-    fGui->StampObjProps();
-    printf("At event %d\n", fGui->fCount);
-    
+    {    
       std::cout<<"[REveEventDisplay : process_single_event] Start "<<std::endl;
       eveMng_->DisableRedraw();
       eveMng_->GetWorld()->BeginAcceptingChanges();
       eveMng_->GetScenes()->AcceptChanges(true);
+      //fGui->fCount++;
+      fGui->feventid = eventid_;
+      fGui->frunid = runid_;
+      fGui->StampObjProps();
+      //printf("At event %d\n", fGui->fCount);
       std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;
       REX::REveElement* scene = eveMng_->GetEventScene();
 

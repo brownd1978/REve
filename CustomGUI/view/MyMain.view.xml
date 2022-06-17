@@ -20,7 +20,7 @@
                 <FormattedText id="centerTitle" htmlText="Mu2e Event Display"/>
          </contentMiddle>
          <contentRight>
-                <Label id="infoLabel" text="text"/>
+                <Label id="infoLabel" text="insert event number here"/>
          </contentRight>
         </Bar>
      </customHeader>

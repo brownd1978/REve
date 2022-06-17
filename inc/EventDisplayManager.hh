@@ -39,6 +39,7 @@ namespace mu2e {
       std::mutex* m_{nullptr};
       bool doneProcessingEvents_{false};
       REveMu2eGUI *fGui_{nullptr};
+
     };
 }
 

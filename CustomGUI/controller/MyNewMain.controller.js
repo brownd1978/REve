@@ -10,7 +10,7 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
 
       onWebsocketClosed : function() {
          var elem = this.byId("centerTitle");
-         elem.setHtmlText("<strong style=\"color: red;\">Client Disconnected !</strong>");
+         elem.setHtmlText("<strong style=\"color: red;\">Client Disconnected: Check code for errors !</strong>");
       },
 
       onInit: function() {
@@ -23,20 +23,18 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
          MainController.prototype.onEveManagerInit.apply(this, arguments);
          var world = this.mgr.childs[0].childs;
 
-         // this is a prediction that the fireworks GUI is the last element after scenes
-         // could loop all the elements in top level and check for typename
-         var last = world.length -1;
-
-         if (world[last]._typename == "REveMu2eGUI") {
-            this.fw2gui = (world[last]);
-
-            var pthis = this;
-            this.mgr.UT_refresh_event_info = function () {
-               pthis.showEventInfo();
+         world.forEach((item) => {
+            if (item._typename == "mu2e::REveMu2eGUI") {
+               this.fw2gui = item;
+               var pthis = this;
+               this.mgr.UT_refresh_event_info = function () {
+                  pthis.showEventInfo();
+                  
+               }
+               this.showEventInfo();
+               return;
             }
-
-            pthis.showEventInfo();
-         }
+         });
       },
 
       onWebsocketMsg : function(handle, msg, offset)
@@ -45,9 +43,10 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
       },
 
       showEventInfo : function() {
-         let tinfo = this.fw2gui.path + ":" + this.fw2gui.total + "/" + this.fw2gui.count;
+         let tinfo = "Event : " + this.fw2gui.eventid + " Run :" + this.fw2gui.runid;
          document.title = tinfo;
          let infoLabel = this.getView().byId("infoLabel");
+         console.log(infoLabel);
          infoLabel.setText(tinfo);
       },
 

@@ -15,7 +15,6 @@ namespace mu2e {
   EventDisplayManager::NextEvent()
   {
     std::unique_lock lock{*m_};
-   
     cv_->notify_all();
   }
 
@@ -27,7 +26,7 @@ namespace mu2e {
     cv_->notify_all();
     throw std::runtime_error("EventDisplay");
   }
-
-}
+  
+};
 
 
