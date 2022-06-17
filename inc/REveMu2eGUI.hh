@@ -12,8 +12,8 @@ class REveMu2eGUI : public ROOT::Experimental::REveElement
   public:
      int fCount{0};
      int fTotal{10};
-     int eventid{0};
-     int runid{0};
+     int feventid{0};
+     int frunid{0};
 
      int WriteCoreJson(nlohmann::json &j, int rnr_offset) override;
      void PrintEventInfo();

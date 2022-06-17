@@ -43,7 +43,7 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
       },
 
       showEventInfo : function() {
-         let tinfo = this.fw2gui.path + ":" + this.fw2gui.total + "/" + this.fw2gui.count;
+         let tinfo = "Event : " + this.fw2gui.eventid + " Run :" + this.fw2gui.runid;
          document.title = tinfo;
          let infoLabel = this.getView().byId("infoLabel");
          console.log(infoLabel);

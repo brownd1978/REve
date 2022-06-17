@@ -234,8 +234,8 @@ namespace mu2e
      
       std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
       
-      fGui->eventid = event.id().event();
-      fGui->runid = event.run();
+      fGui->feventid = event.id().event();
+      fGui->frunid = event.run();
 
       XThreadTimer proc_timer([this]{ process_single_event(); });
       std::cout<<"[REveEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
