@@ -1,0 +1,15 @@
+// draw options
+
+int trans  = 100;
+int maxlevel = 8;
+int level = 0;
+int maxSID = 20000;
+int maxStrawID = 70;
+int TrackLineWidth = 5;
+
+int ThreeDimColor = 432; //kCyan
+int RecoTrackColor = 416; //kGreen
+
+int CRVHitColor = 600; //kBlue
+string TrkHitColor = 600; //kBlue
+string TrkNoHitColor = "kRed-4";

@@ -30,6 +30,7 @@ namespace mu2e{
           REveMu2eMCInterface& operator=(const REveMu2eMCInterface &);
           virtual ~REveMu2eMCInterface() = default;
           #ifndef __CINT__
+          inline constexpr double pointmmTocm(double mm){ return mm/10; };
           int Contains(std::vector<int> v, int x);
           const char* GetParticleName(int PDGCode);
           void SetLineColorPID(int PDGCode,REX::REveLine *line);

@@ -5,18 +5,17 @@ using namespace std;
 using namespace mu2e;
 
 
-std::string calfilename("REve/config/geomutils.txt"); //TODO - a fcl parameter?
-SimpleConfig config(calfilename);
-    
-double disk1_center = config.getDouble("disk1_center");
-double disk2_center =config.getDouble("disk2_center");
-double nCrystals = config.getDouble("nCrystals"); 
-double dz = config.getDouble("CaloTrackerdz"); 
+std::string calfilename("REve/config/geomutils.txt");
+std::string drawoptfilename("REve/config/drawutils.txt");
+SimpleConfig geomconfig(calfilename);
+SimpleConfig drawconfigf(drawoptfilename);
 
-//Geometry tags:
-double ST_gdmltag = 82976 ;
-double Tracker_gdmltag = 42423; //TODO - needs to be a list
-// std::vector<double> Tracker_gdmltags = ;
+double disk1_center = geomconfig.getDouble("disk1_center");
+double disk2_center = geomconfig.getDouble("disk2_center");
+double nCrystals = geomconfig.getDouble("nCrystals"); 
+double dz = geomconfig.getDouble("CaloTrackerdz"); 
+
+double FrontTracker_gdmltag; 
 
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2)
  {
@@ -25,15 +24,15 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     b1s->InitMainTrans();
     b1s->RefMainTrans().SetFrom(trans.Array());
     b1s->SetShape(gss);
-    b1s->SetMainColor(kCyan);
-    b1s->SetMainTransparency(100); //TODO - config parameter
+    b1s->SetMainColor(drawconfigf.getInt("ThreeDimColor"));
+    b1s->SetMainTransparency(drawconfigf.getInt("trans")); 
     holder->AddElement(b1s);
     if( crystal1 ){ 
         mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
     }if( crystal2 ){
         mngXYCaloDisk2->ImportElements(b1s, XYCaloDisk2GeomScene);
     }
-    if( val == Tracker_gdmltag ){ 
+    if( val == FrontTracker_gdmltag ){ 
         mngTrackerXY->ImportElements(b1s, TrackerXYGeomScene); //shows only one plane for simplicity
     }
     mngRhoZ  ->ImportElements(b1s, rhoZGeomScene); 
@@ -69,6 +68,9 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
                 if(print) std::cout<<j<<" "<<name<<" "<<tv[0]<<" "<<tv[1]<<" "<<tv[2]<<std::endl;
+                if(name == "TrackerPlaneEnvelope_000x3acaae0") {
+                  FrontTracker_gdmltag = j;
+                 }
                 if(name == "caloDisk_00x3d71700") {
                   disk1_center = tv[2];
                  }
@@ -105,18 +107,18 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     
     if(addTS){
       static std::vector <std::string> substrings_ts  {"TS"};  
-      shift.at(0) = config.getDouble("psts_x")/10;
-      shift.at(1) = config.getDouble("psts_y")/10;
-      shift.at(2) = config.getDouble("psts_z")/10;
+      shift.at(0) = geomconfig.getDouble("psts_x")/10;
+      shift.at(1) = geomconfig.getDouble("psts_y")/10;
+      shift.at(2) = geomconfig.getDouble("psts_z")/10;
       for(auto& i: substrings_ts){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
       }
     }
     if(addPS){
       static std::vector <std::string> substrings_ps  {"PSVacuum"};  
-      shift.at(0) = config.getDouble("psts_x")/10;
-      shift.at(1) = config.getDouble("psts_y")/10;
-      shift.at(2) = config.getDouble("psts_z")/10;
+      shift.at(0) = geomconfig.getDouble("psts_x")/10;
+      shift.at(1) = geomconfig.getDouble("psts_y")/10;
+      shift.at(2) = geomconfig.getDouble("psts_z")/10;
       for(auto& i: substrings_ps){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
       }
@@ -124,16 +126,16 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     if(addDS){
       static std::vector <std::string> substrings_ds {"DS1Vacuum","DS2Vacuum","DS3Vacuum"}; 
       for(auto& i: substrings_ds){
-        shift.at(0) = config.getDouble("psts_x")/10;
-        shift.at(1) = config.getDouble("psts_y")/10;
-        shift.at(2) = config.getDouble("psts_z")/10;
+        shift.at(0) = geomconfig.getDouble("psts_x")/10;
+        shift.at(1) = geomconfig.getDouble("psts_y")/10;
+        shift.at(2) = geomconfig.getDouble("psts_z")/10;
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false);
       }
      }
     if(addCRV){
       static std::vector <std::string> substrings_crv  {"CRS"};
       shift.at(0) = 0;  
-      shift.at(1) = config.getDouble("crvheight"); 
+      shift.at(1) = geomconfig.getDouble("crvheight"); 
       shift.at(2) = 0;
       for(auto& i: substrings_crv){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
@@ -156,7 +158,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     static std::vector <std::string> substrings_stoppingtarget  {"StoppingTarget","Foil"};
     shift.at(0) = 0;  
     shift.at(1) = 0;
-    shift.at(2) = -1*config.getDouble("STz")/10; 
+    shift.at(2) = -1*geomconfig.getDouble("STz")/10; 
     for(auto& i: substrings_stoppingtarget){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true);
     }
@@ -168,8 +170,6 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false);
     }
 }
-
-  
 
  void REveMainWindow::projectEvents(REX::REveManager *eveMng)
  {
@@ -285,7 +285,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         auto holder = new REX::REveElement("Mu2e World");
         eveMng->GetGlobalScene()->AddElement(holder);
         REX::REveTrans trans;
-        GeomDrawer(topnode, trans, holder,8,0, addCRV, addPS, addTS, addDS);
+        GeomDrawer(topnode, trans, holder,drawconfigf.getInt("maxlevel"),drawconfigf.getInt("level"), addCRV, addPS, addTS, addDS);
     }
 
     try {

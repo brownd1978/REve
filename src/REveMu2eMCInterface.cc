@@ -76,11 +76,17 @@ namespace REX = ROOT::Experimental;
   }
   
   void REveMu2eMCInterface::AddMCTrajectoryCollection(REX::REveManager *&eveMng, bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const MCTrajectoryCollection *>> mctrack_tuple, REX::REveElement* &scene, std::vector<int> particleIds){
-    // extract the track and input tage:
+  
+    std::cout<<"[REveMu2eMCInterface] AddMCTrajectory "<<std::endl;
+    std::string drawfilename("REve/config/drawutils.txt");
+    SimpleConfig drawconfig(drawfilename);
+    
+    // eEtract the track and input tag:
     std::vector<const MCTrajectoryCollection*> track_list = std::get<1>(mctrack_tuple);
     std::vector<std::string> names = std::get<0>(mctrack_tuple);
     std::vector<int> colour;
-    // loop over tracks:
+    
+    // Loop over tracks:
     for(unsigned int j=0; j< track_list.size(); j++){
       const MCTrajectoryCollection* trajcol = track_list[j];
       colour.push_back(j+3);
@@ -90,13 +96,13 @@ namespace REX = ROOT::Experimental;
 
             for(trajectoryIter=trajcol->begin(); trajectoryIter!=trajcol->end(); trajectoryIter++)
             { 
-              // check user defined list of particles to plot
+              // Check user defined list of particles to plot
               int x = Contains(particleIds,trajectoryIter->first->pdgId()); 
               // get particle name
               //const char* particlename = GetParticleName(trajectoryIter->first->pdgId());
               if(x == 1){
                 const std::vector<MCTrajectoryPoint> &points = trajectoryIter->second.points();
-                // make label
+                // Make label
                 std::string energy = std::to_string(points[0].kineticEnergy());
                 const std::string title = " MCTrajectory "+ energy + " Creation code = " + std::to_string(trajectoryIter->first->creationCode()) + "Stopping code = " + std::to_string(trajectoryIter->first->stoppingCode()) + " End Global Time = " + std::to_string(trajectoryIter->first->endGlobalTime())  ;
                 // create line with the above label
@@ -106,18 +112,18 @@ namespace REX = ROOT::Experimental;
                   CLHEP::Hep3Vector Pos(points[i].x(), points[i].y(), points[i].z());
                   GeomHandle<DetectorSystem> det;
                   CLHEP::Hep3Vector HitPos = det->toDetector(Pos);
-                  line->SetNextPoint((HitPos.x())/10,(HitPos.y())/10,(HitPos.z()/10));
+                  line->SetNextPoint(pointmmTocm((HitPos.x())),pointmmTocm((HitPos.y())),pointmmTocm(HitPos.z()));
                 }
                 // set line colour
                 SetLineColorPID(trajectoryIter->first->pdgId(),line);
-                line->SetLineWidth(5);
+                line->SetLineWidth(drawconfig.getInt("TrackLineWidth"));
                 scene->AddElement(line); 
               } else std::cout<<"Warning: No Particles of User-Specified Type In File "<<std::endl;
             }
           }
         }
       }
-     }
+   }
 
 
 
