@@ -295,3 +295,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     }
    
  }
+
+ #ifdef __CINT__
+    ClassImp(REveMainWindow)
+ #endif
