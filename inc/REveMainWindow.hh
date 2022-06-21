@@ -97,9 +97,9 @@ namespace mu2e {
             REX::REveViewer *rhoZView = nullptr;
 
             
-            
+            #else
+                ClassDef(REveMainWindow, 0);
             #endif
-            ClassDef(REveMainWindow, 0);
 
     };
 
