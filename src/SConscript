@@ -51,7 +51,7 @@ userlibs = [ rootlibs,
             'cetlib',
             'cetlib_except',
             'KinKal_General',
-            'KinKal_Trajectory'
+            'KinKal_Trajectory',
             'CLHEP',
             'Core',
             'boost_filesystem',
