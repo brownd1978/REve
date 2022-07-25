@@ -165,7 +165,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           scibar->SetNextPoint(pointmmTocm(sposf.x()),pointmmTocm(sposf.y()),pointmmTocm(sposf.z()));            
           scibar->SetLineWidth(1);
           scibar->SetLineColor(kRed);
-          if(scibar->GetSize() !=0 ) scene->AddElement(barline);
+          if(scibar->GetSize() !=0 ) scene->AddElement(scibar);
           // CRV hits
 	      ps1->SetNextPoint(pointmmTocm(pointInMu2e.x()), pointmmTocm(pointInMu2e.y()) , pointmmTocm(pointInMu2e.z()));
         }
