@@ -153,21 +153,21 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           const CRSScintillatorBar &crvCounter = CRS->getBar(crvBarIndex);
           const CRSScintillatorBarDetail &barDetail = crvCounter.getBarDetail();
           CLHEP::Hep3Vector crvCounterPos = crvCounter.getPosition();
-          CLHEP::Hep3Vector HitPos(crvCounterPos.x(), crvCounterPos.y(), crvCounterPos.z());//TODO this should be the RecoPulse position
+          CLHEP::Hep3Vector HitPos(crvCounterPos.x(), crvCounterPos.y(), crvCounterPos.z());
           CLHEP::Hep3Vector pointInMu2e = det-> toDetector(crvCounterPos);
           CLHEP::Hep3Vector sibardetails(barDetail.getHalfLengths()[0],barDetail.getHalfLengths()[1],barDetail.getHalfLengths()[2]);
-	      CLHEP::Hep3Vector sposi(0.0,0.0,0.0), sposf(0.0,0.0,0.0);
+	  CLHEP::Hep3Vector sposi(0.0,0.0,0.0), sposf(0.0,0.0,0.0);
           sposi.set(pointInMu2e.x()-sibardetails.x(), pointInMu2e.y()-sibardetails.y(), pointInMu2e.z()-sibardetails.z());
-	      sposf.set(pointInMu2e.x()+sibardetails.x(), pointInMu2e.y()+sibardetails.y(), pointInMu2e.z()+sibardetails.z());
+	  sposf.set(pointInMu2e.x()+sibardetails.x(), pointInMu2e.y()+sibardetails.y(), pointInMu2e.z()+sibardetails.z());
           // CRV hit scintillation bars highlighted
-	      auto scibar = new REX::REveLine("scintillationBar","",1); 
+	  auto scibar = new REX::REveLine("scintillationBar","",1); 
           scibar->SetPoint(0,pointmmTocm(sposi.x()),pointmmTocm(sposi.y()),pointmmTocm(sposi.z()));
           scibar->SetNextPoint(pointmmTocm(sposf.x()),pointmmTocm(sposf.y()),pointmmTocm(sposf.z()));            
           scibar->SetLineWidth(1);
           scibar->SetLineColor(kRed);
           if(scibar->GetSize() !=0 ) scene->AddElement(scibar);
           // CRV hits
-	      ps1->SetNextPoint(pointmmTocm(pointInMu2e.x()), pointmmTocm(pointInMu2e.y()) , pointmmTocm(pointInMu2e.z()));
+	  ps1->SetNextPoint(pointmmTocm(pointInMu2e.x()), pointmmTocm(pointInMu2e.y()) , pointmmTocm(pointInMu2e.z()));
         }
         
         ps1->SetMarkerColor(drawconfig.getInt("CRVHitColor"));
