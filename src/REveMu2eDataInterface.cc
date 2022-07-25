@@ -170,7 +170,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
 	      ps1->SetNextPoint(pointmmTocm(pointInMu2e.x()), pointmmTocm(pointInMu2e.y()) , pointmmTocm(pointInMu2e.z()));
         }
         
-        ps1->SetMarkerColor(drawconfig.getInt("TrkHitColor"));
+        ps1->SetMarkerColor(drawconfig.getInt("CRVHitColor"));
         ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
         ps1->SetMarkerSize(REveMu2eDataInterface::msize);
         if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
