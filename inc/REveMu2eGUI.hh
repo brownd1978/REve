@@ -13,6 +13,7 @@ class REveMu2eGUI : public ROOT::Experimental::REveElement
      //int fCount{0};
      //int fTotal{10};
      int feventid{0};
+     int fsubrunid{0};
      int frunid{0};
 
      int WriteCoreJson(nlohmann::json &j, int rnr_offset) override;
