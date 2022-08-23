@@ -134,9 +134,9 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
      }
     if(addCRV){
       static std::vector <std::string> substrings_crv  {"CRS"};
-      shift.at(0) = 0;  
-      shift.at(1) = geomconfig.getDouble("crvheight"); 
-      shift.at(2) = 0;
+      shift.at(0) = geomconfig.getDouble("psts_x")/10;
+      shift.at(1) = geomconfig.getDouble("psts_y")/10;
+      shift.at(2) = geomconfig.getDouble("psts_z")/10;
       for(auto& i: substrings_crv){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
       }
