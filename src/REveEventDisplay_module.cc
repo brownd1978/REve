@@ -155,7 +155,6 @@ namespace mu2e
         double runid_;   
         double subrunid_;
         bool seqMode_;
-        int eventSelected = 0;
         int eventn;
         int runn;
     };
@@ -175,14 +174,10 @@ namespace mu2e
     {
        if(!seqMode_){  
         // Take in Run, Event number
-        std::cout<<" Press 0 for sequential events, Press 1 to specify event"<<std::endl;
-        cin>>eventSelected;
-        if(eventSelected == 1){
           std::cout<<" Event Number : "<<std::endl;
           cin>>eventn;
           std::cout<<" Run Number : "<<std::endl;
           cin>>runn;
-        }
       }
     }
 
@@ -244,8 +239,7 @@ namespace mu2e
       runid_ = event.run();
       subrunid_ = event.subRun();
       
-      std::cout<<eventid_<<"  "<<runid_<<" "<<eventn<<" "<<runn<<std::endl;
-      if((seqMode_) or ( eventSelected == 1 and runid_ == runn and eventid_ == eventn)){
+      if((seqMode_) or ( runid_ == runn and eventid_ == eventn)){
         // Hand off control to display thread
         std::unique_lock lock{m_};
         std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
@@ -265,7 +259,7 @@ namespace mu2e
         cv_.wait(lock);
         std::cout<<"[REveEventDisplay : analyze()] -- TApplication thread returning control "<<std::endl;
         std::cout<<"[REveEventDisplay : analyze()] Ended Event "<<std::endl; 
-        eventSelected = 0;
+        seqMode_ = true;
       }
   }
 
