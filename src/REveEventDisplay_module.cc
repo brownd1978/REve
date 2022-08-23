@@ -290,7 +290,7 @@ namespace mu2e
       frame_->makeGeometryScene(eveMng_,showCRV_,showPS_,showTS_,showDS_,gdmlname_);
       
       //add path to the custom GUI code here, this overrides ROOT GUI
-      eveMng_->AddLocation("mydir/", "REve/CustomGUI");
+      eveMng_->AddLocation("mydir/", "/mu2e/app/users/sophie/Offline_October/REve/CustomGUI");
       eveMng_->SetDefaultHtmlPage("file:mydir/eventDisplay.html");
    
       // InitGuiInfo() cont'd
