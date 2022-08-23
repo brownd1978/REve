@@ -102,6 +102,7 @@ namespace mu2e
           fhicl::Sequence<int>particles{Name("particles"),Comment("PDGcodes to plot")};
           fhicl::Atom<std::string>gdmlname{Name("gdmlname"),Comment("gdmlname")};
           fhicl::Atom<bool> strawdisplay{Name("strawdisplay"), Comment(""),true};
+          fhicl::Atom<bool> seqMode{Name("seqMode"), Comment("turn off for go to any event functionality"),true};
         };
 
         typedef art::EDAnalyzer::Table<Config> Parameters;
@@ -152,7 +153,11 @@ namespace mu2e
         REveMu2eGUI *fGui{nullptr};
         double eventid_;   
         double runid_;   
-        
+        double subrunid_;
+        bool seqMode_;
+        int eventSelected = 0;
+        int eventn;
+        int runn;
     };
 
 
@@ -165,8 +170,21 @@ namespace mu2e
     filler_(conf().filler()),
     particles_(conf().particles()),
     gdmlname_(conf().gdmlname()),
-    strawdisplay_(conf().strawdisplay())
-    {}
+    strawdisplay_(conf().strawdisplay()),
+    seqMode_(conf().seqMode())
+    {
+       if(!seqMode_){  
+        // Take in Run, Event number
+        std::cout<<" Press 0 for sequential events, Press 1 to specify event"<<std::endl;
+        cin>>eventSelected;
+        if(eventSelected == 1){
+          std::cout<<" Event Number : "<<std::endl;
+          cin>>eventn;
+          std::cout<<" Run Number : "<<std::endl;
+          cin>>runn;
+        }
+      }
+    }
 
   REveEventDisplay::~REveEventDisplay() {}
 
@@ -224,25 +242,31 @@ namespace mu2e
       displayedEventID_ = event.id();
       eventid_ = event.id().event(); 
       runid_ = event.run();
-     
-      // Hand off control to display thread
-      std::unique_lock lock{m_};
-      std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
-      if(filler_.addClusters_)  filler_.FillRecoCollections(event, data, CaloClusters);
-      if(filler_.addHits_)  filler_.FillRecoCollections(event, data, ComboHits);
-      if(filler_.addCrvHits_) filler_.FillRecoCollections(event, data, CRVRecoPulses);
-      if(filler_.addTimeClusters_) filler_.FillRecoCollections(event, data, TimeClusters);
-      if(filler_.addTrkHits_) filler_.FillRecoCollections(event, data, TrkHits); 
-      if(filler_.addKalSeeds_)  filler_.FillRecoCollections(event, data, KalSeeds);
-      if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
-      if(filler_.addMCTraj_)  filler_.FillMCCollections(event, data, MCTrajectories);
-     
-      std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
-      XThreadTimer proc_timer([this]{ process_single_event(); });
-      std::cout<<"[REveEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
-      cv_.wait(lock);
-      std::cout<<"[REveEventDisplay : analyze()] -- TApplication thread returning control "<<std::endl;
-      std::cout<<"[REveEventDisplay : analyze()] Ended Event "<<std::endl; 
+      subrunid_ = event.subRun();
+      
+      std::cout<<eventid_<<"  "<<runid_<<" "<<eventn<<" "<<runn<<std::endl;
+      if((seqMode_) or ( eventSelected == 1 and runid_ == runn and eventid_ == eventn)){
+        // Hand off control to display thread
+        std::unique_lock lock{m_};
+        std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
+        
+        if(filler_.addClusters_)  filler_.FillRecoCollections(event, data, CaloClusters);
+        if(filler_.addHits_)  filler_.FillRecoCollections(event, data, ComboHits);
+        if(filler_.addCrvHits_) filler_.FillRecoCollections(event, data, CRVRecoPulses);
+        if(filler_.addTimeClusters_) filler_.FillRecoCollections(event, data, TimeClusters);
+        if(filler_.addTrkHits_) filler_.FillRecoCollections(event, data, TrkHits); 
+        if(filler_.addKalSeeds_)  filler_.FillRecoCollections(event, data, KalSeeds);
+        if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
+        if(filler_.addMCTraj_)  filler_.FillMCCollections(event, data, MCTrajectories);
+       
+        std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
+        XThreadTimer proc_timer([this]{ process_single_event(); });
+        std::cout<<"[REveEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
+        cv_.wait(lock);
+        std::cout<<"[REveEventDisplay : analyze()] -- TApplication thread returning control "<<std::endl;
+        std::cout<<"[REveEventDisplay : analyze()] Ended Event "<<std::endl; 
+        eventSelected = 0;
+      }
   }
 
     void REveEventDisplay::endJob()
@@ -312,6 +336,7 @@ namespace mu2e
       eveMng_->GetScenes()->AcceptChanges(true);
 
       fGui->feventid = eventid_;
+      fGui->frunid = subrunid_;
       fGui->frunid = runid_;
       fGui->StampObjProps();
 
