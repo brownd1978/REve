@@ -56,6 +56,9 @@
 #include "REve/inc/CollectionFiller.hh"
 #include "REve/inc/DataCollections.hh"
 #include "REve/inc/REveMu2eGUI.hh"
+#include "REve/inc/REveCaloCluster.hh"
+#include "REve/inc/REveComboHit.hh"
+#include "REve/inc/REveDataProduct.hh"
 
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
@@ -157,6 +160,8 @@ namespace mu2e
         bool seqMode_;
         int eventn;
         int runn;
+        
+        std::vector<std::shared_ptr<REveDataProduct>> listoflists;
     };
 
 
@@ -227,7 +232,45 @@ namespace mu2e
   }
   
   
-  
+  template <class T> void FillAllCollections(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list){
+      // get all instances of products of type T
+      std::vector<art::Handle<T>> vah = evt.getMany<T>();
+      std::string name;
+      // loop over the list of instances of products of this type
+      for (auto const& ah : vah) {
+        const art::Provenance* prov = ah.provenance();
+
+        // the name of the root file directory holding these histos
+        // is the className_moduleName_InstanceName for the instance
+        std::string fcn = prov->friendlyClassName();
+        std::string modn = prov->moduleLabel();
+        std::string instn = prov->processName();
+        //data.clustercol = prov;
+        //data.calocluster_list.push_back(data.clustercol);
+        //std::string name = TurnNameToString(modn);
+        //data.calocluster_labels.push_back(name);
+        name = fcn + "_" + prov->moduleLabel() + "_" + instn;
+        std::cout<<"NAME  "<<fcn<<" "<<modn<<" "<<instn<<std::endl;
+        std::cout<<"TYPE  "<<typeid(prov).name()<<std::endl;
+      }
+      
+      std::shared_ptr<REveDataProduct> prd = nullptr;
+      for (auto ptr : list) {
+          // if this instance of this product found in the list
+          if (ptr->name().compare(name) == 0) prd = ptr;
+        }
+        // if not in the list, create a new set of histograms
+        // for this product
+        if (prd == nullptr) {
+          prd = std::make_shared<REveDataProduct>(name);
+          std::cout<<"TYPE >> "<<typeid(prd).name()<<std::endl;
+          // add it to the list of products being histogrammed
+          list.push_back(prd);
+      }
+      std::cout<<"size >> "<<list.size()<<std::endl;
+      //REveEventDisplay::listoflists.push_back(list);
+    }
+    
   void REveEventDisplay::analyze(art::Event const& event){
       std::cout<<"starting analyze"<<std::endl;
       //remove previous event objects
@@ -238,14 +281,19 @@ namespace mu2e
       eventid_ = event.id().event(); 
       runid_ = event.run();
       subrunid_ = event.subRun();
-      
+      std::vector<std::shared_ptr<REveDataProduct>> _ccls;
+      std::vector<std::shared_ptr<REveDataProduct>> _chits;
+     
       if((seqMode_) or ( runid_ == runn and eventid_ == eventn)){
         // Hand off control to display thread
         std::unique_lock lock{m_};
         std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
-        
+        //if(filler_.addClusters_) FillAllCollections<CaloClusterCollection>(event, _ccls);
         if(filler_.addClusters_)  filler_.FillRecoCollections(event, data, CaloClusters);
-        if(filler_.addHits_)  filler_.FillRecoCollections(event, data, ComboHits);
+        if(filler_.addHits_) {
+          filler_.FillRecoCollections(event, data, ComboHits);
+          //FillAllCollections<ComboHitCollection>(event, _chits);
+        }
         if(filler_.addCrvHits_) filler_.FillRecoCollections(event, data, CRVRecoPulses);
         if(filler_.addTimeClusters_) filler_.FillRecoCollections(event, data, TimeClusters);
         if(filler_.addTrkHits_) filler_.FillRecoCollections(event, data, TrkHits); 
