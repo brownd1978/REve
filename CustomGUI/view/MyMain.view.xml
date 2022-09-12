@@ -17,7 +17,8 @@
             </MenuButton>
          </contentLeft>
          <contentMiddle>
-                <FormattedText id="centerTitle" htmlText="Mu2e Event Display"/>
+               <Image src="mydir/mu2e_logo_oval.png"
+                  class="sapUiSmallMarginEnd" height="100%"/>
          </contentMiddle>
          <contentRight>
                 <Label id="infoLabel" text="insert event number here"/>

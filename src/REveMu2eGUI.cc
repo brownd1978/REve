@@ -9,12 +9,13 @@ int REveMu2eGUI::WriteCoreJson(nlohmann::json &j, int rnr_offset)
   //j["count"] = fCount;
   //j["total"] = fTotal;
   j["eventid"] = feventid;
+  j["subrunid"] = fsubrunid;
   j["runid"] = frunid;
   j["UT_PostStream"] = "UT_refresh_event_info";
   return ROOT::Experimental::REveElement::WriteCoreJson(j, 0);
 }
 
 void REveMu2eGUI::PrintEventInfo(){
-  std::cout<<"Event : "<<feventid<<" Sub Run : "<<" Run : "<<frunid<<std::endl;
+  std::cout<<"Event : "<<feventid<<" Sub Run : "<<fsubrunid<<" Run : "<<frunid<<std::endl;
 }
 
