@@ -82,6 +82,25 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
 
       nextEvent : function(oEvent) {
           this.mgr.SendMIR("NextEvent()", this.fw2gui.fElementId, "EventDisplayManager");
+      },
+      
+      goEvent: function () {
+          if (this.eventFilter){
+            //this.eventFilter.openFilterDialog();
+            
+         }
+         else {
+            let pthis = this;
+            XMLView.create({
+               viewName: "custom.view.EventFilter",
+            }).then(function (oView) {
+               pthis.eventFilter = oView.getController();
+               pthis.eventFilter.setGUIElement(pthis.fw2gui);
+              // console.log(oView, "filter dialog", oView.byId("filterDialog"));
+               pthis.eventFilter.makeTables();
+               pthis.eventFilter.openFilterDialog();
+            });
+         }
       }
    });
 });

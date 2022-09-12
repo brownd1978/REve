@@ -10,8 +10,6 @@
      <customHeader>
        <Bar id="otb1" >
          <contentLeft>
-          <Button icon="sap-icon://user-edit" type="Transparent"
-               tooltip="Toggle GED editor" press="toggleGedEditor"/>
             <MenuButton text="File"  enabled="true">
                <menu>
                   <Menu itemSelected="onFileMenuAction">
@@ -70,7 +68,7 @@
             <Input id="runInput" width="100px"  />
             <Label id="event" text="Event"/>
             <Input id="eventInput" width="100px" />
-           <Button text="Go" press="testXML"/>
+           <Button text="Go" press="goEvent"/>
             <ToolbarSpacer />
             <Label id="dateLabel" />
              
