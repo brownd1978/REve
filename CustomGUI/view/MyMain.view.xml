@@ -113,5 +113,13 @@
           </l:contentAreas>
         </l:Splitter>
       </content>
+      <footer>
+        <OverflowToolbar>
+          <Label text="{/StatusLbl1}" id="FooterLbl1" />
+          <Label text="{/StatusLbl2}" id="FooterLbl2" />
+          <Label text="{/StatusLbl3}" id="FooterLbl3" />
+          <Label text="{/StatusLbl4}" id="FooterLbl4" />
+        </OverflowToolbar>
+      </footer>
     </Page>
   </mvc:View>
