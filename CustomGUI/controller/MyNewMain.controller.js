@@ -66,7 +66,7 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
       },
       
       showHelp : function(oEvent) {
-         alert("=====User support: dummy@cern.ch");
+         alert("=====User support: sophie@fnal.gov");
       },
 
       showEventInfo : function() {
