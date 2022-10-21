@@ -382,6 +382,7 @@ namespace mu2e
       fGui->frunid = runid_;
       fGui->fcalocluster_tuple = data.calocluster_tuple;
       fGui->fmctrack_tuple = data.mctrack_tuple;
+      fGui->ftrack_tuple = data.track_tuple;
       fGui->StampObjProps();
 
       std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;
