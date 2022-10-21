@@ -16,8 +16,7 @@ int REveMu2eGUI::WriteCoreJson(nlohmann::json &j, int rnr_offset)
 }
 
 void REveMu2eGUI::PrintEventInfo(){
-  std::cout<<" Run : "<<frunid<<" SubRun : "<<fsubrunid<<" Event : "<<feventid<<std::endl;
- 
+  std::cout<<"Run : "<<frunid<<" SubRun : "<<fsubrunid<<" Event : "<<feventid<<std::endl;
   // SimParticle information
   std::vector<const MCTrajectoryCollection*> track_list = std::get<1>(fmctrack_tuple);
   for(unsigned int j=0; j< track_list.size(); j++){
@@ -26,15 +25,16 @@ void REveMu2eGUI::PrintEventInfo(){
       std::map<art::Ptr<mu2e::SimParticle>,mu2e::MCTrajectory>::const_iterator trajectoryIter;
       std::cout<<"SIM PARTICLE INFORMATION"<<std::endl;
       std::cout<<"Number of SimParticles = "<<trajcol->size()<<std::endl;
-      std::cout<<" ID  "<<"   PDGID   "<<"  Energy    "<<"    p0x     "<<"     p0y      "<<"       p0z        "
-               <<"      posx    "<<"       posy      "<<"     posz    "<<"  t0      "<<"     p1x   "<<"    p1y   "<<"   p1z    "<<"    t1"<<std::endl;
+      std::cout<<"  "<<std::endl;
+      std::cout<<" ID  "<<"   PDGID   "<<" Energy    "<<"    p0x     "<<"     p0y      "<<"       p0z    "
+      <<"      posx    "<<"     posy      "<<"    posz    "<<"  t0      "<<"     p1x   "<<"    p1y   "<<"   p1z    "<<"    t1"<<std::endl;
       for(trajectoryIter=trajcol->begin(); trajectoryIter!=trajcol->end(); trajectoryIter++){
         std::string pdgID = std::to_string(trajectoryIter->first->pdgId());
-	      std::string t0 = std::to_string(trajectoryIter->first->startGlobalTime());
-	      std::string p0x = std::to_string(trajectoryIter->first->startMomentum().x());
+	std::string t0 = std::to_string(trajectoryIter->first->startGlobalTime());
+	std::string p0x = std::to_string(trajectoryIter->first->startMomentum().x());
         std::string p0y = std::to_string(trajectoryIter->first->startMomentum().y());
         std::string p0z = std::to_string(trajectoryIter->first->startMomentum().z());
-	      std::string energy = std::to_string(trajectoryIter->first->startMomentum().e());
+	std::string energy = std::to_string(trajectoryIter->first->startMomentum().e());
         std::string posx = std::to_string(trajectoryIter->first->startPosition().x());
         std::string posy = std::to_string(trajectoryIter->first->startPosition().y());
         std::string posz = std::to_string(trajectoryIter->first->startPosition().z());
@@ -45,11 +45,30 @@ void REveMu2eGUI::PrintEventInfo(){
         std::string pos1x = std::to_string(trajectoryIter->first->endPosition().x());
         std::string pos1y = std::to_string(trajectoryIter->first->endPosition().y());
         std::string pos1z = std::to_string(trajectoryIter->first->endPosition().z());
-	      std::string id = std::to_string(trajectoryIter->first->id().asInt());
+	std::string id = std::to_string(trajectoryIter->first->id().asInt());
 
-        std::cout<<" "<<id<<"      "<<pdgID<<"    "<<energy<<"    "<<p0x<<"     "<<p0y<<"     "<<p0z
-                 <<"  "<<posx<<"  "<<posy<<"   "<<posz<<"  "<<t0<<"   "<<p1x<<"  "<<p1y<<"  "<<p1z<<"   "<<t1<<std::endl;	
+        std::cout<<" "<<id<<"      "<<pdgID<<"     "<<energy<<"    "<<p0x<<"     "<<p0y<<"     "<<p0z
+        <<"  "<<posx<<"  "<<posy<<"   "<<posz<<"  "<<t0<<"   "<<p1x<<"  "<<p1y<<"  "<<p1z<<"   "<<t1<<std::endl;	
       }    	
+    }
+  }
+  
+  // KalSeed info
+  std::vector<const KalSeedCollection*> ktrack_list = std::get<1>(ftrack_tuple);
+  for(unsigned int j=0; j< ktrack_list.size(); j++){
+    const KalSeedCollection* seedcol = ktrack_list[j];
+    std::cout<<" "<<std::endl;
+    std::cout<<"KALSEED INFORMATION"<<std::endl;  
+    if(seedcol->size() !=0){
+       for(unsigned int i = 0; i < seedcol->size(); i++){
+         mu2e::KalSeed const  &kseed= (*seedcol)[i];
+         const std::vector<mu2e::TrkStrawHitSeed>* hots = &kseed.hits();
+         int n_krep_hits = hots->size();
+	 std::string kt0 = std::to_string(kseed.t0().t0());
+	 const std::vector<mu2e::KalSegment> &segments = kseed.segments();
+         unsigned int nSegments=segments.size();
+         std::cout<<" t0 = "<<kt0<<" hits = "<<n_krep_hits<<" segments = "<<nSegments<<std::endl;                 
+       }
     }
   }
 
@@ -58,7 +77,8 @@ void REveMu2eGUI::PrintEventInfo(){
   if(calocluster_list.size()!=0){
     for(unsigned int j = 0; j< calocluster_list.size(); j++){
       const CaloClusterCollection* clustercol = calocluster_list[j];
-      std::cout<<"CALO CLUSTER"<<std::endl;
+      std::cout<<" "<<std::endl;
+      std::cout<<"CALO CLUSTER INFORMATION"<<std::endl;
       std::cout<<"  Energy  "<<"     Time  "<<"        X       "<<"      Y    "<<std::endl;
       if(clustercol->size() != 0){
        for(unsigned int i = 0; i < clustercol->size(); i++){
@@ -73,5 +93,6 @@ void REveMu2eGUI::PrintEventInfo(){
       }
     }
   }
-
-}
+}	
+ 
+  
