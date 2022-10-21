@@ -33,7 +33,12 @@ class REveMu2eGUI : public ROOT::Experimental::REveElement
      const mu2e::MCTrajectoryCollection *mctrajcol = 0;
      std::vector<const mu2e::MCTrajectoryCollection*> mctrack_list;
      std::vector<std::string> mctrack_labels;
-     std::tuple<std::vector<std::string>, std::vector<const mu2e::MCTrajectoryCollection*>> fmctrack_tuple; 
+     std::tuple<std::vector<std::string>, std::vector<const mu2e::MCTrajectoryCollection*>> fmctrack_tuple;
+     
+     const mu2e::KalSeedCollection* kalSeedcol = 0;
+     std::vector<const mu2e::KalSeedCollection*> track_list;
+     std::vector<std::string> track_labels;
+     std::tuple<std::vector<std::string>, std::vector<const mu2e::KalSeedCollection*>> ftrack_tuple;
 
      int WriteCoreJson(nlohmann::json &j, int rnr_offset) override;
      void PrintEventInfo();
