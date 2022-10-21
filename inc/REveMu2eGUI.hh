@@ -4,6 +4,7 @@
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
 #include "Offline/MCDataProducts/inc/MCTrajectoryPoint.hh"
 #include "Offline/MCDataProducts/inc/MCTrajectoryCollection.hh"
+#include "Offline/RecoDataProducts/inc/KalSeed.hh"
 
 #include <iostream>
 #include <vector>
