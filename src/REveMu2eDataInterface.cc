@@ -275,6 +275,74 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
   }
 }
 
+using LHPT = KinKal::PiecewiseTrajectory<KinKal::LoopHelix>;
+using CHPT = KinKal::PiecewiseTrajectory<KinKal::CentralHelix>;
+using KLPT = KinKal::PiecewiseTrajectory<KinKal::KinematicLine>;
+template<class KTRAJ> void REveMu2eDataInterface::AddKinKalTrajectory( std::unique_ptr<KTRAJ> &trajectory, REX::REveLine* line){
+  double t1=trajectory->range().begin();
+  double t2=trajectory->range().end();
+
+  double x1=trajectory->position3(t1).x();
+  double y1=trajectory->position3(t1).y();
+  double z1=trajectory->position3(t1).z();
+  //double x2=trajectory->position3(t2).x();
+  //double y2=trajectory->position3(t2).y();
+  //double z2=trajectory->position3(t2).z();
+  
+  line->SetPoint(0,pointmmTocm(x1), pointmmTocm(y1) , pointmmTocm(z1));
+  for(double t=t1; t<=t2; t+=0.1)
+  {
+    const auto &p = trajectory->position3(t);
+    double xt=p.x();
+    double yt=p.y();
+    double zt=p.z();
+    line->SetNextPoint(pointmmTocm(xt), pointmmTocm(yt) , pointmmTocm(zt));
+  }
+}
+
+void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool firstloop, REX::REveElement* &scene, std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple){
+  std::cout<<"[REveMu2eDataInterface] AddKinKalTracks  "<<std::endl;
+  std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
+  std::vector<std::string> names = std::get<0>(track_tuple);
+  std::vector<int> colour;
+
+  for(unsigned int j=0; j< track_list.size(); j++){
+    const KalSeedCollection* seedcol = track_list[j];
+    colour.push_back(j+3);
+    if(seedcol!=0){  
+     for(unsigned int k = 0; k < seedcol->size(); k = k + 20){ 
+        mu2e::KalSeed kseed = (*seedcol)[k];
+        std::cout<<" is loop "<<kseed.centralHelixFit()<<std::endl;
+        auto line = new REX::REveLine(names[j], names[j], 100);
+        if(kseed.loopHelixFit())
+        {
+          std::cout<<"Loop Helix Fit"<<std::endl;
+          //info->setText(2,"Loop Helix Fit");
+          auto trajectory=kseed.loopHelixFitTrajectory();
+          AddKinKalTrajectory<LHPT>(trajectory,line);
+        }
+        else if(kseed.centralHelixFit())
+        {
+          //info->setText(2,"Central Helix Fit");
+          std::cout<<"Central Helix Fit"<<std::endl;
+          auto trajectory=kseed.centralHelixFitTrajectory();
+          AddKinKalTrajectory<CHPT>(trajectory,line);
+        }
+        else if(kseed.kinematicLineFit())
+        {
+          //const mu2e::KalSegment &segment = segments.at(k);
+          //info->setText(2,"Kinematic Line Fit");
+          auto trajectory=kseed.kinematicLineFitTrajectory();
+          AddKinKalTrajectory<KLPT>(trajectory,line);
+        }
+        line->SetLineColor(kOrange);
+        line->SetLineWidth(drawconfig.getInt("TrackLineWidth"));
+        scene->AddElement(line); 
+      }
+    }
+  }
+}
+
 void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
 
     std::cout<<"[REveMu2eDataInterface] AddTracks  "<<std::endl;
