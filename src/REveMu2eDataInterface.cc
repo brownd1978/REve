@@ -76,7 +76,6 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
   const ComboHitCollection* chcol = combohit_list[j];
   colour.push_back(j+3);
   if(chcol->size() !=0 ){
-    auto ps1 = new REX::REvePointSet("ComboHits ", "",0); 
     // Loop over hits
     for(unsigned int i=0; i< chcol->size(); i++){
     mu2e::ComboHit const  &hit= (*chcol)[i];
@@ -123,12 +122,14 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
       }
     }
     CLHEP::Hep3Vector HitPos(pointmmTocm(hit.pos().x()), pointmmTocm(hit.pos().y()), pointmmTocm(hit.pos().z()));
+    std::string chtitle = "x " + std::to_string(hit.pos().x()) + " y " + std::to_string(hit.pos().y()) + " z " + std::to_string(hit.pos().z());
+    auto ps1 = new REX::REvePointSet("ComboHit", chtitle,0); 
     ps1->SetNextPoint(HitPos.x(), HitPos.y() , HitPos.z()); 
-  }
-  ps1->SetMarkerColor(drawconfig.getInt("CRVHitColor"));
-  ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
-  ps1->SetMarkerSize(REveMu2eDataInterface::msize);
-  if(ps1->GetSize() !=0 ) scene->AddElement(ps1);  
+    ps1->SetMarkerColor(drawconfig.getInt("CRVHitColor"));
+    ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+    ps1->SetMarkerSize(REveMu2eDataInterface::msize);
+    if(ps1->GetSize() !=0 ) scene->AddElement(ps1);  
+    }
   }
   }
   std::cout<<"[REveMu2eDataInterface] AddComboHits end"<<std::endl;

@@ -33,7 +33,9 @@ namespace mu2e{
         return ss.str();
     }
   
-
+    
+    
+   
     void CollectionFiller::FillRecoCollections(const art::Event& evt, DataCollections &data, RecoDataProductName CollectionName){
         if(FillAll_  or (CollectionName == ComboHits)){ 
             for(const auto &tag : chTag_){ 
@@ -48,12 +50,12 @@ namespace mu2e{
         }
         if(FillAll_ or (addCrvHits_ and CollectionName==CRVRecoPulses)){
           for(const auto &tag : crvcoinTag_){ 
-           auto chH = evt.getValidHandle<mu2e::CrvRecoPulseCollection>(tag);
-           data.crvcoincol = chH.product();
+            auto chH = evt.getValidHandle<mu2e::CrvRecoPulseCollection>(tag);
+            data.crvcoincol = chH.product();
             data.crvpulse_list.push_back(data.crvcoincol);
-                std::string name = TurnNameToString(tag);
-                std::cout<<"Plotting CRV Instance: "<<name<<"  "<<data.crvpulse_list.size()<<std::endl;
-                data.crvpulse_labels.push_back(name);
+            std::string name = TurnNameToString(tag);
+            std::cout<<"Plotting CRV Instance: "<<name<<"  "<<data.crvpulse_list.size()<<std::endl;
+            data.crvpulse_labels.push_back(name);
           }
             data.crvpulse_tuple = std::make_tuple(data.crvpulse_labels,data.crvpulse_list);
         }

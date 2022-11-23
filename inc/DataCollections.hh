@@ -64,12 +64,13 @@ namespace mu2e{
       std::tuple<std::vector<std::string>, std::vector<const mu2e::TimeClusterCollection*>> timecluster_tuple;
       std::tuple<std::vector<std::string>, std::vector<const mu2e::MCTrajectoryCollection*>> mctrack_tuple;
       
+
       void Reset(){
         this->track_list.clear();
         this->calocluster_list.clear();
         this->combohit_list.clear();
         this->crvpulse_list.clear();
-	this->timecluster_list.clear();
+	      this->timecluster_list.clear();
         this->mctrack_list.clear();
         this->track_labels.clear();
         this->calocluster_labels.clear();
