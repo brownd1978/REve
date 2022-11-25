@@ -316,22 +316,16 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
         auto line = new REX::REveLine(names[j], names[j], 100);
         if(kseed.loopHelixFit())
         {
-          std::cout<<"Loop Helix Fit"<<std::endl;
-          //info->setText(2,"Loop Helix Fit");
           auto trajectory=kseed.loopHelixFitTrajectory();
           AddKinKalTrajectory<LHPT>(trajectory,line);
         }
         else if(kseed.centralHelixFit())
         {
-          //info->setText(2,"Central Helix Fit");
-          std::cout<<"Central Helix Fit"<<std::endl;
           auto trajectory=kseed.centralHelixFitTrajectory();
           AddKinKalTrajectory<CHPT>(trajectory,line);
         }
         else if(kseed.kinematicLineFit())
         {
-          //const mu2e::KalSegment &segment = segments.at(k);
-          //info->setText(2,"Kinematic Line Fit");
           auto trajectory=kseed.kinematicLineFitTrajectory();
           AddKinKalTrajectory<KLPT>(trajectory,line);
         }
