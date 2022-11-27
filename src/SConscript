@@ -95,6 +95,7 @@ helper.make_plugins( [
     'mu2e_BFieldGeom',
     'mu2e_CRVAnalysis',
     'mu2e_TrkDiag',
+    'KinKal_Trajectory',
     'pthread'
     ] )
 

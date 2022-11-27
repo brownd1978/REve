@@ -67,7 +67,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
-                if(print) std::cout<<j<<" "<<name<<" "<<tv[0]<<" "<<tv[1]<<" "<<tv[2]<<std::endl;
+                //if(print) std::cout<<j<<" "<<name<<" "<<tv[0]<<" "<<tv[1]<<" "<<tv[2]<<std::endl;
                 if(name == "TrackerPlaneEnvelope_000x3acaae0") {
                   FrontTracker_gdmltag = j;
                  }
@@ -249,6 +249,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
     if(drawOpts.addTracks and track_list.size() !=0) {
       pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
+      pass_data->FillKinKalTrajectory(eveMng, firstLoop, eventScene, data.track_tuple );
       if(drawOpts.addTrkHits) {   
         std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
         pass_data->AddTrkHits(eveMng, firstLoop, data.combohit_tuple,data.track_tuple, eventScene);
