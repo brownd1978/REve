@@ -16,6 +16,7 @@ int REveMu2eGUI::WriteCoreJson(nlohmann::json &j, int rnr_offset)
 }
 
 void REveMu2eGUI::PrintEventInfo(){
-  std::cout<<"Event : "<<feventid<<" Sub Run : "<<fsubrunid<<" Run : "<<frunid<<std::endl;
-}
-
+  std::cout<<"Run : "<<frunid<<" SubRun : "<<fsubrunid<<" Event : "<<feventid<<std::endl;
+}	
+ 
+  

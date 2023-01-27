@@ -211,66 +211,65 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
 }
 
 /*------------Function to color code the Tracker hits -------------*/
-  void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const ComboHitCollection*>> combohit_tuple,std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
-
-    std::cout<<"[REveMu2eDataInterface] AddTrkHits  "<<std::endl;
-    std::vector<const ComboHitCollection*> combohit_list = std::get<1>(combohit_tuple);
-    std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
+void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const ComboHitCollection*>> combohit_tuple,std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
+  std::cout<<"[REveMu2eDataInterface] AddTrkHits  "<<std::endl;
+  std::vector<const ComboHitCollection*> combohit_list = std::get<1>(combohit_tuple);
+  std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
     
-    GeomHandle<DetectorSystem> det;
-    StrawId trksid[drawconfig.getInt("maxStrawID")]; 
-    unsigned int trkhitsize=0;
-    //Save the hit straw IDs of the KalSeed hits  
-    for(unsigned int j = 0; j< track_list.size(); j++){
-      const KalSeedCollection* seedcol = track_list[j];
-      if(seedcol!=0){
-        for(unsigned int k = 0; k < seedcol->size(); k++){
-          KalSeed kseed = (*seedcol)[k];
-          const std::vector<mu2e::TrkStrawHitSeed> &hits = kseed.hits();
-          trkhitsize = hits.size();
-          for(unsigned int i = 0; i <trkhitsize; i++){
-            const mu2e::TrkStrawHitSeed &hit = hits.at(i);
-            trksid[i] = hit._sid; 
-          }
+  GeomHandle<DetectorSystem> det;
+  StrawId trksid[drawconfig.getInt("maxStrawID")]; 
+  unsigned int trkhitsize=0;
+  //Save the hit straw IDs of the KalSeed hits  
+  for(unsigned int j = 0; j< track_list.size(); j++){
+    const KalSeedCollection* seedcol = track_list[j];
+    if(seedcol!=0){
+      for(unsigned int k = 0; k < seedcol->size(); k++){
+        KalSeed kseed = (*seedcol)[k];
+        const std::vector<mu2e::TrkStrawHitSeed> &hits = kseed.hits();
+        trkhitsize = hits.size();
+	for(unsigned int i = 0; i <trkhitsize; i++){
+          const mu2e::TrkStrawHitSeed &hit = hits.at(i);
+          trksid[i] = hit._sid; 
         }
+	StrawId usedtrksid[trkhitsize];
+        unsigned int usedid[trkhitsize];
+        //Compare the straw IDs of the Kal seed hits with the hits in the ComboHit Collection
+        for(unsigned int j=0; j< combohit_list.size(); j++){
+          const ComboHitCollection* chcol = combohit_list[j];
+          if(chcol!=0){
+            for(unsigned int i=0; i<chcol->size();i++){
+              ComboHit hit = (*chcol)[i];
+              for(unsigned int q=0; q<trkhitsize; q++){
+                if(hit._sid == trksid[q]){
+                  usedtrksid[q]=hit._sid;//Save the Straw ID if the KalSeed and Combo hit ID matches
+                  usedid[q]=q;
+                  CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
+                  auto trkhit = new REX::REvePointSet("TrkHits", "trkhit",0); 
+                  trkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+                  trkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
+	          // trkhit ->SetMarkerColor(drawconfig.getInt("RecoTrackColor")-4); //TODO
+                  trkhit ->SetMarkerColor(kGreen); //TODO
+                  trkhit ->SetNextPoint(pointmmTocm(HitPos.x()),pointmmTocm(HitPos.y()) ,pointmmTocm(HitPos.z()));
+                  if(trkhit->GetSize() !=0 ) scene->AddElement(trkhit); 
+	          // std::cout<<"TrkHit = "<<HitPos.x()<<"  "<<HitPos.y()<<" "<<HitPos.z()<<std::endl;
+		}
+	      }
+	    }
+            for(unsigned int i = 0;i < trkhitsize;i++){ 
+              if(i != usedid[i] and i<chcol->size()){
+                ComboHit chhit = (*chcol)[i];
+                CLHEP::Hep3Vector HitPos(chhit.pos().x(), chhit.pos().y(), chhit.pos().z());
+                auto notusedtrkhit = new REX::REvePointSet("NotTrkHits", "nottrkhit",0); 
+                notusedtrkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+                notusedtrkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
+                notusedtrkhit ->SetNextPoint(pointmmTocm(HitPos.x()),pointmmTocm(HitPos.y()) ,pointmmTocm(HitPos.z()));
+                notusedtrkhit ->SetMarkerColor(kRed);
+                if(notusedtrkhit->GetSize() !=0 ) scene->AddElement(notusedtrkhit); 
+	      }
+	    }
+	  }
+	}
       }
-    }        
-    StrawId usedtrksid[trkhitsize];
-    unsigned int usedid[trkhitsize];
-    //Compare the straw IDs of the Kal seed hits with the hits in the ComboHit Collection
-
-    for(unsigned int j=0; j< combohit_list.size(); j++){
-      const ComboHitCollection* chcol = combohit_list[j];
-      if(chcol!=0){
-        for(unsigned int i=0; i<chcol->size();i++){
-          ComboHit hit = (*chcol)[i];
-          for(unsigned int q=0; q<trkhitsize; q++){
-            if(hit._sid == trksid[q]){
-              usedid[q]=q;
-              usedtrksid[q]=hit._sid;//Save the Straw ID if the KalSeed and Combo hit ID matches
-              CLHEP::Hep3Vector HitPos(hit.pos().x(), hit.pos().y(), hit.pos().z());
-              auto trkhit = new REX::REvePointSet("TrkHits", "trkhit",0); 
-              trkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
-              trkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
-              trkhit ->SetMarkerColor(drawconfig.getInt("RecoTrackColor")-4); //TODO
-              trkhit ->SetNextPoint(pointmmTocm(HitPos.x()),pointmmTocm(HitPos.y()) ,pointmmTocm(HitPos.z()));
-              if(trkhit->GetSize() !=0 ) scene->AddElement(trkhit); 
-              }
-            }
-        }
-        //Hits which are not in the ComboHit Collection of the helix    
-        for(unsigned int i = 0;i < trkhitsize;i++){ // FIXMES - this doesnt work
-          if(i != usedid[i] and i<chcol->size()){
-            ComboHit chhit = (*chcol)[i];
-            CLHEP::Hep3Vector HitPos(chhit.pos().x(), chhit.pos().y(), chhit.pos().z());
-            auto notusedtrkhit = new REX::REvePointSet("NotTrkHits", "nottrkhit",0); 
-            notusedtrkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
-            notusedtrkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
-            notusedtrkhit ->SetNextPoint(pointmmTocm(HitPos.x()),pointmmTocm(HitPos.y()) ,pointmmTocm(HitPos.z()));
-            notusedtrkhit ->SetMarkerColor(kRed-4);
-            if(notusedtrkhit->GetSize() !=0 ) scene->AddElement(notusedtrkhit); 
-          }
-        }
     }
   }
 }
