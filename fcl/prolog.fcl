@@ -12,7 +12,7 @@ REveEventDisplay : {
       CrvRecoPulseCollection : ["SelectRecoMC"]
       TimeClusterCollection : ["MHDeM"]
       CaloClusterCollection : ["CaloClusterFast"]
-      KalSeedCollection : ["KKDeM"]
+      KalSeedCollection : ["KFFDeM"]//KKDeM
       CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
       MCTrajectoryCollection :  ["compressRecoMCs"]
       addHits : false

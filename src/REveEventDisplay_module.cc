@@ -129,6 +129,7 @@ namespace mu2e
         void run_application();
         void process_single_event();
         void printOpts();
+        template <class T> void FillAllCollections(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list);
 
         // Application control
         TApplication application_{"none", nullptr, nullptr};
@@ -162,6 +163,7 @@ namespace mu2e
         int runn;
         
         std::vector<std::shared_ptr<REveDataProduct>> listoflists;
+        
     };
 
 
@@ -232,23 +234,25 @@ namespace mu2e
   }
   
   
-  template <class T> void FillAllCollections(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list){
+  template <class T> void REveEventDisplay::FillAllCollections(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list){
       // get all instances of products of type T
       std::vector<art::Handle<T>> vah = evt.getMany<T>();
       std::string name;
       // loop over the list of instances of products of this type
       for (auto const& ah : vah) {
         const art::Provenance* prov = ah.provenance();
-
+        
         // the name of the root file directory holding these histos
         // is the className_moduleName_InstanceName for the instance
         std::string fcn = prov->friendlyClassName();
         std::string modn = prov->moduleLabel();
         std::string instn = prov->processName();
-        //data.clustercol = prov;
-        //data.calocluster_list.push_back(data.clustercol);
-        //std::string name = TurnNameToString(modn);
-        //data.calocluster_labels.push_back(name);
+        T collection(*ah);
+        T* p = &collection;
+        data.clustercol = p;
+        data.calocluster_list.push_back(data.clustercol);
+        std::string name = "";//filler_.TurnNameToString(modn);
+        data.calocluster_labels.push_back(name);
         name = fcn + "_" + prov->moduleLabel() + "_" + instn;
         std::cout<<"NAME  "<<fcn<<" "<<modn<<" "<<instn<<std::endl;
         std::cout<<"TYPE  "<<typeid(prov).name()<<std::endl;
@@ -287,8 +291,8 @@ namespace mu2e
         // Hand off control to display thread
         std::unique_lock lock{m_};
         std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
-        //if(filler_.addClusters_) FillAllCollections<CaloClusterCollection>(event, _ccls);
-        if(filler_.addClusters_)  filler_.FillRecoCollections(event, data, CaloClusters);
+        if(filler_.addClusters_) FillAllCollections<CaloClusterCollection>(event, _ccls);
+        //if(filler_.addClusters_)  filler_.FillRecoCollections(event, data, CaloClusters);
         if(filler_.addHits_) {
           filler_.FillRecoCollections(event, data, ComboHits);
           //FillAllCollections<ComboHitCollection>(event, _chits);
@@ -385,7 +389,7 @@ namespace mu2e
       REX::REveElement* scene = eveMng_->GetEventScene();
 
       std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
-      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_, filler_.addCrvHits_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_);
+      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_);
       frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts, particles_, strawdisplay_);
 
       std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;

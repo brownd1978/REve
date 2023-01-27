@@ -284,9 +284,7 @@ template<class KTRAJ> void REveMu2eDataInterface::AddKinKalTrajectory( std::uniq
   double x1=trajectory->position3(t1).x();
   double y1=trajectory->position3(t1).y();
   double z1=trajectory->position3(t1).z();
-  //double x2=trajectory->position3(t2).x();
-  //double y2=trajectory->position3(t2).y();
-  //double z2=trajectory->position3(t2).z();
+
   
   line->SetPoint(0,pointmmTocm(x1), pointmmTocm(y1) , pointmmTocm(z1));
   for(double t=t1; t<=t2; t+=0.1)
