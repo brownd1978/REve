@@ -49,7 +49,7 @@ namespace mu2e{
         CollectionFiller& operator=(const CollectionFiller &);
 
         std::vector<art::InputTag> chTag_;
-        std::vector<art::InputTag> tcTag_; //TODO - make in same style as others
+        std::vector<art::InputTag> tcTag_; 
         std::vector<art::InputTag> crvcoinTag_;
         std::vector<art::InputTag> cluTag_;
         std::vector<art::InputTag> kalSeedTag_;

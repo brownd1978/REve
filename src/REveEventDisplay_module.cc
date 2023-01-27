@@ -272,7 +272,6 @@ namespace mu2e
     }
     
   void REveEventDisplay::analyze(art::Event const& event){
-      std::cout<<"starting analyze"<<std::endl;
       //remove previous event objects
       data.Reset();
       
