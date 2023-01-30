@@ -15,7 +15,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
       // Extract cluster list
       const CaloClusterCollection* clustercol = calocluster_list[j];
       colour.push_back(j+3);
-      if(clustercol->size() != 0){// and clustercol->size() < 2){ //TODO what is this < 2?   
+      if(clustercol->size() != 0){
           if(!firstLoop_){
               scene->DestroyElements();;
           }
@@ -23,13 +23,11 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
           GeomHandle<DetectorSystem> det;
           for(unsigned int i = 0; i < clustercol->size(); i++){
             mu2e::CaloCluster const  &cluster= (*clustercol)[i];
-            
             // Info for label:
             std::string cluster_energy = std::to_string(cluster.energyDep());
             std::string cluster_time = std::to_string(cluster.time());
             std::string cluster_x = std::to_string(cluster.cog3Vector().x());
             std::string cluster_y = std::to_string(cluster.cog3Vector().y());
-
             // Extract center of gravity, convert to coord sys
             CLHEP::Hep3Vector COG(cluster.cog3Vector().x(),cluster.cog3Vector().y(), cluster.cog3Vector().z());
             CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDiskFF(cluster.diskID(),COG);
@@ -42,7 +40,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             std::string label =  "Instance = " + names[0] + " Energy Dep. = "+cluster_energy+" MeV "+", Time = "+cluster_time+" ns " +" Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
             auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
             auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
-
+            std::cout<<"[REveMu2eDataInterface] AddCaloClusters 6"<<std::endl;
             // Set positions
             if(cluster.diskID() == 0) ps1->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z()))); 
             if(cluster.diskID() == 1) ps2->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z()))); 

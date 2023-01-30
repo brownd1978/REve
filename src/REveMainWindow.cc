@@ -244,6 +244,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     }
     if(drawOpts.addClusters){
       std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(data.calocluster_tuple);
+      std::cout<<"calo clusters "<<calocluster_list.size()<<std::endl;
       if(calocluster_list.size() !=0 ) pass_data->AddCaloClusters(eveMng, firstLoop, data.calocluster_tuple, eventScene);
     }
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
