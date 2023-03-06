@@ -11,25 +11,26 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
     std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(calocluster_tuple);
     std::vector<std::string> names = std::get<0>(calocluster_tuple);
     std::vector<int> colour;
+    std::cout<<"size of list in drawing "<<calocluster_list.size()<<std::endl;
     for(unsigned int j = 0; j< calocluster_list.size(); j++){
+    std::cout<<"[REveMu2eDataInterface] AddCaloClusters 1"<<std::endl;
       // Extract cluster list
       const CaloClusterCollection* clustercol = calocluster_list[j];
       colour.push_back(j+3);
-      if(clustercol->size() != 0){// and clustercol->size() < 2){ //TODO what is this < 2?   
+      if(clustercol->size() != 0){
           if(!firstLoop_){
               scene->DestroyElements();;
           }
+          std::cout<<"[REveMu2eDataInterface] AddCaloClusters 2"<<std::endl;
           mu2e::Calorimeter const &cal = *(mu2e::GeomHandle<mu2e::Calorimeter>());
           GeomHandle<DetectorSystem> det;
           for(unsigned int i = 0; i < clustercol->size(); i++){
             mu2e::CaloCluster const  &cluster= (*clustercol)[i];
-            
             // Info for label:
             std::string cluster_energy = std::to_string(cluster.energyDep());
             std::string cluster_time = std::to_string(cluster.time());
             std::string cluster_x = std::to_string(cluster.cog3Vector().x());
             std::string cluster_y = std::to_string(cluster.cog3Vector().y());
-
             // Extract center of gravity, convert to coord sys
             CLHEP::Hep3Vector COG(cluster.cog3Vector().x(),cluster.cog3Vector().y(), cluster.cog3Vector().z());
             CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDiskFF(cluster.diskID(),COG);
@@ -37,28 +38,29 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
 
             // Info for label
             std::string cluster_z = std::to_string(abs(pointInMu2e.z()));
-            
+            std::cout<<"[REveMu2eDataInterface] AddCaloClusters 3"<<std::endl;
             // Make label and REve objects
             std::string label =  "Instance = " + names[0] + " Energy Dep. = "+cluster_energy+" MeV "+", Time = "+cluster_time+" ns " +" Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
             auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
             auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
-
+            
             // Set positions
             if(cluster.diskID() == 0) ps1->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z()))); 
             if(cluster.diskID() == 1) ps2->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z()))); 
-
+            std::cout<<"[REveMu2eDataInterface] AddCaloClusters 4"<<std::endl;
             // Set draw options
-            ps1->SetMarkerColor(kRed); //TODO - add colors to the DrawUtils
+            ps1->SetMarkerColor(j+3); 
             ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
             ps1->SetMarkerSize(REveMu2eDataInterface::mstyle);
 
-            ps2->SetMarkerColor(kRed);
+            ps2->SetMarkerColor(j+3);
             ps2->SetMarkerStyle(REveMu2eDataInterface::mstyle);
             ps2->SetMarkerSize(REveMu2eDataInterface::mstyle);
 
             // Add to REve world
             if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
             if(ps2->GetSize() !=0 ) scene->AddElement(ps2); 
+            std::cout<<"[REveMu2eDataInterface] AddCaloClusters 5"<<std::endl;
           }
       }
     }
@@ -168,7 +170,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           scibar->SetLineColor(kRed);
           if(scibar->GetSize() !=0 ) scene->AddElement(scibar);
           // CRV hits
-	  ps1->SetNextPoint(pointmmTocm(pointInMu2e.x()), pointmmTocm(pointInMu2e.y()) , pointmmTocm(pointInMu2e.z()));
+	        ps1->SetNextPoint(pointmmTocm(pointInMu2e.x()), pointmmTocm(pointInMu2e.y()) , pointmmTocm(pointInMu2e.z()));
         }
         
         ps1->SetMarkerColor(drawconfig.getInt("CRVHitColor"));
@@ -227,11 +229,11 @@ void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop
         KalSeed kseed = (*seedcol)[k];
         const std::vector<mu2e::TrkStrawHitSeed> &hits = kseed.hits();
         trkhitsize = hits.size();
-	for(unsigned int i = 0; i <trkhitsize; i++){
+        for(unsigned int i = 0; i <trkhitsize; i++){
           const mu2e::TrkStrawHitSeed &hit = hits.at(i);
           trksid[i] = hit._sid; 
         }
-	StrawId usedtrksid[trkhitsize];
+        StrawId usedtrksid[trkhitsize];
         unsigned int usedid[trkhitsize];
         //Compare the straw IDs of the Kal seed hits with the hits in the ComboHit Collection
         for(unsigned int j=0; j< combohit_list.size(); j++){
@@ -247,14 +249,14 @@ void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop
                   auto trkhit = new REX::REvePointSet("TrkHits", "trkhit",0); 
                   trkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
                   trkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
-	          // trkhit ->SetMarkerColor(drawconfig.getInt("RecoTrackColor")-4); //TODO
+                  // trkhit ->SetMarkerColor(drawconfig.getInt("RecoTrackColor")-4); //TODO
                   trkhit ->SetMarkerColor(kGreen); //TODO
                   trkhit ->SetNextPoint(pointmmTocm(HitPos.x()),pointmmTocm(HitPos.y()) ,pointmmTocm(HitPos.z()));
                   if(trkhit->GetSize() !=0 ) scene->AddElement(trkhit); 
-	          // std::cout<<"TrkHit = "<<HitPos.x()<<"  "<<HitPos.y()<<" "<<HitPos.z()<<std::endl;
-		}
-	      }
-	    }
+                  // std::cout<<"TrkHit = "<<HitPos.x()<<"  "<<HitPos.y()<<" "<<HitPos.z()<<std::endl;
+                }
+              }
+            }
             for(unsigned int i = 0;i < trkhitsize;i++){ 
               if(i != usedid[i] and i<chcol->size()){
                 ComboHit chhit = (*chcol)[i];
@@ -265,10 +267,10 @@ void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop
                 notusedtrkhit ->SetNextPoint(pointmmTocm(HitPos.x()),pointmmTocm(HitPos.y()) ,pointmmTocm(HitPos.z()));
                 notusedtrkhit ->SetMarkerColor(kRed);
                 if(notusedtrkhit->GetSize() !=0 ) scene->AddElement(notusedtrkhit); 
-	      }
-	    }
-	  }
-	}
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -284,9 +286,6 @@ template<class KTRAJ> void REveMu2eDataInterface::AddKinKalTrajectory( std::uniq
   double x1=trajectory->position3(t1).x();
   double y1=trajectory->position3(t1).y();
   double z1=trajectory->position3(t1).z();
-  //double x2=trajectory->position3(t2).x();
-  //double y2=trajectory->position3(t2).y();
-  //double z2=trajectory->position3(t2).z();
   
   line->SetPoint(0,pointmmTocm(x1), pointmmTocm(y1) , pointmmTocm(z1));
   for(double t=t1; t<=t2; t+=0.1)

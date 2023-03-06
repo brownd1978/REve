@@ -26,18 +26,11 @@ sap.ui.define([
 
           let aData = [
             { id: Math.random(), name: "$Muons.@size > 4", checked: true, rating: "5", type: "Inactive" },
-            { id: Math.random(), name: "$Tracks.pt() > 1", checked: true, rating: "2", type: "Inactive" },
-            { id: Math.random(), name: "", checked: false, rating: "0", type: "Inactive" },
          ];
 
-
-         let hltArr = [
-            { id: Math.random(), trigger: "HTL", name: "HLT_mu9", checked: true, rating: "5", type: "Inactive" },
-
-         ];
 
          var oModel = new sap.ui.model.json.JSONModel();
-         oModel.setData({ modelData: aData, hltData: hltArr });
+         oModel.setData({ modelData: aData});
          this.byId("filterDialog").setModel(oModel);
 
        },
@@ -49,7 +42,6 @@ sap.ui.define([
 
        makeTables: function () {
            this.makePlainTable();
-           this.makeHLTTable();
 
            let dialog = this.byId("filterDialog");
 
@@ -171,103 +163,6 @@ sap.ui.define([
            this.byId("plainPanel").addContent(oTable);
            this.byId("plainPanel").addContent(oAddButton);
         },
-
-        makeHLTTable: function()
-        {
-           var aHLTColumns = [
-               new sap.m.Column({
-                   width: "160px",
-                   header: new sap.m.Label({
-                       text: "Process"
-                   })
-               }),
-               new sap.m.Column({
-                   header: new sap.m.Label({
-                       text: "Expression"
-                   })
-               }),
-               new sap.m.Column({
-                   header: new sap.m.Label({
-                       text: "Active"
-                   })
-               }),
-               new sap.m.Column({
-                   width: "100px",
-                   header: new sap.m.Label({
-                       text: "Pass"
-                   })
-               }),
-           ];
-
-
-           var oHLTTemplate = new sap.m.ColumnListItem({
-               type: "{type}",
-               detailPress: function () {
-                   setTimeout(function () {
-                       sap.m.MessageToast.show("detail is pressed");
-                   }, 10);
-               },
-               cells: [
-                   new sap.m.ComboBox({
-                       width: "150px",
-                       items: [
-                           {
-                               "key": "RECO",
-                               "text": "RECO"
-                           },
-                           {
-                               "key": "SIM",
-                               "text": "SIM"
-                           },
-                           {
-                               "key": "HLT",
-                               "text": "HLT"
-                           }],
-                       selectedKey: "HLT"
-                   }),
-                   new sap.m.Input({
-                       value: "{name}",
-                       wrapping: false
-                   }),
-                   new sap.m.CheckBox({
-                       selected: "{checked}"
-                   }),
-                   new sap.m.Label({
-                       text: "{rating}"
-                   })
-               ]
-           });
-
-           let oHLTTable = new sap.m.Table({
-               growing: true,
-               growingScrollToLoad: true,
-               mode: sap.m.ListMode.Delete,
-               columns: aHLTColumns,
-           });
-
-           oHLTTable.bindItems({
-               path: "/hltData",
-               mode: sap.m.ListMode.None,
-               template: oHLTTemplate,
-               key: "id"
-           });
-
-
-           var oHLTAddButton = new sap.m.Button({
-               icon: "sap-icon://sys-add",
-               press: function (oEvent) {
-                   let nv = { process: "HLT", name: "", checked: true, rating: 0, type: "Inactive" };
-                   console.log("amt model ", this.getModel());
-                   //let data = o.getData();
-                   var aData = this.getModel().getProperty("/hltData");
-                   aData.push(nv);
-                   this.getModel().setProperty("/hltData", aData);
-               }
-           });
-
-           this.byId("htmlPanel").addContent(oHLTTable);
-           this.byId("htmlPanel").addContent(oHLTAddButton);
-       },
 
        publishFilters: function () {
            console.log("publish Filters");

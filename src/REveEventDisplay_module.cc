@@ -101,6 +101,7 @@ namespace mu2e
           fhicl::Atom<bool> showTS{Name("showTS"), Comment("set false if you just want to see inside DS"),false}; 
           fhicl::Atom<bool> showDS{Name("showDS"), Comment("set false if you just want to see inside DS"),false};    
           fhicl::Atom<bool> show2D{Name("show2D"), Comment(""),true};   
+          fhicl::Atom<bool> caloVST{Name("caloVST"), Comment(""),false};   
           fhicl::Table<CollectionFiller::Config> filler{Name("filler"),Comment("fill collections")};
           fhicl::Sequence<int>particles{Name("particles"),Comment("PDGcodes to plot")};
           fhicl::Atom<std::string>gdmlname{Name("gdmlname"),Comment("gdmlname")};
@@ -124,11 +125,14 @@ namespace mu2e
         bool showPS_;
         bool showTS_;   
         bool showDS_;
+        bool show2D_;
+        bool caloVST_;
         
         void setup_eve();
         void run_application();
         void process_single_event();
         void printOpts();
+        template <class T, class S> void FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list);
 
         // Application control
         TApplication application_{"none", nullptr, nullptr};
@@ -162,6 +166,7 @@ namespace mu2e
         int runn;
         
         std::vector<std::shared_ptr<REveDataProduct>> listoflists;
+        
     };
 
 
@@ -171,6 +176,8 @@ namespace mu2e
     showPS_(conf().showPS()),
     showTS_(conf().showTS()),
     showDS_(conf().showDS()),
+    show2D_(conf().show2D()),
+    caloVST_(conf().caloVST()),
     filler_(conf().filler()),
     particles_(conf().particles()),
     gdmlname_(conf().gdmlname()),
@@ -232,47 +239,33 @@ namespace mu2e
   }
   
   
-  template <class T> void FillAllCollections(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list){
+  template <class T, class S> void REveEventDisplay::FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list){
       // get all instances of products of type T
       std::vector<art::Handle<T>> vah = evt.getMany<T>();
       std::string name;
+      std::vector<std::string> alabel;
+      std::vector<S> alist;
       // loop over the list of instances of products of this type
       for (auto const& ah : vah) {
         const art::Provenance* prov = ah.provenance();
-
-        // the name of the root file directory holding these histos
-        // is the className_moduleName_InstanceName for the instance
+        
         std::string fcn = prov->friendlyClassName();
         std::string modn = prov->moduleLabel();
         std::string instn = prov->processName();
-        //data.clustercol = prov;
-        //data.calocluster_list.push_back(data.clustercol);
-        //std::string name = TurnNameToString(modn);
+        //data.calocluster_list.push_back(ah.product());  
+        alist.push_back(ah.product());
+        std::string name = fcn + "_" + prov->moduleLabel() + "_" + instn;
         //data.calocluster_labels.push_back(name);
-        name = fcn + "_" + prov->moduleLabel() + "_" + instn;
-        std::cout<<"NAME  "<<fcn<<" "<<modn<<" "<<instn<<std::endl;
-        std::cout<<"TYPE  "<<typeid(prov).name()<<std::endl;
+        alabel.push_back(name);
+        //std::cout<<"NAME  "<<fcn<<" "<<modn<<" "<<instn<<std::endl; // TODO - delete
+        //std::cout<<"TYPE  "<<typeid(prov).name()<<std::endl; // TODO - delete
       }
+      std::cout<<"sizes "<<alabel.size()<<"  "<<alist.size()<<std::endl;
+      data.combohit_tuple = std::make_tuple(alabel,alist);
       
-      std::shared_ptr<REveDataProduct> prd = nullptr;
-      for (auto ptr : list) {
-          // if this instance of this product found in the list
-          if (ptr->name().compare(name) == 0) prd = ptr;
-        }
-        // if not in the list, create a new set of histograms
-        // for this product
-        if (prd == nullptr) {
-          prd = std::make_shared<REveDataProduct>(name);
-          std::cout<<"TYPE >> "<<typeid(prd).name()<<std::endl;
-          // add it to the list of products being histogrammed
-          list.push_back(prd);
-      }
-      std::cout<<"size >> "<<list.size()<<std::endl;
-      //REveEventDisplay::listoflists.push_back(list);
     }
     
   void REveEventDisplay::analyze(art::Event const& event){
-      std::cout<<"starting analyze"<<std::endl;
       //remove previous event objects
       data.Reset();
       
@@ -288,11 +281,12 @@ namespace mu2e
         // Hand off control to display thread
         std::unique_lock lock{m_};
         std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
-        //if(filler_.addClusters_) FillAllCollections<CaloClusterCollection>(event, _ccls);
-        if(filler_.addClusters_)  filler_.FillRecoCollections(event, data, CaloClusters);
+        if(filler_.addClusters_) {filler_.FillRecoCollections(event, data, CaloClusters);
+          //FillAnyCollection<CaloClusterCollection, const CaloClusterCollection*>(event, _ccls);// data.calocluster_list,data.calocluster_labels, data.calocluster_tuple );
+        }
         if(filler_.addHits_) {
-          filler_.FillRecoCollections(event, data, ComboHits);
-          //FillAllCollections<ComboHitCollection>(event, _chits);
+          //filler_.FillRecoCollections(event, data, ComboHits);
+          FillAnyCollection<ComboHitCollection, const ComboHitCollection*>(event, _chits);
         }
         if(filler_.addCrvHits_) filler_.FillRecoCollections(event, data, CRVRecoPulses);
         if(filler_.addTimeClusters_) filler_.FillRecoCollections(event, data, TimeClusters);
@@ -353,7 +347,8 @@ namespace mu2e
       
       
       frame_ = new REveMainWindow();
-      frame_->makeGeometryScene(eveMng_,showCRV_,showPS_,showTS_,showDS_,gdmlname_);
+      GeomOptions geomOpts(showCRV_,showPS_, showTS_, showDS_, show2D_, caloVST_ );
+      frame_->makeGeometryScene(eveMng_, geomOpts, gdmlname_);
       
       //add path to the custom GUI code here, this overrides ROOT GUI
       eveMng_->AddLocation("mydir/", "REve/CustomGUI");
@@ -386,7 +381,7 @@ namespace mu2e
       REX::REveElement* scene = eveMng_->GetEventScene();
 
       std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
-      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_, filler_.addCrvHits_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_);
+      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_);
       frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts, particles_, strawdisplay_);
 
       std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;

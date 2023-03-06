@@ -98,14 +98,14 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
   
   
   /* function to hide all elements which are not PS,TS, DS */
- void REveMainWindow::GeomDrawer(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool addCRV, bool addPS, bool addTS, bool addDS){
+ void REveMainWindow::GeomDrawer(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, GeomOptions geomOpt){
 
     std::vector<double> shift;
     shift.push_back(0);
     shift.push_back(0);
     shift.push_back(0); 
     
-    if(addTS){
+    if(geomOpt.showTS){
       static std::vector <std::string> substrings_ts  {"TS"};  
       shift.at(0) = geomconfig.getDouble("psts_x")/10;
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
@@ -114,7 +114,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
       }
     }
-    if(addPS){
+    if(geomOpt.showPS){
       static std::vector <std::string> substrings_ps  {"PSVacuum"};  
       shift.at(0) = geomconfig.getDouble("psts_x")/10;
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
@@ -123,7 +123,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
       }
     }
-    if(addDS){
+    if(geomOpt.showDS){
       static std::vector <std::string> substrings_ds {"DS1Vacuum","DS2Vacuum","DS3Vacuum"}; 
       for(auto& i: substrings_ds){
         shift.at(0) = geomconfig.getDouble("psts_x")/10;
@@ -132,7 +132,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false);
       }
      }
-    if(addCRV){
+    if(geomOpt.showCRV){
       static std::vector <std::string> substrings_crv  {"CRS"};
       shift.at(0) = geomconfig.getDouble("psts_x")/10;
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
@@ -273,7 +273,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     projectEvents(eveMng);
  }
  
- void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, bool addCRV, bool addPS, bool addTS, bool addDS, std::string gdmlname)
+ void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, GeomOptions geomOpt, std::string gdmlname)
  {
     TGeoManager *geom = TGeoManager::Import(gdmlname.c_str()); 
     TGeoVolume* topvol = geom->GetTopVolume();
@@ -286,7 +286,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         auto holder = new REX::REveElement("Mu2e World");
         eveMng->GetGlobalScene()->AddElement(holder);
         REX::REveTrans trans;
-        GeomDrawer(topnode, trans, holder,drawconfigf.getInt("maxlevel"),drawconfigf.getInt("level"), addCRV, addPS, addTS, addDS);
+        GeomDrawer(topnode, trans, holder,drawconfigf.getInt("maxlevel"),drawconfigf.getInt("level"), geomOpt);
     }
 
     try {

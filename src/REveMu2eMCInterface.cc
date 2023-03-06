@@ -104,7 +104,7 @@ namespace REX = ROOT::Experimental;
                 const std::vector<MCTrajectoryPoint> &points = trajectoryIter->second.points();
                 // Make label
                 std::string energy = std::to_string(points[0].kineticEnergy());
-                const std::string title = " MCTrajectory "+ energy + " Creation code = " + std::to_string(trajectoryIter->first->creationCode()) + "Stopping code = " + std::to_string(trajectoryIter->first->stoppingCode()) + " End Global Time = " + std::to_string(trajectoryIter->first->endGlobalTime())  ;
+                const std::string title = " MCTrajectory pdgId "+ std::to_string(trajectoryIter->first->pdgId()) +" energy " + energy + "MeV Creation code = " + std::to_string(trajectoryIter->first->creationCode()) + " Stopping code = " + std::to_string(trajectoryIter->first->stoppingCode()) + " End Global Time = " + std::to_string(trajectoryIter->first->endGlobalTime())  ;
                 // create line with the above label
                 auto line = new REX::REveLine(Form(title.c_str()), Form(title.c_str()),1); //TODO : add InputTag to name
                 // add points

@@ -25,8 +25,10 @@ physics.analyzers.REveEventDisplay.filler.addCrvHits : false
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
 physics.analyzers.REveEventDisplay.filler.addTrkHits : false
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
-physics.analyzers.REveEventDisplay.filler.addMCTraj : false
-physics.analyzers.REveEventDisplay.seqMode : true
+physics.analyzers.REveEventDisplay.filler.addMCTraj : true
+physics.analyzers.REveEventDisplay.seqMode : false
+physics.analyzers.REveEventDisplay.filler.MCTrajectoryCollection :  ["compressDigiMCs"]
+physics.analyzers.REveEventDisplay.filler.ComboHitCollection :  ["makeSH"]
 physics.EndPath  : [ @sequence::REveDis.seqBase] 
 
 services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"

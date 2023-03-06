@@ -32,11 +32,8 @@ namespace mu2e{
         ss << value;
         return ss.str();
     }
-  
-    
-    
    
-    void CollectionFiller::FillRecoCollections(const art::Event& evt, DataCollections &data, RecoDataProductName CollectionName){
+    void CollectionFiller::FillRecoCollections(const art::Event& evt, DataCollections &data, RecoDataProductName CollectionName)  {
         if(FillAll_  or (CollectionName == ComboHits)){ 
             for(const auto &tag : chTag_){ 
                 auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(tag);
