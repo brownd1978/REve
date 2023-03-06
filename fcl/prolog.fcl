@@ -1,11 +1,14 @@
 BEGIN_PROLOG
 			
 REveEventDisplay : {
-    module_type : REveEventDisplay  
+    module_type : REveEventDisplay 
+    diagLevel : 1 
     showCRV : false
     showPS : false
     showTS : false
     showTS : false
+    caloVST : false
+    specifyTag : false // IMPORTANT: override to make the following selections!!!
     filler : {
       diagLevel : 0
       ComboHitCollection : ["makeSH"]

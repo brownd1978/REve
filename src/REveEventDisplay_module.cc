@@ -101,7 +101,8 @@ namespace mu2e
           fhicl::Atom<bool> showTS{Name("showTS"), Comment("set false if you just want to see inside DS"),false}; 
           fhicl::Atom<bool> showDS{Name("showDS"), Comment("set false if you just want to see inside DS"),false};    
           fhicl::Atom<bool> show2D{Name("show2D"), Comment(""),true};   
-          fhicl::Atom<bool> caloVST{Name("caloVST"), Comment(""),false};   
+          fhicl::Atom<bool> caloVST{Name("caloVST"), Comment(""),false};  
+          fhicl::Atom<bool> specifyTag{Name("specifyTag"), Comment("to only select events of selected input tag"),false};   
           fhicl::Table<CollectionFiller::Config> filler{Name("filler"),Comment("fill collections")};
           fhicl::Sequence<int>particles{Name("particles"),Comment("PDGcodes to plot")};
           fhicl::Atom<std::string>gdmlname{Name("gdmlname"),Comment("gdmlname")};
@@ -121,18 +122,20 @@ namespace mu2e
 
         art::ServiceHandle<art::TFileService> tfs;
         Config _conf;
+        int  diagLevel_;
         bool showCRV_;
         bool showPS_;
         bool showTS_;   
         bool showDS_;
         bool show2D_;
         bool caloVST_;
+        bool specifyTag_ = false;
         
         void setup_eve();
         void run_application();
         void process_single_event();
         void printOpts();
-        template <class T, class S> void FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list);
+        template <class T, class S> void FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list, std::tuple<std::vector<std::string>, std::vector<S>>& tuple);
 
         // Application control
         TApplication application_{"none", nullptr, nullptr};
@@ -172,12 +175,14 @@ namespace mu2e
 
   REveEventDisplay::REveEventDisplay(const Parameters& conf)  :
     art::EDAnalyzer(conf),
+    diagLevel_(conf().diagLevel()),
     showCRV_(conf().showCRV()),
     showPS_(conf().showPS()),
     showTS_(conf().showTS()),
     showDS_(conf().showDS()),
     show2D_(conf().show2D()),
     caloVST_(conf().caloVST()),
+    specifyTag_(conf().specifyTag()),
     filler_(conf().filler()),
     particles_(conf().particles()),
     gdmlname_(conf().gdmlname()),
@@ -201,10 +206,8 @@ namespace mu2e
       cv_.notify_all();
   }
 
-
-
   void REveEventDisplay::beginJob(){
-      std::cout<<"[REveEventDisplay : beginJob()] -- starting ..."<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting ..."<<std::endl;
       {
       std::unique_lock lock{m_};
 
@@ -212,13 +215,13 @@ namespace mu2e
 
       // Wait for app init to finish ... this will process pending timer events.
       XThreadTimer sut([this]{ signalAppStart(); });
-      std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on app start"<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on app start"<<std::endl;
       cv_.wait(lock);
-      std::cout<<"[REveEventDisplay : beginJob()] -- app start signal received, starting eve init"<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- app start signal received, starting eve init"<<std::endl;
       XThreadTimer suet([this]{ setup_eve(); });
-      std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on eve setup"<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on eve setup"<<std::endl;
       cv_.wait(lock);
-      std::cout<<"[REveEventDisplay : beginJob()] -- eve setup apparently complete"<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- eve setup apparently complete"<<std::endl;
       }
   }
 
@@ -239,7 +242,7 @@ namespace mu2e
   }
   
   
-  template <class T, class S> void REveEventDisplay::FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list){
+  template <class T, class S> void REveEventDisplay::FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list, std::tuple<std::vector<std::string>, std::vector<S>>& tuple){
       // get all instances of products of type T
       std::vector<art::Handle<T>> vah = evt.getMany<T>();
       std::string name;
@@ -252,16 +255,16 @@ namespace mu2e
         std::string fcn = prov->friendlyClassName();
         std::string modn = prov->moduleLabel();
         std::string instn = prov->processName();
-        //data.calocluster_list.push_back(ah.product());  
         alist.push_back(ah.product());
         std::string name = fcn + "_" + prov->moduleLabel() + "_" + instn;
-        //data.calocluster_labels.push_back(name);
         alabel.push_back(name);
-        //std::cout<<"NAME  "<<fcn<<" "<<modn<<" "<<instn<<std::endl; // TODO - delete
-        //std::cout<<"TYPE  "<<typeid(prov).name()<<std::endl; // TODO - delete
+        if(diagLevel_ == 1){
+          std::cout<<"extracting name =  "<<fcn<<" "<<modn<<" "<<instn<<std::endl; 
+          std::cout<<"wit htype =  "<<typeid(prov).name()<<std::endl;
+        } 
       }
       std::cout<<"sizes "<<alabel.size()<<"  "<<alist.size()<<std::endl;
-      data.combohit_tuple = std::make_tuple(alabel,alist);
+      tuple = std::make_tuple(alabel,alist);
       
     }
     
@@ -274,46 +277,64 @@ namespace mu2e
       eventid_ = event.id().event(); 
       runid_ = event.run();
       subrunid_ = event.subRun();
-      std::vector<std::shared_ptr<REveDataProduct>> _ccls;
+
       std::vector<std::shared_ptr<REveDataProduct>> _chits;
      
       if((seqMode_) or ( runid_ == runn and eventid_ == eventn)){
         // Hand off control to display thread
         std::unique_lock lock{m_};
-        std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
-        if(filler_.addClusters_) {filler_.FillRecoCollections(event, data, CaloClusters);
-          //FillAnyCollection<CaloClusterCollection, const CaloClusterCollection*>(event, _ccls);// data.calocluster_list,data.calocluster_labels, data.calocluster_tuple );
+        if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
+        
+        // fill the collection lists
+        if(filler_.addClusters_) {
+          if(specifyTag_) filler_.FillRecoCollections(event, data, CaloClusters);
+          else { FillAnyCollection<CaloClusterCollection, const CaloClusterCollection*>(event, _chits, data.calocluster_tuple);}
         }
+        
         if(filler_.addHits_) {
-          //filler_.FillRecoCollections(event, data, ComboHits);
-          FillAnyCollection<ComboHitCollection, const ComboHitCollection*>(event, _chits);
+          if(specifyTag_) { filler_.FillRecoCollections(event, data, ComboHits); }
+          else { FillAnyCollection<ComboHitCollection, const ComboHitCollection*>(event, _chits, data.combohit_tuple ); }
         }
+        
+        if(filler_.addKalSeeds_) {
+          if(specifyTag_) { filler_.FillRecoCollections(event, data, KalSeeds); }
+          else { FillAnyCollection<KalSeedCollection, const KalSeedCollection*>(event, _chits, data.track_tuple ); }
+        }
+        
+        if(filler_.addMCTraj_) { 
+          if(specifyTag_) { filler_.FillMCCollections(event, data, MCTrajectories); }
+          else { FillAnyCollection<MCTrajectoryCollection, const MCTrajectoryCollection*>(event, _chits, data.mctrack_tuple ); }
+        }
+        
+        if(filler_.addTimeClusters_) {
+          if(specifyTag_) { filler_.FillRecoCollections(event, data, TimeClusters);}
+          else {FillAnyCollection<TimeClusterCollection, const TimeClusterCollection*>(event, _chits, data.timecluster_tuple );}
+        }
+        
         if(filler_.addCrvHits_) filler_.FillRecoCollections(event, data, CRVRecoPulses);
-        if(filler_.addTimeClusters_) filler_.FillRecoCollections(event, data, TimeClusters);
+        
         if(filler_.addTrkHits_) filler_.FillRecoCollections(event, data, TrkHits); 
-        if(filler_.addKalSeeds_)  filler_.FillRecoCollections(event, data, KalSeeds);
         if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
-        if(filler_.addMCTraj_)  filler_.FillMCCollections(event, data, MCTrajectories);
-       
-        std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
+        
+        if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
         XThreadTimer proc_timer([this]{ process_single_event(); });
-        std::cout<<"[REveEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
+        if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
         cv_.wait(lock);
-        std::cout<<"[REveEventDisplay : analyze()] -- TApplication thread returning control "<<std::endl;
-        std::cout<<"[REveEventDisplay : analyze()] Ended Event "<<std::endl; 
+        if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- TApplication thread returning control "<<std::endl;
+        if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] Ended Event "<<std::endl; 
         seqMode_ = true;
       }
   }
 
     void REveEventDisplay::endJob()
     {
-      std::cout<<"[REveEventDisplay : EndJob] Start "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : EndJob] Start "<<std::endl;
       application_.Terminate(0);
 
       if (appThread_.joinable()) {
         appThread_.join();
       }
-      std::cout<<"[REveEventDisplay : EndJob] End "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : EndJob] End "<<std::endl;
     }
 
 
@@ -367,7 +388,7 @@ namespace mu2e
   // Actually interesting function responsible for drawing the current event
   void REveEventDisplay::process_single_event()
     {    
-      std::cout<<"[REveEventDisplay : process_single_event] Start "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] Start "<<std::endl;
       eveMng_->DisableRedraw();
       eveMng_->GetWorld()->BeginAcceptingChanges();
       eveMng_->GetScenes()->AcceptChanges(true);
@@ -377,20 +398,20 @@ namespace mu2e
       fGui->frunid = runid_;
       fGui->StampObjProps();
 
-      std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;
       REX::REveElement* scene = eveMng_->GetEventScene();
 
-      std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
       DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_);
       frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts, particles_, strawdisplay_);
 
-      std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
       firstLoop_ = false;
       eveMng_->GetScenes()->AcceptChanges(false);
       eveMng_->GetWorld()->EndAcceptingChanges();
       eveMng_->EnableRedraw();
       
-      std::cout<<"[REveEventDisplay : process_single_event] End "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] End "<<std::endl;
     }
   }
   using mu2e::REveEventDisplay;

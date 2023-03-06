@@ -10,13 +10,11 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
     std::cout<<"[REveMu2eDataInterface] AddCaloClusters "<<std::endl;
     std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(calocluster_tuple);
     std::vector<std::string> names = std::get<0>(calocluster_tuple);
-    std::vector<int> colour;
     std::cout<<"size of list in drawing "<<calocluster_list.size()<<std::endl;
     for(unsigned int j = 0; j< calocluster_list.size(); j++){
     std::cout<<"[REveMu2eDataInterface] AddCaloClusters 1"<<std::endl;
       // Extract cluster list
       const CaloClusterCollection* clustercol = calocluster_list[j];
-      colour.push_back(j+3);
       if(clustercol->size() != 0){
           if(!firstLoop_){
               scene->DestroyElements();;
@@ -68,73 +66,79 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
 
 void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const ComboHitCollection*>> combohit_tuple, REX::REveElement* &scene, bool strawdisplay){
 
-  std::cout<<"[REveMu2eDataInterface] AddComboHits start"<<std::endl;
   std::vector<const ComboHitCollection*> combohit_list = std::get<1>(combohit_tuple);
   std::vector<std::string> names = std::get<0>(combohit_tuple);
-  std::vector<int> colour;
   
   // Loop over hit lists
   for(unsigned int j = 0; j < combohit_list.size(); j++){
-  const ComboHitCollection* chcol = combohit_list[j];
-  colour.push_back(j+3);
-  if(chcol->size() !=0 ){
-    // Loop over hits
-    for(unsigned int i=0; i< chcol->size(); i++){
-    mu2e::ComboHit const  &hit= (*chcol)[i];
-    // Display hit straws if selected too in FCL file
-    if(strawdisplay){
-      mu2e::GeomHandle<mu2e::Tracker> tracker;
-      const auto& allStraws = tracker->getStraws();
-      int sid = hit._sid.asUint16();
-      CLHEP::Hep3Vector sposi(0.0,0.0,0.0), sposf(0.0,0.0,0.0);
-      const mu2e::Straw& s = allStraws[sid];
-      const CLHEP::Hep3Vector& p = s.getMidPoint();
-      const CLHEP::Hep3Vector& d = s.getDirection();
-      double x = p.x();
-      double y = p.y();
-      double z = p.z();
-      double l = s.halfLength();
-      double st=sin(d.theta());
-      double ct=cos(d.theta());
-      double sp=sin(d.phi()+TMath::Pi()/2.0);
-      double cp=cos(d.phi()+TMath::Pi()/2.0);
-      if(sid < drawconfig.getInt("maxSID")){   
-        double x1=x+l*st*sp;
-        double y1=y-l*st*cp;
-        double z1=z+l*ct;
-        double x2=x-l*st*sp;
-        double y2=y+l*st*cp;
-        double z2=z-l*ct;
-        std::string strawtitle;
-        int idStraw =  s.id().getStraw();
-        int idPanel =  s.id().getPanel();
-        int idPlane =  s.id().getPlane();
-        int colorid = idPlane + idPanel;
-        strawtitle =Form("Straw %i Panel %i  Plane %i",idStraw,idPanel,idPlane);
-        sposi.set(x1, y1, z1);
-        sposf.set(x2, y2, z2);
-        if(sposi.x()!=0){ 
-          auto strawline = new REX::REveLine("StrawHit ",strawtitle,1); 
-          strawline->SetPoint(0,pointmmTocm(sposi.x()),pointmmTocm(sposi.y()),pointmmTocm(sposi.z()));
-          strawline->SetNextPoint(pointmmTocm(sposf.x()),pointmmTocm(sposf.y()),pointmmTocm(sposf.z()));            
-          strawline->SetLineWidth(1);
-          strawline->SetLineColor(colorid);
-          if(strawline->GetSize() !=0 ) scene->AddElement(strawline);  
+    const ComboHitCollection* chcol = combohit_list[j];
+    int colour = (j+3);
+    if(chcol->size() !=0 ){
+      // Loop over hits
+      for(unsigned int i=0; i< chcol->size(); i++){
+        mu2e::ComboHit const  &hit= (*chcol)[i];
+        // Display hit straws if selected too in FCL file
+        if(strawdisplay){
+          mu2e::GeomHandle<mu2e::Tracker> tracker;
+          const auto& allStraws = tracker->getStraws();
+          int sid = hit._sid.asUint16();
+          CLHEP::Hep3Vector sposi(0.0,0.0,0.0), sposf(0.0,0.0,0.0);
+          const mu2e::Straw& s = allStraws[sid];
+          const CLHEP::Hep3Vector& p = s.getMidPoint();
+          const CLHEP::Hep3Vector& d = s.getDirection();
+          double x = p.x();
+          double y = p.y();
+          double z = p.z();
+          double l = s.halfLength();
+          double st=sin(d.theta());
+          double ct=cos(d.theta());
+          double sp=sin(d.phi()+TMath::Pi()/2.0);
+          double cp=cos(d.phi()+TMath::Pi()/2.0);
+          if(sid < drawconfig.getInt("maxSID")){   
+            double x1=x+l*st*sp;
+            double y1=y-l*st*cp;
+            double z1=z+l*ct;
+            double x2=x-l*st*sp;
+            double y2=y+l*st*cp;
+            double z2=z-l*ct;
+            std::string strawtitle;
+            int idStraw =  s.id().getStraw();
+            int idPanel =  s.id().getPanel();
+            int idPlane =  s.id().getPlane();
+            int colorid = idPlane + idPanel;
+            strawtitle =Form("Straw %i Panel %i  Plane %i",idStraw,idPanel,idPlane);
+            sposi.set(x1, y1, z1);
+            sposf.set(x2, y2, z2);
+            if(sposi.x()!=0){ 
+              auto strawline = new REX::REveLine("StrawHit ",strawtitle,1); 
+              strawline->SetPoint(0,pointmmTocm(sposi.x()),pointmmTocm(sposi.y()),pointmmTocm(sposi.z()));
+              strawline->SetNextPoint(pointmmTocm(sposf.x()),pointmmTocm(sposf.y()),pointmmTocm(sposf.z()));            
+              strawline->SetLineWidth(1);
+              strawline->SetLineColor(colorid);
+              if(strawline->GetSize() !=0 ) scene->AddElement(strawline);  
+            }
+          }
         }
+        CLHEP::Hep3Vector HitPos(pointmmTocm(hit.pos().x()), pointmmTocm(hit.pos().y()), pointmmTocm(hit.pos().z()));
+        std::string chtitle = "ComboHits tag = "
+        + (names[j])  +  '\n'
+        + " position : x "  +  '\n'
+        + std::to_string(hit.pos().x())  +  '\n'
+        + " y " + std::to_string(hit.pos().y())  +  '\n'
+        + " z " + std::to_string(hit.pos().z())  +  '\n'
+        + " time :" + std::to_string(hit.time()) +  '\n'
+        + " energy dep : "
+        + std::to_string(hit.energyDep())  + 
+        + "MeV";
+        auto ps1 = new REX::REvePointSet("ComboHit", chtitle,0); 
+        ps1->SetNextPoint(HitPos.x(), HitPos.y() , HitPos.z()); 
+        ps1->SetMarkerColor(colour);
+        ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+        ps1->SetMarkerSize(REveMu2eDataInterface::msize);
+        if(ps1->GetSize() !=0 ) scene->AddElement(ps1);  
       }
     }
-    CLHEP::Hep3Vector HitPos(pointmmTocm(hit.pos().x()), pointmmTocm(hit.pos().y()), pointmmTocm(hit.pos().z()));
-    std::string chtitle = "x " + std::to_string(hit.pos().x()) + " y " + std::to_string(hit.pos().y()) + " z " + std::to_string(hit.pos().z());
-    auto ps1 = new REX::REvePointSet("ComboHit", chtitle,0); 
-    ps1->SetNextPoint(HitPos.x(), HitPos.y() , HitPos.z()); 
-    ps1->SetMarkerColor(drawconfig.getInt("CRVHitColor"));
-    ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
-    ps1->SetMarkerSize(REveMu2eDataInterface::msize);
-    if(ps1->GetSize() !=0 ) scene->AddElement(ps1);  
-    }
   }
-  }
-  std::cout<<"[REveMu2eDataInterface] AddComboHits end"<<std::endl;
 }
 
 
@@ -299,18 +303,15 @@ template<class KTRAJ> void REveMu2eDataInterface::AddKinKalTrajectory( std::uniq
 }
 
 void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool firstloop, REX::REveElement* &scene, std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple){
-  std::cout<<"[REveMu2eDataInterface] AddKinKalTracks  "<<std::endl;
+
   std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
   std::vector<std::string> names = std::get<0>(track_tuple);
-  std::vector<int> colour;
 
   for(unsigned int j=0; j< track_list.size(); j++){
     const KalSeedCollection* seedcol = track_list[j];
-    colour.push_back(j+3);
     if(seedcol!=0){  
      for(unsigned int k = 0; k < seedcol->size(); k = k + 20){ 
         mu2e::KalSeed kseed = (*seedcol)[k];
-        std::cout<<" is loop "<<kseed.centralHelixFit()<<std::endl;
         auto line = new REX::REveLine(names[j], names[j], 100);
         if(kseed.loopHelixFit())
         {
@@ -327,7 +328,7 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
           auto trajectory=kseed.kinematicLineFitTrajectory();
           AddKinKalTrajectory<KLPT>(trajectory,line);
         }
-        line->SetLineColor(kOrange);
+        line->SetLineColor(j+6);
         line->SetLineWidth(drawconfig.getInt("TrackLineWidth"));
         scene->AddElement(line); 
       }
@@ -337,21 +338,17 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
 
 void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
 
-    std::cout<<"[REveMu2eDataInterface] AddTracks  "<<std::endl;
     std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
     std::vector<std::string> names = std::get<0>(track_tuple);
-    std::vector<int> colour;
     
     for(unsigned int j=0; j< track_list.size(); j++){
       const KalSeedCollection* seedcol = track_list[j];
-      colour.push_back(j+3);
       if(seedcol!=0){  
-       for(unsigned int k = 0; k < seedcol->size(); k = k + 20){ //TODO
+       for(unsigned int k = 0; k < seedcol->size(); k = k + 20){ 
           mu2e::KalSeed kseed = (*seedcol)[k];
           const std::vector<mu2e::KalSegment> &segments = kseed.segments();
           unsigned int nSegments=segments.size();
           
-          auto line = new REX::REveLine(names[j], names[j],nSegments);
           if(nSegments==0) continue;
           const mu2e::KalSegment &segmentFirst = kseed.segments().front();
           const mu2e::KalSegment &segmentLast = kseed.segments().back();
@@ -359,9 +356,37 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
           double fltLMax=segmentLast.fmax();     
           
           for(unsigned int m = 0; m<nSegments; m++){
+            
             const mu2e::KalSegment &segment = segments.at(m);
             fltLMin=segment.fmin();
             fltLMax=segment.fmax();
+            std::string kaltitle = " tag : " + names[j] ;
+            
+            if(kseed.loopHelixFit()){
+              kaltitle = "KalSeed tag : " + names[j] +  '\n'
+              + " mom " + std::to_string(segment.mom()) +  '\n'
+              + " MeV/c t0 " + std::to_string(segment.loopHelix().t0()) +  '\n'
+              + " ns tandip " + std::to_string(segment.loopHelix().tanDip() ) +  '\n'
+              + " lam "  + std::to_string(segment.loopHelix().lam() ) +  '\n'
+              + " rad "  + std::to_string(segment.loopHelix().rad() ) +  '\n'
+              + " cx "  + std::to_string(segment.loopHelix().cx() ) +  '\n'
+              + " cy "  + std::to_string(segment.loopHelix().cy() ) +  '\n'
+              + " phi0 "  + std::to_string(segment.loopHelix().phi0() );
+            }
+            if(kseed.centralHelixFit() ){
+              kaltitle = "KalSeed tag : " + names[j] +  '\n'
+              + " mom " + std::to_string(segment.mom()) +  '\n'
+              + " MeV/c tandip " + std::to_string(segment.centralHelix().tanDip() ) +  '\n'
+              + " d0 " + std::to_string(segment.centralHelix().d0() ) +  '\n'
+              + " z0 " + std::to_string(segment.centralHelix().z0() ) +  '\n'
+              + " phi0 " + std::to_string(segment.centralHelix().phi0() ) +  '\n'
+              + " omega " + std::to_string(segment.centralHelix().omega() );
+            }
+            if(kseed.kinematicLineFit() ){
+              kaltitle = "KalSeed tag : " + names[j]
+              + " mom " + std::to_string(segment.mom());
+            }
+            auto line = new REX::REveLine(kaltitle,kaltitle,1);
             if(m>0){
               double fltLMaxPrev=segments.at(m-1).fmax();
               fltLMin=(fltLMin+fltLMaxPrev)/2.0;
@@ -376,10 +401,11 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
               CLHEP::Hep3Vector p =  GenVector::Hep3Vec(pos);
               line->SetNextPoint(pointmmTocm(p.x()), pointmmTocm(p.y()) , pointmmTocm(p.z()));
             }
+            line->SetLineColor(j+3);
+            line->SetLineWidth(drawconfig.getInt("TrackLineWidth"));
+            scene->AddElement(line); 
           }
-        line->SetLineColor(kBlack);
-        line->SetLineWidth(drawconfig.getInt("TrackLineWidth"));
-        scene->AddElement(line); 
+        
     }
    }
   }
