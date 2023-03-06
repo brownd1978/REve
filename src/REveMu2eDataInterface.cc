@@ -122,8 +122,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
         CLHEP::Hep3Vector HitPos(pointmmTocm(hit.pos().x()), pointmmTocm(hit.pos().y()), pointmmTocm(hit.pos().z()));
         std::string chtitle = "ComboHits tag = "
         + (names[j])  +  '\n'
-        + " position : x "  +  '\n'
-        + std::to_string(hit.pos().x())  +  '\n'
+        + " position : x "  + std::to_string(hit.pos().x())  +  '\n'
         + " y " + std::to_string(hit.pos().y())  +  '\n'
         + " z " + std::to_string(hit.pos().z())  +  '\n'
         + " time :" + std::to_string(hit.time()) +  '\n'
@@ -191,30 +190,31 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
 /*------------Function to add TimeCluster Collection in 3D and 2D displays:-------------*/
   void REveMu2eDataInterface::AddTimeClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const TimeClusterCollection*>>  timecluster_tuple, REX::REveElement* &scene){
   
-  std::cout<<"[REveMu2eDataInterface] AddTimeClusters "<<std::endl;
-  std::vector<const TimeClusterCollection*> timecluster_list = std::get<1>(timecluster_tuple);
-  std::vector<std::string> names = std::get<0>(timecluster_tuple);
-  if(timecluster_list.size() !=0){
-    for(unsigned int i = 0; i < timecluster_list.size(); i++){
-    const TimeClusterCollection* tccol = timecluster_list[i];
-    if(tccol->size() != 0){    
-      if(!firstLoop_){
-        scene->DestroyElements();;
+    std::vector<const TimeClusterCollection*> timecluster_list = std::get<1>(timecluster_tuple);
+    std::vector<std::string> names = std::get<0>(timecluster_tuple);
+    
+    if(timecluster_list.size() !=0){
+      for(unsigned int i = 0; i < timecluster_list.size(); i++){
+        const TimeClusterCollection* tccol = timecluster_list[i];
+        if(tccol->size() != 0){    
+          if(!firstLoop_){
+            scene->DestroyElements();;
+          }
+          std::string tctitle = names[i];
+          auto ps1 = new REX::REvePointSet("TimeClusters", tctitle, 0); 
+          for(size_t j=0; j<tccol->size();j++){
+            mu2e::TimeCluster const  &tclust= (*tccol)[j];
+            CLHEP::Hep3Vector HitPos(tclust._pos.x(), tclust._pos.y(), tclust._pos.z());
+            ps1->SetNextPoint(pointmmTocm(HitPos.x()), pointmmTocm(HitPos.y()) , pointmmTocm(HitPos.z())); 
+          }
+          ps1->SetMarkerColor(i+6);
+          ps1->SetMarkerStyle(kOpenCircle);
+          ps1->SetMarkerSize(REveMu2eDataInterface::msize);
+          if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
+        }
       }
-      auto ps1 = new REX::REvePointSet("TimeClusters", "TimeCluster", 0); // TODO - add in descriptive label
-      for(size_t j=0; j<tccol->size();j++){
-        mu2e::TimeCluster const  &tclust= (*tccol)[j];
-        CLHEP::Hep3Vector HitPos(tclust._pos.x(), tclust._pos.y(), tclust._pos.z());
-        ps1->SetNextPoint(pointmmTocm(HitPos.x()), pointmmTocm(HitPos.y()) , pointmmTocm(HitPos.z())); 
-      }
-      ps1->SetMarkerColor(drawconfig.getInt("RecoTrackColor"));
-      ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
-      ps1->SetMarkerSize(REveMu2eDataInterface::msize);
-      if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
-    }
     }
   }
-}
 
 /*------------Function to color code the Tracker hits -------------*/
 void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const ComboHitCollection*>> combohit_tuple,std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
