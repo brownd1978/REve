@@ -15,6 +15,7 @@ physics :
 {
  analyzers : { @table::REveDis.analyzers}
 }
+physics.analyzers.REveEventDisplay.specifyTag : true
 physics.analyzers.REveEventDisplay.showCRV : false
 physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false

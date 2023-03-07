@@ -315,15 +315,8 @@ namespace mu2e
           if(specifyTag_) { filler_.FillRecoCollections(event, data, CRVRecoPulses); }
           else { FillAnyCollection<CrvRecoPulseCollection, const CrvRecoPulseCollection*>(event, _chits, data.crvpulse_tuple );}
         }
-        
-        if(filler_.addTrkHits_) 
-          if(specifyTag_) { filler_.FillRecoCollections(event, data, TrkHits); }
-          else { FillAnyCollection<ComboHitCollection, const ComboHitCollection*>(event, _chits, data.combohit_tuple );}
-        }
-        
-        if(filler_.addCosmicTrackSeeds_)  {
-          filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
-        }
+        if(filler_.addTrkHits_) filler_.FillRecoCollections(event, data, TrkHits); 
+        if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
         
         if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
         XThreadTimer proc_timer([this]{ process_single_event(); });
