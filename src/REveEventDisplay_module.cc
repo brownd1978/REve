@@ -316,7 +316,7 @@ namespace mu2e
           else { FillAnyCollection<CrvRecoPulseCollection, const CrvRecoPulseCollection*>(event, _chits, data.crvpulse_tuple );}
         }
         
-        if(filler_.addTrkHits_) 
+        if(filler_.addTrkHits_) {
           if(specifyTag_) { filler_.FillRecoCollections(event, data, TrkHits); }
           else { FillAnyCollection<ComboHitCollection, const ComboHitCollection*>(event, _chits, data.combohit_tuple );}
         }
