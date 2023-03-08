@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
 	<meta charset="UTF-8">
-	<title>Eve7 test</title>
+	<title> Mu2e Event Display </title>
 	<script type="text/javascript" src="jsrootsys/scripts/JSRoot.core.js"></script>
 	<style>
          html { height: 100%; }
@@ -22,7 +22,7 @@
 
     <body>
 	<div id="EveDiv">
-            loading scripts...
+            muons are coming....
 	</div>
 
 	<script type='text/javascript'>
@@ -31,21 +31,21 @@
              prereq: "painter;openui5",
              prereq_logdiv: "EveDiv",
              openui5libs: "sap.ui.core" // customize openui5 libs
-         }).then(handle => {
+             }).then(handle => {
              sap.ui.loader.config({ paths: { custom: "mydir/" } });  // used for offline
 
              sap.ui.require(["sap/ui/core/ComponentContainer"], ComponentContainer => {
-		 new ComponentContainer({
+              new ComponentContainer({
                      name: "custom",
                      manifest: true,
                      async: true,
                      settings: {
-			 componentData: {
+                      componentData: {
                              conn_handle: handle
-			 }
+                      }
                      },
                      height: "100%"
-		 }).placeAt("EveDiv")
+              }).placeAt("EveDiv")
              });
 
          });
