@@ -12,7 +12,7 @@
         "resources": {
             "css": [
                 {
-                  "uri": "../rootui5sys/eve7/css/eve.css"
+                  "uri": "myeve.css"
                 }
               ]
         },
