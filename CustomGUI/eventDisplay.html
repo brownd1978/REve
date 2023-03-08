@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
 	<meta charset="UTF-8">
-	<title>Eve7 test</title>
+	<title> Mu2e Event Display </title>
 	<script type="text/javascript" src="jsrootsys/scripts/JSRoot.core.js"></script>
 	<style>
          html { height: 100%; }
@@ -16,13 +16,16 @@
              right: 0;
              padding: 1
          }
-	</style>
+	</style >
 
     </head>
 
-    <body>
+     <body text = "black" bgcolor = "white">
 	<div id="EveDiv">
-            loading scripts...
+            <h1 style="font-family:verdana;text-align:center;font-size:300%;">Muons are coming</h1> 
+            <p style="font-family:verdana;text-align:center;font-size:160%;">Mu2e REve Event Display is loading....1 second </p>
+            <p style="font-family:verdana;text-align:center;font-size:160%;"> in case of issues please contact: sophie@fnal.gov </p>
+            <img src="mydir/mu2e_logo_oval.png" alt="mu2elogo" width="204" height="112">
 	</div>
 
 	<script type='text/javascript'>
@@ -31,21 +34,21 @@
              prereq: "painter;openui5",
              prereq_logdiv: "EveDiv",
              openui5libs: "sap.ui.core" // customize openui5 libs
-         }).then(handle => {
+             }).then(handle => {
              sap.ui.loader.config({ paths: { custom: "mydir/" } });  // used for offline
 
              sap.ui.require(["sap/ui/core/ComponentContainer"], ComponentContainer => {
-		 new ComponentContainer({
+              new ComponentContainer({
                      name: "custom",
                      manifest: true,
                      async: true,
                      settings: {
-			 componentData: {
+                      componentData: {
                              conn_handle: handle
-			 }
+                      }
                      },
                      height: "100%"
-		 }).placeAt("EveDiv")
+              }).placeAt("EveDiv")
              });
 
          });

@@ -48,7 +48,7 @@ namespace REX = ROOT::Experimental;
         color = kRed;
         break;
       case PDGCode::e_plus:
-        color = kYellow;
+        color = kGreen;
         break;
       case PDGCode::mu_minus:
         color = kOrange-7;
@@ -103,7 +103,7 @@ namespace REX = ROOT::Experimental;
                 // Make label
                 std::string energy = std::to_string(points[0].kineticEnergy());
                 std::string mctitle = " MCTrajectory tag :"
-                + names[j]
+                + names[j] +  '\n'
                 + " particle = " + std::string(particlename)  +  '\n'
                 + " energy = " + energy + "MeV" +  '\n'
                 + " creation code = " + std::to_string(trajectoryIter->first->creationCode()) +  '\n'

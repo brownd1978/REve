@@ -79,6 +79,10 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
          console.log(infoLabel);
          infoLabel.setText(tinfo);
       },
+      /**getVal : function () {
+        const this.fw2gui.eventid = document.querySelector('eventInput').value;
+        console.log(val);
+    }**/
 
       nextEvent : function(oEvent) {
           this.mgr.SendMIR("NextEvent()", this.fw2gui.fElementId, "EventDisplayManager");
