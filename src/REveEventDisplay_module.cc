@@ -315,6 +315,7 @@ namespace mu2e
           if(specifyTag_) { filler_.FillRecoCollections(event, data, CRVRecoPulses); }
           else { FillAnyCollection<CrvRecoPulseCollection, const CrvRecoPulseCollection*>(event, _chits, data.crvpulse_tuple );}
         }
+
         if(filler_.addTrkHits_) filler_.FillRecoCollections(event, data, TrkHits); 
         if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
         
