@@ -23,6 +23,7 @@ sap.ui.define([
           console.log("Event Filter FW2GUI ", gui);
           this.fw2gui = gui;
 
+
           let aData = [
             { id: Math.random(), name: "$Muons.@size > 4", checked: true, rating: "5", type: "Inactive" },
          ];
@@ -115,30 +116,6 @@ sap.ui.define([
                        text: "{rating}"
                    })
                ]
-           });
-
-           var oTable = new sap.m.Table({
-               growing: true,
-               growingThreshold: 7,
-               mode: sap.m.ListMode.Delete,
-               growingScrollToLoad: true,
-               columns: aColumns,
-               "delete": function (oEvent) {
-                   var oItem = oEvent.getParameter("listItem");
-
-                   sap.m.MessageBox.confirm("Are you sure to delete this record?", {
-                       onClose: function (sResult) {
-                           if (sResult == sap.m.MessageBox.Action.CANCEL) {
-                               return;
-                           }
-
-                           oTable.removeItem(oItem);
-                           setTimeout(function () {
-                               oTable.focus();
-                           }, 0);
-                       }
-                   });
-               }
            });
 
            oTable.bindItems({

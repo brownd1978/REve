@@ -43,6 +43,11 @@
                 "name": "View",
                 "pattern": "view/:viewName:",
                 "target": ["GL"]
+            },
+            {
+                "name": "Button",
+                "pattern": "view/:viewName:",
+                "target": ["GL"]
             }],
             "targets": {
                 "MyMain": {

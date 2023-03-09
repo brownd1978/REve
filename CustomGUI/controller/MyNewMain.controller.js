@@ -55,6 +55,7 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
                   
                }
                this.showEventInfo();
+               this.showDate();
                return;
             }
          });
@@ -66,7 +67,11 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
       },
       
       showHelp : function(oEvent) {
-         alert("=====User support: sophie@fnal.gov");
+         alert("For help and support please contact: sophie@fnal.gov");
+      },
+      
+      showUsersGuide : function(oEvent) {
+         alert("For Users Guide see https://mu2ewiki.fnal.gov/wiki/Eve7EventDisplay");
       },
 
       showEventInfo : function() {
@@ -79,11 +84,36 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
          console.log(infoLabel);
          infoLabel.setText(tinfo);
       },
-      /**getVal : function () {
-        const this.fw2gui.eventid = document.querySelector('eventInput').value;
-        console.log(val);
-    }**/
+      
+      showDate : function(){
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
 
+        today = mm + '/' + dd + '/' + yyyy;
+        this.byId("dateInput").setValue(today);
+      },
+
+      /* submitRun : function(runLabel) {
+          var v = oEvent.getElementById(runLabel).value
+          this.byId("runInput").setValue(v);
+      },
+      
+      submitEvent : function(eventLabel) {
+          var v = oEvent.getElementById(eventLabel).value
+          this.byId("eventInput").setValue(v);
+      }
+      submitRun : function() {
+        let b2 = new sap.m.Button({text:"Go"});
+	      fa.addContent(b2);
+	      b2.attachPress(function() {
+	         //var v = document.getElementById(runLabel).value
+            this.byId("runInput").setValue(1);
+	      });
+	      }*/
+
+      
       nextEvent : function(oEvent) {
           this.mgr.SendMIR("NextEvent()", this.fw2gui.fElementId, "EventDisplayManager");
       }
