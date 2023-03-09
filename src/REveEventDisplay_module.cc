@@ -260,10 +260,9 @@ namespace mu2e
         alabel.push_back(name);
         if(diagLevel_ == 1){
           std::cout<<"extracting name =  "<<fcn<<" "<<modn<<" "<<instn<<std::endl; 
-          std::cout<<"wit htype =  "<<typeid(prov).name()<<std::endl;
+          std::cout<<"with type =  "<<typeid(prov).name()<<std::endl;
         } 
       }
-      std::cout<<"sizes "<<alabel.size()<<"  "<<alist.size()<<std::endl;
       tuple = std::make_tuple(alabel,alist);
       
     }
@@ -381,7 +380,7 @@ namespace mu2e
       world->AddElement(fGui);
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
-      world->AddCommand("PrintEventInfo", "sap-icon://step", fGui, "PrintEventInfo()");
+      //world->AddCommand("PrintEventInfo", "sap-icon://step", fGui, "PrintEventInfo()");
       std::unique_lock lock{m_};
       cv_.notify_all();
  
