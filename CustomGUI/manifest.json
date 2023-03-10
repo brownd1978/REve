@@ -43,11 +43,14 @@
                 "name": "View",
                 "pattern": "view/:viewName:",
                 "target": ["GL"]
-            },
-            {
-                "name": "Button",
-                "pattern": "view/:viewName:",
-                "target": ["GL"]
+            },{
+                "name": "Lego",
+                "pattern": "lego/:viewName:",
+                "target": ["Lego"]
+            }, {
+                "name": "Table",
+                "pattern": "table/:viewName:",
+                "target": ["Table"]
             }],
             "targets": {
                 "MyMain": {

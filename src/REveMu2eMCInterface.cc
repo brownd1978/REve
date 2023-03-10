@@ -28,8 +28,14 @@ namespace REX = ROOT::Experimental;
         case PDGCode::pi_plus:
             pid = "pion +";
             break;
+        case PDGCode::pi0:
+            pid = "pion 0";
+            break;
         case PDGCode::proton:
             pid = "proton";
+            break;
+        case PDGCode::neutron:
+            pid = "neutron";
             break;
         case PDGCode::gamma:
             pid = "gamma";
@@ -62,14 +68,20 @@ namespace REX = ROOT::Experimental;
       case PDGCode::pi_plus:
         color = kViolet;
         break;
+      case PDGCode::pi0:
+        color = kCyan;
+        break;
       case PDGCode::proton:
         color = kBlue;
+        break;
+      case PDGCode::neutron:
+        color = kViolet;
         break;
       case PDGCode::gamma:
         color = kOrange;
         break;
       default:
-        color = kCyan;
+        color = kCyan-4;
         break;
     }
     line->SetLineColor(color);
