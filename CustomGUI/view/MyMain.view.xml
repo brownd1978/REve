@@ -4,7 +4,7 @@
           xmlns:mvc="sap.ui.core.mvc"
           xmlns:l="sap.ui.layout"
           xmlns:commons="sap.ui.commons">
-         <Page title="EVE-7" showNavButton="false" showFooter="true" enableScrolling="true"
+         <Page title="EVE-7" showNavButton="false" showFooter="false" enableScrolling="true"
          showHeader="true"
          showSubHeader="true" id="CanvasMainPage">
      <customHeader>
@@ -71,6 +71,43 @@
             <Input id="dateInput" width="100px" />   
               </OverflowToolbar>
       </subHeader>
+      <Button
+					id="BadgedButton"
+					class="sapUiSizeCompact"
+					icon="{= ${/buttonWithIcon} ? ${/buttonIcon} : '' }"
+					type="{/buttonType}"
+					text="{= ${/buttonWithText} ? ${/buttonText} : '' }">
+					<customData>
+						<BadgeCustomData
+							key="badge"
+							value=""
+							visible=""/>
+					</customData>
+				</Button>
+				<FlexBox
+					class="sapUiSizeCompact"
+					alignItems="Center"
+					justifyContent="Start">
+					<Text
+						renderWhitespace="true"
+						width="50px"
+						text="Set Run "/>
+					<Input
+						id="MinInput"
+						value="{/badgeMax}"
+						width="50px"
+						type="Number"
+						change="minChangeHandler"/>
+					<Text
+						renderWhitespace="true"
+						text="Set Event"/>
+					<Input
+						id="MaxInput"
+						value="{/badgeMin}"
+						width="55px"
+						type="Number"
+						change="maxChangeHandler"/>
+				</FlexBox>
       <content>
         <l:Splitter orientation="Horizontal" id="MainAreaSplitter">
           <l:contentAreas>
