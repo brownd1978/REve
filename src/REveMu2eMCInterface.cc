@@ -34,7 +34,7 @@ namespace REX = ROOT::Experimental;
         case PDGCode::proton:
             pid = "proton";
             break;
-        case PDGCode::neutron:
+        case PDGCode::n0:
             pid = "neutron";
             break;
         case PDGCode::gamma:
@@ -74,7 +74,7 @@ namespace REX = ROOT::Experimental;
       case PDGCode::proton:
         color = kBlue;
         break;
-      case PDGCode::neutron:
+      case PDGCode::n0:
         color = kViolet;
         break;
       case PDGCode::gamma:
