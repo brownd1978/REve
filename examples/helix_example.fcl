@@ -18,6 +18,7 @@ physics :
 physics.analyzers.REveEventDisplay.showCRV : false
 physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
+physics.analyzers.REveEventDisplay.filler.addHelixSeeds : false
 physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
 physics.analyzers.REveEventDisplay.filler.addClusters : false
 physics.analyzers.REveEventDisplay.filler.addHits : true
