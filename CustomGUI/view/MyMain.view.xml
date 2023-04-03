@@ -59,14 +59,14 @@
      </customHeader>
      <subHeader>
         <OverflowToolbar id="otb2">
-            <ToolbarSpacer />
+            <!--<ToolbarSpacer />
             <Label id="runLabel" text="Run" />
             <Input id="runInput" width="100px"  />
             <Button text="Set Run" press="submitRun" enabled="true" />
             <Label id="eventLabel" text="Event"/>
             <Input id="eventInput" width="100px" />
             <Button text="Set Event" press="submitEvent" enabled="true"/>
-            <ToolbarSpacer />
+            <ToolbarSpacer />-->
             <Label id="dateLabel" text="date" />
             <Input id="dateInput" width="100px" />   
               </OverflowToolbar>
@@ -93,20 +93,20 @@
 						width="50px"
 						text="Set Run "/>
 					<Input
-						id="MinInput"
-						value="{/badgeMax}"
+						id="EventInput"
+						value="{/Event}"
 						width="50px"
 						type="Number"
-						change="minChangeHandler"/>
+						change="eventChangeHandler"/>
 					<Text
 						renderWhitespace="true"
 						text="Set Event"/>
 					<Input
-						id="MaxInput"
-						value="{/badgeMin}"
+						id="RunInput"
+						value="{/Run}"
 						width="55px"
 						type="Number"
-						change="maxChangeHandler"/>
+						change="runChangeHandler"/>
 				</FlexBox>
       <content>
         <l:Splitter orientation="Horizontal" id="MainAreaSplitter">

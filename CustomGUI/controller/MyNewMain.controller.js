@@ -14,6 +14,7 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
          elem.setHtmlText("<strong style=\"color: red;\">Client Disconnected: Check code for errors !</strong>");
       },
 
+		
       onInit: function() {
          MainController.prototype.onInit.apply(this, arguments);
          this.mgr.handle.setReceiver(this);
@@ -22,26 +23,28 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
 			    // create model with settings
 			    this.oModel = new JSONModel();
 			    this.oModel.setData({
-				    badgeMin:			"1",
-				    badgeMax:			"9999",
+				    Run:			"1",
+				    Event:			"1",
 				    badgeCurrent:		1,
-				    buttonText: 		"Button with Badge",
-				    //buttonIcon: 		"sap-icon://cart",
-				    //buttonType: 		"Default",
-				    //buttonWithIcon:		true,
-				    //buttonWithText:		true
+				    buttonText: 		"Go to",
+				    buttonIcon: 		"sap-icon://down",
+				    buttonType: 		"Default",
+				    buttonWithIcon:		true,
+				    buttonWithText:		true
 			    });
 			    this.getView().setModel(this.oModel);
 
 			    // create internal vars with instances of controls
 			    this.oLabel = this.byId("ButtonLabel");
 			    this.oButton = this.byId("BadgedButton");
-			    this.oMin = this.byId("MinInput");
-			    this.oMax = this.byId("MaxInput");
+			    this.oRun = this.byId("RunInput");
+			    this.oEvent = this.byId("EventInput");
 			    this.oCurrent = this.byId("CurrentValue");
 			    this.oLabelCheckBox = this.byId("LabelCheckBox");
-			    this.iMinValue = parseInt(this.oMin.getValue());
-			    this.iMaxValue = parseInt(this.oMax.getValue());
+			    this.iRunValue = parseInt(this.oRun.getValue());
+			    this.iEventValue = parseInt(this.oEvent.getValue());
+			    //
+          //
 
 			    // initialize Badge
 			    //this.currentChangeHandler();
@@ -52,34 +55,13 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
 			var iCurrent = this.oCurrent.getValue(),
 				oButtonBadgeCustomData = this.oButton.getBadgeCustomData(),
 				sValue = iCurrent.toString();
-
 			if (!oButtonBadgeCustomData) {
 				return;
 			}
-
 			oButtonBadgeCustomData.setValue(sValue);
-		},
+		},*/
 
-		minChangeHandler: function() {
-			var iMin = parseInt(this.oModel.getProperty("/badgeMin"));
-			if (iMin >= BADGE_MIN_VALUE && iMin <= this.iMaxValue) {
-				this.oButton.setBadgeMinValue(iMin);
-				this.iMinValue = iMin;
-			} else {
-				this.oMin.setValue(this.iMinValue);
-			}
-		},
-
-		maxChangeHandler: function() {
-			var iMax = parseInt(this.oModel.getProperty("/badgeMax"));
-			this.oButton.setBadgeMaxValue(iMax);
-			if (iMax <= BADGE_MAX_VALUE && iMax >= this.iMinValue) {
-				this.oButton.setBadgeMaxValue(iMax);
-				this.iMaxValue = iMax;
-			} else {
-				this.oMax.setValue(this.iMaxValue);
-			}
-		}*/
+		
 
       /** @brief Invoke dialog with server side code */
       onSaveAsFile: function(tab) {
@@ -139,8 +121,8 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
       showEventInfo : function() {
          let tinfo = "Event : " + this.fw2gui.eventid + " Sub Run :" + this.fw2gui.subrunid + " Run :" + this.fw2gui.runid;
          document.title = tinfo;
-         this.byId("runInput").setValue(this.fw2gui.runid);
-         this.byId("eventInput").setValue(this.fw2gui.eventid);
+         //this.byId("runInput").setValue(this.fw2gui.runid);
+         //this.byId("eventInput").setValue(this.fw2gui.eventid);
 
          let infoLabel = this.getView().byId("infoLabel");
          console.log(infoLabel);
@@ -159,7 +141,30 @@ sap.ui.define(['rootui5/eve7/controller/Main.controller',
       
       nextEvent : function(oEvent) {
           this.mgr.SendMIR("NextEvent()", this.fw2gui.fElementId, "EventDisplayManager");
-      }
+      },
+      
+      runChangeHandler: function(oEvent) {
+      //this.oRun.setValue(this.fw2gui.runid);
+			var iRun = parseInt(this.oModel.getProperty("/Run"));
+			if (iRun == this.fw2gui.runid && iRun <= this.iRunValue) {
+				this.oButton.setBadgeMinValue(iRun);
+				this.iRunValue = iRun;
+			} else {
+				this.oRun.setValue(this.iRunValue);
+			}
+		},
+
+		eventChangeHandler: function(oEvent) {
+		  //this.oEvent = .setValue(this.fw2gui.eventid);
+			var iEvent = parseInt(this.oModel.getProperty("/Event"));
+			this.oButton.setBadgeMaxValue(iEvent);
+			if (iEvent == this.fw2gui.eventid  && iEvent >= this.iEventValue) {
+				this.oButton.setBadgeMaxValue(iEvent);
+				this.iEventValue = iEvent;
+			} else {
+				this.oEvent.setValue(this.iEventValue);
+			}
+		},
 
       /* submitRun : function(runLabel) {
           var v = oEvent.getElementById(runLabel).value

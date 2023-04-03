@@ -41,7 +41,7 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
 int j = 0;
 int fp =0;
 
-void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal,  std::vector<double> shift, bool print) { //FIXME this function needs rewrting
+void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal,  std::vector<double> shift, bool print, bool single) { //FIXME this function needs rewrting
     ++level;
     if (level > maxlevel){
        return;
@@ -52,10 +52,26 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     bool cry1 = false; // these help us know which disk and to draw crystals
     bool cry2 = false;
     int ndau = n->GetNdaughters();
+    if (name.find(str)!= std::string::npos and single){
+    REX::REveTrans ctrans;
+    ctrans.SetFrom(trans.Array());
+    {
+        TGeoMatrix     *gm = n->GetMatrix();
+        const Double_t *rm = gm->GetRotationMatrix();
+        const Double_t *tv = gm->GetTranslation();
+        REX::REveTrans t;
+        t(1,1) = rm[0]; t(1,2) = rm[1]; t(1,3) = rm[2];
+        t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
+        t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
+        t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
+        ctrans *= t;
+       }
+    n->ls();
+    makeEveGeoShape(n, ctrans, holder, j, cry1, cry2);
+    }
     for ( int i=0; i<ndau; ++i ){
         TGeoNode * pn = n->GetDaughter(i);
         if (name.find(str)!= std::string::npos and i==0 ){ //To make the geometry translucant we only add i==0
-            //std::cout<<j<<" "<<name<<std::endl;
             REX::REveTrans ctrans;
             ctrans.SetFrom(trans.Array());
             {
@@ -92,7 +108,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
             n->ls();
             makeEveGeoShape(n, ctrans, holder, j, cry1, cry2);  
         }
-       showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal,shift, print);
+       showNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal,shift, print, single);
        }
     } 
   
@@ -111,7 +127,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
       shift.at(2) = geomconfig.getDouble("psts_z")/10;
       for(auto& i: substrings_ts){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false);
       }
     }
     if(geomOpt.showPS){
@@ -120,16 +136,16 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
       shift.at(2) = geomconfig.getDouble("psts_z")/10;
       for(auto& i: substrings_ps){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false);
       }
     }
     if(geomOpt.showDS){
-      static std::vector <std::string> substrings_ds {"DS1Vacuum","DS2Vacuum","DS3Vacuum"}; 
+      static std::vector <std::string> substrings_ds {"DS1Vacuum","DS2Vacuum","DS3Vacuum","StoppingTarget_Al"}; 
       for(auto& i: substrings_ds){
         shift.at(0) = geomconfig.getDouble("psts_x")/10;
         shift.at(1) = geomconfig.getDouble("psts_y")/10;
         shift.at(2) = geomconfig.getDouble("psts_z")/10;
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false);
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false, false);
       }
      }
     if(geomOpt.showCRV){
@@ -138,7 +154,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
       shift.at(2) = geomconfig.getDouble("psts_z")/10;
       for(auto& i: substrings_crv){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false);
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false);
       }
     }
     static std::vector <std::string> substrings_disk  {"caloDisk"}; 
@@ -146,28 +162,28 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(0) = 0;  
       shift.at(1) = 0;
       shift.at(2) = 0;
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, shift, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, shift, false, false);
     }
     static std::vector <std::string> substring_tracker  {"TrackerPlaneEnvelope"};
     for(auto& i: substring_tracker){
       shift.at(0) = 0;  
       shift.at(1) = 0;
       shift.at(2) = 0;
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true, false);
     }
-    static std::vector <std::string> substrings_stoppingtarget  {"StoppingTarget","Foil"};
+    static std::vector <std::string> substrings_stoppingtarget  {"TargetFoil"};
     shift.at(0) = 0;  
     shift.at(1) = 0;
     shift.at(2) = -1*geomconfig.getDouble("STz")/10; 
     for(auto& i: substrings_stoppingtarget){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true, true);
     }
     static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
     for(auto& i: substrings_crystals){
       shift.at(0) = 0;  
       shift.at(1) = 0;
       shift.at(2) = 0;
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false, false);
     }
 }
 
