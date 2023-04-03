@@ -289,9 +289,10 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     projectEvents(eveMng);
  }
  
- void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, GeomOptions geomOpt, std::string gdmlname)
+ void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, GeomOptions geomOpt, std::string gdmlname, bool extracted)
  {
-    TGeoManager *geom = TGeoManager::Import(gdmlname.c_str()); 
+    
+    TGeoManager *geom = TGeoManager::Import(gdmlname.c_str());
     TGeoVolume* topvol = geom->GetTopVolume();
     gGeoManager->SetTopVolume(topvol);
     gGeoManager->SetTopVisible(kFALSE);

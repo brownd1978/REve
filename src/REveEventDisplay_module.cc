@@ -107,6 +107,7 @@ namespace mu2e
           fhicl::Sequence<int>particles{Name("particles"),Comment("PDGcodes to plot")};
           fhicl::Atom<std::string>gdmlname{Name("gdmlname"),Comment("gdmlname")};
           fhicl::Atom<bool> strawdisplay{Name("strawdisplay"), Comment(""),true};
+          fhicl::Atom<bool> extracted{Name("extracted"), Comment(""),false};
           fhicl::Atom<bool> seqMode{Name("seqMode"), Comment("turn off for go to any event functionality"),true};
         };
 
@@ -122,14 +123,7 @@ namespace mu2e
 
         art::ServiceHandle<art::TFileService> tfs;
         Config _conf;
-        int  diagLevel_;
-        bool showCRV_;
-        bool showPS_;
-        bool showTS_;   
-        bool showDS_;
-        bool show2D_;
-        bool caloVST_;
-        bool specifyTag_ = false;
+        
         
         void setup_eve();
         void run_application();
@@ -150,6 +144,14 @@ namespace mu2e
         std::condition_variable cv_{};
         std::mutex m_{};
 
+        int  diagLevel_;
+        bool showCRV_;
+        bool showPS_;
+        bool showTS_;   
+        bool showDS_;
+        bool show2D_;
+        bool caloVST_;
+        bool specifyTag_ = false;
         TDirectory*   directory_ = nullptr;   
         CollectionFiller filler_;
         REveMainWindow *frame_;
@@ -158,6 +160,7 @@ namespace mu2e
         std::vector<int> particles_;
         std::string gdmlname_;
         bool strawdisplay_; 
+        bool extracted_;
         
         // Setup Custom GUI
         REveMu2eGUI *fGui{nullptr};
@@ -187,6 +190,7 @@ namespace mu2e
     particles_(conf().particles()),
     gdmlname_(conf().gdmlname()),
     strawdisplay_(conf().strawdisplay()),
+    extracted_(conf().extracted()),
     seqMode_(conf().seqMode())
     {
        if(!seqMode_){  
@@ -371,7 +375,7 @@ namespace mu2e
       
       frame_ = new REveMainWindow();
       GeomOptions geomOpts(showCRV_,showPS_, showTS_, showDS_, show2D_, caloVST_ );
-      frame_->makeGeometryScene(eveMng_, geomOpts, gdmlname_);
+      frame_->makeGeometryScene(eveMng_, geomOpts, gdmlname_, extracted_);
       
       //add path to the custom GUI code here, this overrides ROOT GUI
       eveMng_->AddLocation("mydir/", "REve/CustomGUI");
