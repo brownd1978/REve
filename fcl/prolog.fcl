@@ -31,6 +31,7 @@ REveEventDisplay : {
     }
     particles :   [11,13,2212,2112,211,22,212]
     strawdisplay : false
+    extracted : false
     gdmlname : "REve/mu2e.gdml"
 }  
 
