@@ -38,7 +38,10 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             std::string cluster_z = std::to_string(abs(pointInMu2e.z()));
             std::cout<<"[REveMu2eDataInterface] AddCaloClusters 3"<<std::endl;
             // Make label and REve objects
-            std::string label =  "Instance = " + names[0] + " Energy Dep. = "+cluster_energy+" MeV "+", Time = "+cluster_time+" ns " +" Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
+            std::string label =  "Instance = " + names[0] +  '\n'
+             + " Energy Dep. = "+cluster_energy+" MeV "+   '\n'
+             + ", Time = "+cluster_time+" ns " +  '\n'
+             +" Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
             auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
             auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
             
@@ -118,6 +121,27 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
               if(strawline->GetSize() !=0 ) scene->AddElement(strawline);  
             }
           }
+        }
+        bool AddErrorBar_ = true; //TODO turn off when mixed
+        if(AddErrorBar_){
+          auto error = new REX::REveLine("errors","error title",1); 
+          auto const& p = hit.pos();
+          auto const& w = hit.wdir();
+          auto const& s = hit.wireRes();
+          double x1 = (p.x()+s*w.x());
+          double x2 = (p.x()-s*w.x());
+          double z1 = (p.z()+s*w.z());
+          double z2 = (p.z()-s*w.z());
+          double y1 = (p.y()+s*w.y());
+          double y2 = (p.y()-s*w.y());
+
+          std::string errorbar = "ErrorBar Length: %d, %d, %d";
+          
+          error->SetPoint(0, pointmmTocm(x1),pointmmTocm(y1),pointmmTocm(z1));
+          error->SetNextPoint(pointmmTocm(x2),pointmmTocm(y2),pointmmTocm(z2));
+          std::cout<<"Error positions "<<pointmmTocm(x1)<<" "<<pointmmTocm(y1)<<" "<<pointmmTocm(z1)<<std::endl;
+          error->SetLineColor(colour);
+          scene->AddElement(error);
         }
         CLHEP::Hep3Vector HitPos(pointmmTocm(hit.pos().x()), pointmmTocm(hit.pos().y()), pointmmTocm(hit.pos().z()));
         std::string chtitle = "ComboHits tag = "
@@ -256,7 +280,7 @@ void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop
                   trkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
                   trkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
                   // trkhit ->SetMarkerColor(drawconfig.getInt("RecoTrackColor")-4); //TODO
-                  trkhit ->SetMarkerColor(kGreen); //TODO
+                  trkhit ->SetMarkerColor(kRed); //TODO
                   trkhit ->SetNextPoint(pointmmTocm(HitPos.x()),pointmmTocm(HitPos.y()) ,pointmmTocm(HitPos.z()));
                   if(trkhit->GetSize() !=0 ) scene->AddElement(trkhit); 
                   // std::cout<<"TrkHit = "<<HitPos.x()<<"  "<<HitPos.y()<<" "<<HitPos.z()<<std::endl;
@@ -339,14 +363,13 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
 }
 
 void REveMu2eDataInterface::AddHelixSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const HelixSeedCollection*>> helix_tuple, REX::REveElement* &scene){
-    
     std::cout<<"[REveMu2eDataInterface] AddHelices "<<std::endl;
     std::vector<const HelixSeedCollection*> helix_list = std::get<1>(helix_tuple);
     std::vector<std::string> names = std::get<0>(helix_tuple);
     for(unsigned int j=0; j< helix_list.size(); j++){
       const HelixSeedCollection* seedcol = helix_list[j];
       if(seedcol!=0){  
-          for(unsigned int k = 0; k < seedcol->size(); k++){ //TODO
+          for(unsigned int k = 0; k < seedcol->size(); k++){
           mu2e::HelixSeed hseed = (*seedcol)[k];
           const ComboHitCollection& hhits = hseed.hits();
           unsigned int nhhits = hhits.size();
@@ -357,7 +380,7 @@ void REveMu2eDataInterface::AddHelixSeedCollection(REX::REveManager *&eveMng,boo
           float xc = hseed.helix()._rcent*cos(hseed.helix()._fcent);
           float yc = hseed.helix()._rcent*sin(hseed.helix()._fcent);
           if(hhits.size() !=0 ){
-              for(int i=-1500; i < 1500; i +=100){ //Remove hard-coded numbers
+              for(int i=-1500; i < 1500; i +=100){ //TODO Remove hard-coded numbers
               float z = i;
               if(hseed.helix()._lambda !=0.0) circphi = hseed.helix()._fz0 + z/hseed.helix()._lambda;
 	          float x= xc + helrad*cos(circphi);

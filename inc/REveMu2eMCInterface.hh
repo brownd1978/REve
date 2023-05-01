@@ -34,7 +34,8 @@ namespace mu2e{
           int Contains(std::vector<int> v, int x);
           const char* GetParticleName(int PDGCode);
           void SetLineColorPID(int PDGCode,REX::REveLine *line);
-          void AddMCTrajectoryCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const MCTrajectoryCollection*>> track_tuple, REX::REveElement* &scene, std::vector<int> particles );
+          void toExtracted(CLHEP::Hep3Vector& Pos);
+          void AddMCTrajectoryCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const MCTrajectoryCollection*>> track_tuple, REX::REveElement* &scene, std::vector<int> particles, bool extracted );
           #endif
           ClassDef(REveMu2eMCInterface, 0);
       }; 

@@ -103,6 +103,7 @@ namespace mu2e
           fhicl::Atom<bool> showTS{Name("showTS"), Comment("set false if you just want to see inside DS"),false}; 
           fhicl::Atom<bool> showDS{Name("showDS"), Comment("set false if you just want to see inside DS"),false};    
           fhicl::Atom<bool> show2D{Name("show2D"), Comment(""),true};   
+          fhicl::Atom<bool> showST{Name("showST"), Comment(""),true}; 
           fhicl::Atom<bool> caloVST{Name("caloVST"), Comment(""),false};  
           fhicl::Atom<bool> specifyTag{Name("specifyTag"), Comment("to only select events of selected input tag"),false};   
           fhicl::Table<CollectionFiller::Config> filler{Name("filler"),Comment("fill collections")};
@@ -152,6 +153,7 @@ namespace mu2e
         bool showTS_;   
         bool showDS_;
         bool show2D_;
+        bool showST_;
         bool caloVST_;
         bool specifyTag_ = false;
         TDirectory*   directory_ = nullptr;   
@@ -174,7 +176,7 @@ namespace mu2e
         int runn;
         
         std::vector<std::shared_ptr<REveDataProduct>> listoflists;
-        
+        GeomOptions geomOpts;
     };
 
 
@@ -186,6 +188,7 @@ namespace mu2e
     showTS_(conf().showTS()),
     showDS_(conf().showDS()),
     show2D_(conf().show2D()),
+    showST_(conf().showST()),
     caloVST_(conf().caloVST()),
     specifyTag_(conf().specifyTag()),
     filler_(conf().filler()),
@@ -202,6 +205,7 @@ namespace mu2e
           std::cout<<" Run Number : "<<std::endl;
           cin>>runn;
       }
+      geomOpts.fill(showCRV_,showPS_, showTS_, showDS_, show2D_, caloVST_, showST_, extracted_ );
     }
 
   REveEventDisplay::~REveEventDisplay() {}
@@ -382,8 +386,8 @@ namespace mu2e
       
       
       frame_ = new REveMainWindow();
-      GeomOptions geomOpts(showCRV_,showPS_, showTS_, showDS_, show2D_, caloVST_ );
-      frame_->makeGeometryScene(eveMng_, geomOpts, gdmlname_, extracted_);
+      
+      frame_->makeGeometryScene(eveMng_, geomOpts, gdmlname_);
       
       //add path to the custom GUI code here, this overrides ROOT GUI
       eveMng_->AddLocation("mydir/", "REve/CustomGUI");
@@ -417,7 +421,7 @@ namespace mu2e
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
       DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_);
-      frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts, particles_, strawdisplay_);
+      frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts, particles_, strawdisplay_, geomOpts);
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
       firstLoop_ = false;

@@ -57,10 +57,22 @@ namespace mu2e {
       bool showDS = false;
       bool show2D = true;
       bool caloVST = false;
+      bool showST = true;
+      bool extracted = false;
       
       GeomOptions(){};
-      GeomOptions(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST) 
-      : showCRV(crv), showPS(ps), showTS(ts), showDS(ds), show2D(twodim), caloVST(cVST) {};
+      GeomOptions(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext) 
+      : showCRV(crv), showPS(ps), showTS(ts), showDS(ds), show2D(twodim), caloVST(cVST), showST(st), extracted(ext) {};
+      void fill(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext) {
+        showCRV = (crv);
+        showPS = (ps);
+        showTS = (ts);
+        showDS = (ds);
+        show2D = (twodim);
+        caloVST = (cVST);
+        showST = (st);
+        extracted = (ext);
+      }
      };
      
   struct DrawOptions{
@@ -92,12 +104,12 @@ namespace mu2e {
             void makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int j, bool crys1, bool crys2);
             void showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, std::vector<double> shift, bool print, bool single);
             void GeomDrawer(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, GeomOptions geomOpts); 
-            void makeGeometryScene(REX::REveManager *eveMng,  GeomOptions geomOpts, std::string filename, bool extracted);
-            void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay);
+            void makeGeometryScene(REX::REveManager *eveMng,  GeomOptions geomOpts, std::string filename);
+            void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts);
             
             void createProjectionStuff(REX::REveManager *eveMng);
             void AddTrackerProjection(REX::REveManager *eveMng);
-            void projectScenes(REX::REveManager *eveMng,bool geomp, bool eventp);
+            void projectScenes(REX::REveManager *eveMng, bool geomp, bool eventp);
             void projectEvents(REX::REveManager *eveMng);
             REX::REveProjectionManager *mngTrackerXY = nullptr;
             REX::REveProjectionManager *mngXYCaloDisk1 = nullptr;

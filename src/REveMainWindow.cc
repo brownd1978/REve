@@ -84,14 +84,15 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
                 //if(print) std::cout<<j<<" "<<name<<" "<<tv[0]<<" "<<tv[1]<<" "<<tv[2]<<std::endl;
-                if(name == "TrackerPlaneEnvelope_000x3acaae0") {
+                if(name == "TrackerPlaneEnvelope_000x3acaae0" or name== "TrackerPlaneEnvelope_000x4ce11c0") { // latter for extracted.
                   FrontTracker_gdmltag = j;
+                  std::cout<<"tracker at "<<tv[0]<<" "<<tv[1]<<" "<<tv[2]<<std::endl;
                  }
                 if(name == "caloDisk_00x3d71700") {
-                  disk1_center = tv[2];
+                  disk1_center = tv[2] ;//+ 24175;
                  }
                 if(name == "caloDisk_10x3e1ec70") {
-                  disk2_center = tv[2];
+                  disk2_center = tv[2] ;//+ 24175;
                  }
                 if(caloshift){
                     fp++;
@@ -148,13 +149,22 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false, false);
       }
      }
-    if(geomOpt.showCRV){
-      static std::vector <std::string> substrings_crv  {"CRS"};
-      shift.at(0) = geomconfig.getDouble("psts_x")/10;
+    if(geomOpt.showCRV and !geomOpt.extracted){
+      static std::vector <std::string> substrings_crv  {"CRS"}; 
+      shift.at(0) = geomconfig.getDouble("psts_x")/10; 
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
-      shift.at(2) = geomconfig.getDouble("psts_z")/10;
+      shift.at(2) = geomconfig.getDouble("psts_z")/10; 
       for(auto& i: substrings_crv){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false);
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, true, false);
+      }
+    }
+    if(geomOpt.showCRV and geomOpt.extracted){
+      static std::vector <std::string> substrings_crv  {"CRSscintLayer"}; 
+      shift.at(0) = 0;
+      shift.at(1) = 4880/10;
+      shift.at(2) =  0;
+      for(auto& i: substrings_crv){
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, true, false);
       }
     }
     static std::vector <std::string> substrings_disk  {"caloDisk"}; 
@@ -168,9 +178,9 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     for(auto& i: substring_tracker){
       shift.at(0) = 0;  
       shift.at(1) = 0;
-      shift.at(2) = 0;
+      shift.at(2) = 0 ; 
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true, false);
-    }
+    }if(geomOpt.showST){
     static std::vector <std::string> substrings_stoppingtarget  {"TargetFoil"};
     shift.at(0) = 0;  
     shift.at(1) = 0;
@@ -178,12 +188,15 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     for(auto& i: substrings_stoppingtarget){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true, true);
     }
-    static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
-    for(auto& i: substrings_crystals){
-      shift.at(0) = 0;  
-      shift.at(1) = 0;
-      shift.at(2) = 0;
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false, false);
+    }
+    if(!geomOpt.extracted){
+      static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
+      for(auto& i: substrings_crystals){
+        shift.at(0) = 0;  
+        shift.at(1) = 0;
+        shift.at(2) = 0;
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false, false);
+      }
     }
 }
 
@@ -245,7 +258,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
  }
 
 
- void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay){
+ void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts){
     if(!firstLoop){
       eventScene->DestroyElements();;
     }
@@ -286,14 +299,14 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     //... add MC:
     std::vector<const MCTrajectoryCollection*> mctrack_list = std::get<1>(data.mctrack_tuple);
     if(drawOpts.addMCTrajectories and mctrack_list.size() !=0){
-      pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  data.mctrack_tuple, eventScene, particleIds);
+      pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  data.mctrack_tuple, eventScene, particleIds, geomOpts.extracted);
     } 
     
     // ... project these events onto 2D geometry:
     projectEvents(eveMng);
  }
  
- void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, GeomOptions geomOpt, std::string gdmlname, bool extracted)
+ void REveMainWindow::makeGeometryScene(REX::REveManager *eveMng, GeomOptions geomOpt, std::string gdmlname)
  {
     
     TGeoManager *geom = TGeoManager::Import(gdmlname.c_str());
