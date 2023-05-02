@@ -124,6 +124,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
         }
         bool AddErrorBar_ = true; //TODO turn off when mixed
         if(AddErrorBar_){
+          //XY
           auto error = new REX::REveLine("errors","error title",1); 
           auto const& p = hit.pos();
           auto const& w = hit.wdir();
@@ -142,6 +143,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           std::cout<<"Error positions "<<pointmmTocm(x1)<<" "<<pointmmTocm(y1)<<" "<<pointmmTocm(z1)<<std::endl;
           error->SetLineColor(colour);
           scene->AddElement(error);
+          //TODO - Z - drift cricle, might have to be series of lines in a circle (?)
         }
         CLHEP::Hep3Vector HitPos(pointmmTocm(hit.pos().x()), pointmmTocm(hit.pos().y()), pointmmTocm(hit.pos().z()));
         std::string chtitle = "ComboHits tag = "

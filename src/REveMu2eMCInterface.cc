@@ -87,13 +87,6 @@ namespace REX = ROOT::Experimental;
     line->SetLineColor(color);
   }
   
-  void REveMu2eMCInterface::toExtracted(CLHEP::Hep3Vector& Pos){
-    //x - usual to Det, y - usual to Det, z = -24175
-    GeomHandle<DetectorSystem> det;
-    CLHEP::Hep3Vector HitPos = det->toDetector(Pos);
-    CLHEP::Hep3Vector PosOut(HitPos.x(), HitPos.y(), HitPos.z() + 10175 - 24175); //TODO these need to be taken from the geomservice
-    Pos = PosOut;
-  }
   
   void REveMu2eMCInterface::AddMCTrajectoryCollection(REX::REveManager *&eveMng, bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const MCTrajectoryCollection *>> mctrack_tuple, REX::REveElement* &scene, std::vector<int> particleIds, bool extracted){
   
@@ -135,15 +128,9 @@ namespace REX = ROOT::Experimental;
                 // add points
                 for(unsigned int i=0; i < points.size();i++){
                   CLHEP::Hep3Vector Pos(points[i].x(), points[i].y(), points[i].z());
-                  
-                  if(extracted){
-                    toExtracted(Pos);
-                    line->SetNextPoint(pointmmTocm((Pos.x())),pointmmTocm((Pos.y())),pointmmTocm(Pos.z()));
-                  } else {
                     GeomHandle<DetectorSystem> det;
                     CLHEP::Hep3Vector HitPos = det->toDetector(Pos); 
                     line->SetNextPoint(pointmmTocm((HitPos.x())),pointmmTocm((HitPos.y())),pointmmTocm(HitPos.z()));
-                  }
                 }
                 // set line colour
                 SetLineColorPID(trajectoryIter->first->pdgId(),line);
