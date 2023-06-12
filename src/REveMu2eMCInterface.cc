@@ -114,10 +114,8 @@ namespace REX = ROOT::Experimental;
               if(x == 1){
                 const std::vector<MCTrajectoryPoint> &points = trajectoryIter->second.points();
                 // Make label
-                std::string energy = std::to_string(points[0].kineticEnergy());
-                std::string mctitle = " MCTrajectory tag :"
-                + names[j] +  '\n'
-                + " particle = " + std::string(particlename)  +  '\n'
+                std::string energy = std::to_string(points[0].kineticEnergy());//+ names[j] +  '\n'
+                std::string mctitle = " MCTrajectory tag : particle = " + std::string(particlename)  +  '\n'
                 + " energy = " + energy + "MeV" +  '\n'
                 + " creation code = " + std::to_string(trajectoryIter->first->creationCode()) +  '\n'
                 + " stopping code = " + std::to_string(trajectoryIter->first->stoppingCode())  +  '\n'

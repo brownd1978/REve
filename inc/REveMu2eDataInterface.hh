@@ -38,7 +38,7 @@ namespace REX = ROOT::Experimental;
 namespace mu2e{
     class REveMu2eDataInterface {
         public:
-          static int const mstyle = 4;
+          static int const mstyle = 5;
           static int const msize = 6;
           explicit REveMu2eDataInterface(){};
           explicit REveMu2eDataInterface(const REveMu2eDataInterface &);

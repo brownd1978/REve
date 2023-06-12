@@ -10,16 +10,14 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
     std::cout<<"[REveMu2eDataInterface] AddCaloClusters "<<std::endl;
     std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(calocluster_tuple);
     std::vector<std::string> names = std::get<0>(calocluster_tuple);
-    std::cout<<"size of list in drawing "<<calocluster_list.size()<<std::endl;
+    //std::cout<<"size of list in drawing "<<calocluster_list.size()<<std::endl;
     for(unsigned int j = 0; j< calocluster_list.size(); j++){
-    std::cout<<"[REveMu2eDataInterface] AddCaloClusters 1"<<std::endl;
       // Extract cluster list
       const CaloClusterCollection* clustercol = calocluster_list[j];
       if(clustercol->size() != 0){
           if(!firstLoop_){
               scene->DestroyElements();;
           }
-          std::cout<<"[REveMu2eDataInterface] AddCaloClusters 2"<<std::endl;
           mu2e::Calorimeter const &cal = *(mu2e::GeomHandle<mu2e::Calorimeter>());
           GeomHandle<DetectorSystem> det;
           for(unsigned int i = 0; i < clustercol->size(); i++){
@@ -36,32 +34,38 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
 
             // Info for label
             std::string cluster_z = std::to_string(abs(pointInMu2e.z()));
-            std::cout<<"[REveMu2eDataInterface] AddCaloClusters 3"<<std::endl;
             // Make label and REve objects
             std::string label =  "Instance = " + names[0] +  '\n'
              + " Energy Dep. = "+cluster_energy+" MeV "+   '\n'
-             + ", Time = "+cluster_time+" ns " +  '\n'
-             +" Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
+             + " Time = "+cluster_time+" ns " +  '\n'
+             + " Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
             auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
             auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
             
             // Set positions
             if(cluster.diskID() == 0) ps1->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z()))); 
             if(cluster.diskID() == 1) ps2->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z()))); 
-            std::cout<<"[REveMu2eDataInterface] AddCaloClusters 4"<<std::endl;
-            // Set draw options
-            ps1->SetMarkerColor(j+3); 
+            // Set draw options 
+            Color_t color = kRed;//TODO - this needs improving
+            if(cluster_energy < 10)  color = kRed - 10; 
+            if(cluster_energy >= 10 and cluster_energy < 20) color = kRed - 7 ; 
+            if(cluster_energy >=20  and cluster_energy < 30) color = kRed - 5 ; 
+            if(cluster_energy >=30  and cluster_energy < 40) color = kRed - 3; 
+            if(cluster_energy >=40  and cluster_energy < 50) color = kRed - 1; 
+            if(cluster_energy >= 50) color = kRed; 
+            
+            ps1->SetMarkerColor(color); 
             ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
             ps1->SetMarkerSize(REveMu2eDataInterface::mstyle);
 
-            ps2->SetMarkerColor(j+3);
+            ps2->SetMarkerColor(color);
             ps2->SetMarkerStyle(REveMu2eDataInterface::mstyle);
             ps2->SetMarkerSize(REveMu2eDataInterface::mstyle);
 
             // Add to REve world
             if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
             if(ps2->GetSize() !=0 ) scene->AddElement(ps2); 
-            std::cout<<"[REveMu2eDataInterface] AddCaloClusters 5"<<std::endl;
+
           }
       }
     }
