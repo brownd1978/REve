@@ -25,15 +25,17 @@ WebGui.HttpPort:   1234
 The first line disables the forefox window pop up on the Mu2e machines. The second line sets port number to 1234, this can then be used in your local machine. Assuming you have access to the Fermilab network (either on site or using VPN):
 
 ```
-mu2egpvm0X.fnal.gov:1234/win1/
+mu2egpvm01.fnal.gov:1234/win1/
 
 ```
 
-Or create na ssh tunnel:
+Or create a ssh tunnel:
 ```
-ssh -KXY -L 1234:mu2egpvm02.fnal.gov:1234 user@mu2egpvm02.fnal.gov
+ssh -KXY -L 1234:mu2egpvm01.fnal.gov:1234 user@mu2egpvm01.fnal.gov
 
 ```
+
+You can then view the display on your local machine without need to use a VNC. Be sure to kill the process on the Mu2e machines when finished to avoid future issues.
 
 # Development
 
