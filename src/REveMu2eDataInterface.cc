@@ -140,7 +140,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           
           error->SetPoint(0, pointmmTocm(x1),pointmmTocm(y1),pointmmTocm(z1));
           error->SetNextPoint(pointmmTocm(x2),pointmmTocm(y2),pointmmTocm(z2));
-          std::cout<<"Error positions "<<pointmmTocm(x1)<<" "<<pointmmTocm(y1)<<" "<<pointmmTocm(z1)<<std::endl;
+          
           error->SetLineColor(colour);
           scene->AddElement(error);
           //TODO - Z - drift cricle, might have to be series of lines in a circle (?)

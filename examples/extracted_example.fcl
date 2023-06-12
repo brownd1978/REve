@@ -20,7 +20,7 @@ physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
 physics.analyzers.REveEventDisplay.showST : false
 physics.analyzers.REveEventDisplay.diagLevel : 1
-physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
+physics.analyzers.REveEventDisplay.filler.addKalSeeds : false
 physics.analyzers.REveEventDisplay.filler.KalSeedCollection : ["KKSeed"]
 physics.analyzers.REveEventDisplay.filler.addClusters : false
 physics.analyzers.REveEventDisplay.filler.addHits : false
@@ -28,7 +28,7 @@ physics.analyzers.REveEventDisplay.filler.addCrvHits : true
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
 physics.analyzers.REveEventDisplay.filler.addTrkHits : false
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
-physics.analyzers.REveEventDisplay.filler.addMCTraj : true
+physics.analyzers.REveEventDisplay.filler.addMCTraj : false
 physics.analyzers.REveEventDisplay.extracted : true
 physics.analyzers.REveEventDisplay.gdmlname :"REve/mu2e_extracted.gdml"
 physics.analyzers.REveEventDisplay.seqMode : true

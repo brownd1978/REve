@@ -12,8 +12,28 @@ A number of "examples" are contained in the "examples" directory. For example on
 ```
 mu2e -c REve/fcl/helix_example.fcl FILENAME.art
 ```
+Things can be added and removed on the GUI once set to "true" in the FCL.
 
-A firefox window will open and you should see your events displayed. Edit the parameters in these caller FCL files to display what you want. Things can be added and removed on the GUI once set to "true" in the FCL.
+# The Browser
+
+The user is advised to add the following to their .rootrc:
+
+```
+WebEve.DisableShow:   1
+WebGui.HttpPort:   1234
+```
+The first line disables the forefox window pop up on the Mu2e machines. The second line sets port number to 1234, this can then be used in your local machine. Assuming you have access to the Fermilab network (either on site or using VPN):
+
+```
+mu2egpvm0X.fnal.gov:1234/win1/
+
+```
+
+Or create na ssh tunnel:
+```
+ssh -KXY -L 1234:mu2egpvm02.fnal.gov:1234 user@mu2egpvm02.fnal.gov
+
+```
 
 # Development
 

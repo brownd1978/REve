@@ -7,7 +7,7 @@ int maxSID = 20000;
 int maxStrawID = 70;
 int TrackLineWidth = 5;
 
-int ThreeDimColor = 432; //kCyan
+int ThreeDimColor = 920; //kCyan
 int RecoTrackColor = 416; //kGreen
 
 int CRVHitColor = 600; //kBlue
