@@ -2,7 +2,7 @@ BEGIN_PROLOG
 			
 REveEventDisplay : {
     module_type : REveEventDisplay 
-    diagLevel : 1 
+    diagLevel : 0 
     showCRV : false
     showPS : false
     showTS : false

@@ -370,9 +370,9 @@ namespace mu2e
   {
       REX::RWebWindowsManager::AssignMainThrd();
       eveMng_ = REX::REveManager::Create();
-      // InitGuiInfo()
-      //fGui = new REveMu2eGUI();
-      //fGui->SetName("Mu2eGUI");
+      //InitGuiInfo()
+      fGui = new REveMu2eGUI();
+      fGui->SetName("Mu2eGUI");
       
       // call manager
       eventMgr_ = new EventDisplayManager{eveMng_, cv_, m_, fGui};
@@ -386,11 +386,11 @@ namespace mu2e
       frame_->makeGeometryScene(eveMng_, geomOpts, gdmlname_);
       
       //add path to the custom GUI code here, this overrides ROOT GUI
-      //eveMng_->AddLocation("mydir/", "REve/CustomGUI");
-      //eveMng_->SetDefaultHtmlPage("file:mydir/eventDisplay.html");
+      eveMng_->AddLocation("mydir/", "REve/CustomGUI");
+      eveMng_->SetDefaultHtmlPage("file:mydir/eventDisplay.html");
    
       // InitGuiInfo() cont'd
-      //world->AddElement(fGui);
+      world->AddElement(fGui);
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
       //world->AddCommand("PrintEventInfo", "sap-icon://step", fGui, "PrintEventInfo()");
@@ -407,10 +407,10 @@ namespace mu2e
       eveMng_->GetWorld()->BeginAcceptingChanges();
       eveMng_->GetScenes()->AcceptChanges(true);
 
-      /*fGui->feventid = eventid_;
+      fGui->feventid = eventid_;
       fGui->frunid = subrunid_;
       fGui->frunid = runid_;
-      fGui->StampObjProps();*/
+      fGui->StampObjProps();
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;
       REX::REveElement* scene = eveMng_->GetEventScene();
