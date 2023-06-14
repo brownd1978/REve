@@ -10,9 +10,11 @@ You can run the REve Mu2e code in the same way as any analyzer in Mu2e Offline.
 A number of "examples" are contained in the "examples" directory. For example on the reconstructed outcome of a CeEndpoint (made using the Production/JobConfig fcl files):
 
 ```
-mu2e -c REve/fcl/helix_example.fcl FILENAME.art
+mu2e -c REve/fcl/helix_example.fcl FILENAME.art  
 ```
 Things can be added and removed on the GUI once set to "true" in the FCL.
+
+NOTE: you should run this from your working directory, not inside of REve.
 
 # The Browser
 

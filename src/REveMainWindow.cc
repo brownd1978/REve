@@ -26,6 +26,7 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     b1s->SetShape(gss);
     b1s->SetMainColor(drawconfigf.getInt("ThreeDimColor"));
     b1s->SetMainTransparency(drawconfigf.getInt("trans")); 
+    //b1s->SetLineColor(kBlack);
     holder->AddElement(b1s);
     if( crystal1 ){ 
         mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
@@ -179,7 +180,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(0) = 0;  
       shift.at(1) = 0;
       shift.at(2) = 0 ; 
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true, false);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true, true);
     }if(geomOpt.showST){
     static std::vector <std::string> substrings_stoppingtarget  {"TargetFoil"};
     shift.at(0) = 0;  
@@ -204,7 +205,12 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
  {
        for (auto &ie : eveMng->GetEventScene()->RefChildren())
        {
+          TrackerXYView->SetCameraType(REX::REveViewer::kCameraOrthoXOY);
+          XYCaloDisk1View->SetCameraType(REX::REveViewer::kCameraOrthoXOY);
+          XYCaloDisk2View->SetCameraType(REX::REveViewer::kCameraOrthoXOY);
+          rhoZView->SetCameraType(REX::REveViewer::kCameraOrthoXOY);
           mngTrackerXY->ImportElements(ie, TrackerXYEventScene);
+          
           mngRhoZ  ->ImportElements(ie, rhoZEventScene);
           if(ie->GetName() == "disk1") mngXYCaloDisk1->ImportElements(ie, XYCaloDisk1EventScene);
           if(ie->GetName() == "disk2") mngXYCaloDisk2->ImportElements(ie, XYCaloDisk2EventScene);

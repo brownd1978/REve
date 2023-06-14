@@ -1,6 +1,6 @@
 // draw options
 
-int trans  = 200;
+int trans  = 100;
 int maxlevel = 8;
 int level = 0;
 int maxSID = 20000;
