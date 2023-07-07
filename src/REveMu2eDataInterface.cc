@@ -312,9 +312,9 @@ void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop
   }
 }
 
-using LHPT = KinKal::PiecewiseTrajectory<KinKal::LoopHelix>;
-using CHPT = KinKal::PiecewiseTrajectory<KinKal::CentralHelix>;
-using KLPT = KinKal::PiecewiseTrajectory<KinKal::KinematicLine>;
+using LHPT = KalSeed::LHPT;
+using CHPT = KalSeed::CHPT;
+using KLPT = KalSeed::KLPT;
 template<class KTRAJ> void REveMu2eDataInterface::AddKinKalTrajectory( std::unique_ptr<KTRAJ> &trajectory, REX::REveLine* line){
   double t1=trajectory->range().begin();
   double t2=trajectory->range().end();
