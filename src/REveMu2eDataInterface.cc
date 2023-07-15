@@ -255,7 +255,7 @@ void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop
   std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
     
   GeomHandle<DetectorSystem> det;
-  StrawId trksid[drawconfig.getInt("maxStrawID")]; 
+  std::vector<StrawId> trksid(drawconfig.getInt("maxStrawID")); 
   unsigned int trkhitsize=0;
   //Save the hit straw IDs of the KalSeed hits  
   for(unsigned int j = 0; j< track_list.size(); j++){
@@ -269,8 +269,8 @@ void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop
           const mu2e::TrkStrawHitSeed &hit = hits.at(i);
           trksid[i] = hit._sid; 
         }
-        StrawId usedtrksid[trkhitsize];
-        unsigned int usedid[trkhitsize];
+        std::vector<StrawId> usedtrksid(trkhitsize);
+        std::vector<unsigned int> usedid(trkhitsize);
         //Compare the straw IDs of the Kal seed hits with the hits in the ComboHit Collection
         for(unsigned int j=0; j< combohit_list.size(); j++){
           const ComboHitCollection* chcol = combohit_list[j];
