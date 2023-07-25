@@ -23,6 +23,7 @@ The user is advised to add the following to their .rootrc:
 ```
 WebEve.DisableShow:   1
 WebGui.HttpPort:   1234
+WebEve.GLViewer:  Three
 ```
 The first line disables the forefox window pop up on the Mu2e machines. The second line sets port number to 1234, this can then be used in your local machine. Assuming you have access to the Fermilab network (either on site or using VPN):
 

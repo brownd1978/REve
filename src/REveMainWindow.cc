@@ -21,17 +21,23 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
  {
     auto gss = n->GetVolume()->GetShape();
     auto b1s = new REX::REveGeoShape(n->GetName());
+    
     b1s->InitMainTrans();
     b1s->RefMainTrans().SetFrom(trans.Array());
     b1s->SetShape(gss);
-    b1s->SetMainColor(drawconfigf.getInt("ThreeDimColor"));
     b1s->SetMainTransparency(drawconfigf.getInt("trans")); 
-    //b1s->SetLineColor(kBlack);
+    b1s->SetMainColor(drawconfigf.getInt("ThreeDimColor"));
+    b1s->SetEditMainColor(true);
+   // b1s->SetMainAlpha(0);
+    b1s-> SetEditMainTransparency(true);
+
     holder->AddElement(b1s);
     if( crystal1 ){ 
         mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
+        //b1s->SetMainColorRGB( UChar_t)251, (UChar_t)243, (UChar_t)243);
     }if( crystal2 ){
         mngXYCaloDisk2->ImportElements(b1s, XYCaloDisk2GeomScene);
+        //b1s->SetMainColorRGB( (UChar_t)251, (UChar_t)243, (UChar_t)243);
     }
     if( val == FrontTracker_gdmltag ){ 
         mngTrackerXY->ImportElements(b1s, TrackerXYGeomScene); //shows only one plane for simplicity
@@ -181,8 +187,8 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = 0;
       shift.at(2) = 0 ; 
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, true, true);
-    }if(geomOpt.showST){
-    static std::vector <std::string> substrings_stoppingtarget  {"TargetFoil"};
+    }if(geomOpt.showST and !geomOpt.extracted){
+    static std::vector <std::string> substrings_stoppingtarget  {"TargetFoil","IPAPolyethylene0x339a0f0"};
     shift.at(0) = 0;  
     shift.at(1) = 0;
     shift.at(2) = -1*geomconfig.getDouble("STz")/10; 

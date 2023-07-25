@@ -469,7 +469,9 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
               CLHEP::Hep3Vector p =  GenVector::Hep3Vec(pos);
               line->SetNextPoint(pointmmTocm(p.x()), pointmmTocm(p.y()) , pointmmTocm(p.z()));
             }
-            line->SetLineColor(j+3);
+            int col = j+3;
+            if(col > 9 ){  col += col+10; } 
+            line->SetLineColor(col);
             line->SetLineWidth(drawconfig.getInt("TrackLineWidth"));
             scene->AddElement(line); 
           }
