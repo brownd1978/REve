@@ -26,7 +26,5 @@ namespace mu2e {
     cv_->notify_all();
     throw std::runtime_error("EventDisplay");
   }
-  
-};
 
-
+}
