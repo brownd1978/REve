@@ -59,11 +59,13 @@ namespace mu2e {
       bool caloVST = false;
       bool showST = true;
       bool extracted = false;
-      
+      bool showSTM = false;
+      bool showCalo = true;
+      bool showTracker = true;
       GeomOptions(){};
-      GeomOptions(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext) 
-      : showCRV(crv), showPS(ps), showTS(ts), showDS(ds), show2D(twodim), caloVST(cVST), showST(st), extracted(ext) {};
-      void fill(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext) {
+      GeomOptions(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool calo, bool trk) 
+      : showCRV(crv), showPS(ps), showTS(ts), showDS(ds), show2D(twodim), caloVST(cVST), showST(st), extracted(ext), showSTM(stm), showCalo(calo), showTracker(trk) {};
+      void fill(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool cal, bool trk) {
         showCRV = (crv);
         showPS = (ps);
         showTS = (ts);
@@ -72,6 +74,23 @@ namespace mu2e {
         caloVST = (cVST);
         showST = (st);
         extracted = (ext);
+        showSTM = (stm);
+        showCalo = (cal);
+        showTracker = (trk);
+      }
+      void print(){
+        std::cout<<"***** Geom Options ****** "<<'\n'
+        <<" show CRV : "<<showCRV <<'\n'
+        <<" show PS : "<<showPS <<'\n'
+        <<" show TS : "<<showTS <<'\n'
+        <<" show DS : "<<showDS <<'\n'
+        <<" show 2D : "<<show2D <<'\n'
+        <<" show ST : "<<showST <<'\n'
+        <<" show STM : "<<showSTM <<'\n'
+        <<" show Calo : "<<showCalo <<'\n'
+        <<" show Trk : "<<showTracker <<'\n'
+        <<" show Extracted : "<<extracted <<'\n'
+        <<"************************ "<<std::endl;
       }
      };
      

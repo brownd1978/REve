@@ -6,8 +6,13 @@ REveEventDisplay : {
     showCRV : false
     showPS : false
     showTS : false
-    showTS : false
+    showDS : false
+    show2D : true
     caloVST : false
+    showST : true
+    showSTM : false
+    showCalo : true
+    showTracker : true
     specifyTag : false // IMPORTANT: override to make the following selections!!!
     filler : {
       diagLevel : 0

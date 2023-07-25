@@ -105,6 +105,9 @@ namespace mu2e
           fhicl::Atom<bool> show2D{Name("show2D"), Comment(""),true};   
           fhicl::Atom<bool> showST{Name("showST"), Comment(""),true}; 
           fhicl::Atom<bool> caloVST{Name("caloVST"), Comment(""),false};  
+          fhicl::Atom<bool> showSTM{Name("showSTM"), Comment(""),false};
+          fhicl::Atom<bool> showCalo{Name("showCalo"), Comment(""),true};
+          fhicl::Atom<bool> showTracker{Name("showTracker"), Comment(""),true};
           fhicl::Atom<bool> specifyTag{Name("specifyTag"), Comment("to only select events of selected input tag"),false};   
           fhicl::Table<CollectionFiller::Config> filler{Name("filler"),Comment("fill collections")};
           fhicl::Sequence<int>particles{Name("particles"),Comment("PDGcodes to plot")};
@@ -155,6 +158,9 @@ namespace mu2e
         bool show2D_;
         bool showST_;
         bool caloVST_;
+        bool showSTM_;
+        bool showCalo_;
+        bool showTracker_;
         bool specifyTag_ = false;
         TDirectory*   directory_ = nullptr;   
         CollectionFiller filler_;
@@ -190,6 +196,9 @@ namespace mu2e
     show2D_(conf().show2D()),
     showST_(conf().showST()),
     caloVST_(conf().caloVST()),
+    showSTM_(conf().showSTM()),
+    showCalo_(conf().showCalo()),
+    showTracker_(conf().showTracker()),
     specifyTag_(conf().specifyTag()),
     filler_(conf().filler()),
     particles_(conf().particles()),
@@ -205,7 +214,7 @@ namespace mu2e
           std::cout<<" Run Number : "<<std::endl;
           cin>>runn;
       }
-      geomOpts.fill(showCRV_,showPS_, showTS_, showDS_, show2D_, caloVST_, showST_, extracted_ );
+      geomOpts.fill(showCRV_,showPS_, showTS_, showDS_, show2D_, caloVST_, showST_, extracted_, showSTM_, showCalo_, showTracker_ );
     }
 
   REveEventDisplay::~REveEventDisplay() {}
