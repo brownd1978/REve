@@ -5,7 +5,7 @@ namespace REX = ROOT::Experimental;
 std::string drawfilename("REve/config/drawutils.txt");
 SimpleConfig drawconfig(drawfilename);
 
-void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CaloClusterCollection*>> calocluster_tuple, REX::REveElement* &scene){
+void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CaloClusterCollection*>> calocluster_tuple, REX::REveElement* &scene, std::vector<int> crystals_hit){
 
     std::cout<<"[REveMu2eDataInterface] AddCaloClusters "<<std::endl;
     std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(calocluster_tuple);
@@ -31,6 +31,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             CLHEP::Hep3Vector COG(cluster.cog3Vector().x(),cluster.cog3Vector().y(), cluster.cog3Vector().z());
             CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDiskFF(cluster.diskID(),COG);
             CLHEP::Hep3Vector pointInMu2e = det->toMu2e(crystalPos);
+            std::cout<<"crystal ID" <<cal.crystalIdxFromPosition(COG)<<std::endl;
 
             // Info for label
             std::string cluster_z = std::to_string(abs(pointInMu2e.z()));
