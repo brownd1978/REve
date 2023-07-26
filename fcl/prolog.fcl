@@ -18,6 +18,7 @@ REveEventDisplay : {
       diagLevel : 0
       ComboHitCollection : ["makeSH"]
       CrvRecoPulseCollection : ["SelectRecoMC"]
+      CrvCoincidenceClusterCollection : ["SelectRecoMC"]
       TimeClusterCollection : ["MHDeM"]
       CaloClusterCollection : ["CaloClusterFast"]
       KalSeedCollection : ["KFFDeM"]//KKDeM
@@ -26,6 +27,7 @@ REveEventDisplay : {
       MCTrajectoryCollection :  ["compressRecoMCs"]
       addHits : false
       addCrvHits : false
+      addCrvClusters : false
       addTimeClusters : false
       addTrkHits : false
       addClusters : false

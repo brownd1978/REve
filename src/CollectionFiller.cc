@@ -10,6 +10,7 @@ namespace mu2e{
     CollectionFiller::CollectionFiller(const Config& conf) :
       chTag_(conf.chTag()),
       tcTag_(conf.tcTag()),
+      crvrecoTag_(conf.crvrecoTag()),
       crvcoinTag_(conf.crvcoinTag()),
       cluTag_(conf.cluTag()),
       helixSeedTag_(conf.helixSeedTag()),
@@ -18,6 +19,7 @@ namespace mu2e{
       MCTrajTag_(conf.MCTrajTag()),
       addHits_(conf.addHits()),
       addCrvHits_(conf.addCrvHits()),
+      addCrvClusters_(conf.addCrvClusters()),
       addTimeClusters_(conf.addTimeClusters()),
       addTrkHits_(conf.addTrkHits()),
       addClusters_(conf.addClusters()),
@@ -48,12 +50,23 @@ namespace mu2e{
             data.combohit_tuple = std::make_tuple(data.combohit_labels,data.combohit_list);
         }
         if(FillAll_ or (addCrvHits_ and CollectionName==CRVRecoPulses)){
-          for(const auto &tag : crvcoinTag_){ 
+          for(const auto &tag : crvrecoTag_){ 
             auto chH = evt.getValidHandle<mu2e::CrvRecoPulseCollection>(tag);
-            data.crvcoincol = chH.product();
-            data.crvpulse_list.push_back(data.crvcoincol);
+            data.crvrecocol = chH.product();
+            data.crvpulse_list.push_back(data.crvrecocol);
             std::string name = TurnNameToString(tag);
             std::cout<<"Plotting CRV Instance: "<<name<<"  "<<data.crvpulse_list.size()<<std::endl;
+            data.crvpulse_labels.push_back(name);
+          }
+            data.crvpulse_tuple = std::make_tuple(data.crvpulse_labels,data.crvpulse_list);
+        }
+        if(FillAll_ or (addCrvClusters_ and CollectionName==CRVCoincidenceCluster)){
+          for(const auto &tag : crvcoinTag_){ 
+            auto chH = evt.getValidHandle<mu2e::CrvCoincidenceClusterCollection>(tag);
+            data.crvcoincol = chH.product();
+            data.crvcoin_list.push_back(data.crvcoincol);
+            std::string name = TurnNameToString(tag);
+            std::cout<<"Plotting CRV Instance: "<<name<<"  "<<data.crvcoin_list.size()<<std::endl;
             data.crvpulse_labels.push_back(name);
           }
             data.crvpulse_tuple = std::make_tuple(data.crvpulse_labels,data.crvpulse_list);

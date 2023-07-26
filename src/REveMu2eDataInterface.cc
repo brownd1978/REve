@@ -220,6 +220,36 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
   }
 
 
+/*------------Function to add CRV information to the display:-------------*/
+  void REveMu2eDataInterface::AddCRVClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CrvCoincidenceClusterCollection*>>  crvpulse_tuple, REX::REveElement* &scene){
+    
+    std::vector<const CrvCoincidenceClusterCollection*> crvpulse_list = std::get<1>(crvpulse_tuple);
+    std::vector<std::string> names = std::get<0>(crvpulse_tuple); 
+    GeomHandle<CosmicRayShield> CRS;
+    GeomHandle<DetectorSystem> det;
+    if(crvpulse_list.size() !=0){
+      for(unsigned int i=0; i < crvpulse_list.size(); i++){
+      const CrvCoincidenceClusterCollection* crvClusters = crvpulse_list[i];
+      if(crvClusters->size() !=0){
+        std::string crvtitle = " tag : " + names[i];
+        auto ps1 = new REX::REvePointSet("CRVCoincidenceClusters", crvtitle,0);
+        for(unsigned int j=0; j< crvClusters->size(); j++){
+          mu2e::CrvCoincidenceCluster const &crvpulse = (*crvClusters)[j];
+          std::cout<<crvpulse.GetAvgCounterPos().x()<<" "<<crvpulse.GetAvgCounterPos().y()<<" "<<crvpulse.GetAvgCounterPos().z()<<std::endl;
+          CLHEP::Hep3Vector pointInMu2e = det-> toDetector(crvpulse.GetAvgCounterPos());
+          ps1->SetNextPoint(pointmmTocm(pointInMu2e.x()), pointmmTocm(pointInMu2e.y()) , pointmmTocm(pointInMu2e.z()));
+        }
+        
+        ps1->SetMarkerColor(kBlack);
+        ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
+        ps1->SetMarkerSize(REveMu2eDataInterface::msize);
+        if(ps1->GetSize() !=0 ) scene->AddElement(ps1); 
+      }
+      }
+    }
+    
+  }
+
 /*------------Function to add TimeCluster Collection in 3D and 2D displays:-------------*/
   void REveMu2eDataInterface::AddTimeClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const TimeClusterCollection*>>  timecluster_tuple, REX::REveElement* &scene){
   

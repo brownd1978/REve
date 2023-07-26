@@ -37,7 +37,8 @@ namespace mu2e{
 
       //DataProducts:
       const mu2e::ComboHitCollection* chcol = 0;  
-      const mu2e::CrvRecoPulseCollection* crvcoincol = 0; 
+      const mu2e::CrvRecoPulseCollection* crvrecocol = 0; 
+      const mu2e::CrvCoincidenceClusterCollection* crvcoincol = 0; 
       const mu2e::TimeClusterCollection *tccol = 0;
       const mu2e::CaloClusterCollection* clustercol = 0;
       const mu2e::HelixSeedCollection* helixSeedcol = 0;
@@ -50,6 +51,7 @@ namespace mu2e{
       std::vector<const mu2e::CaloClusterCollection*> calocluster_list;
       std::vector<const mu2e::ComboHitCollection*> combohit_list;
       std::vector<const mu2e::CrvRecoPulseCollection*> crvpulse_list;
+      std::vector<const mu2e::CrvCoincidenceClusterCollection*> crvcoin_list;
       std::vector<const mu2e::TimeClusterCollection*> timecluster_list;
       std::vector<const mu2e::MCTrajectoryCollection*> mctrack_list;
       //Input Tag Labels:
@@ -59,6 +61,7 @@ namespace mu2e{
       std::vector<std::string> mctrack_labels;
       std::vector<std::string> combohit_labels;
       std::vector<std::string> crvpulse_labels;
+      std::vector<std::string> crvcoin_labels;
       std::vector<std::string> timecluster_labels;
       //Link Labels and Lists:
       std::tuple<std::vector<std::string>, std::vector<const mu2e::HelixSeedCollection*>> helix_tuple;
@@ -66,22 +69,29 @@ namespace mu2e{
       std::tuple<std::vector<std::string>, std::vector<const mu2e::CaloClusterCollection*>> calocluster_tuple;
       std::tuple<std::vector<std::string>, std::vector<const mu2e::ComboHitCollection*>> combohit_tuple;
       std::tuple<std::vector<std::string>, std::vector<const mu2e::CrvRecoPulseCollection*>> crvpulse_tuple;
+      std::tuple<std::vector<std::string>, std::vector<const mu2e::CrvCoincidenceClusterCollection*>> crvcoin_tuple;
       std::tuple<std::vector<std::string>, std::vector<const mu2e::TimeClusterCollection*>> timecluster_tuple;
       std::tuple<std::vector<std::string>, std::vector<const mu2e::MCTrajectoryCollection*>> mctrack_tuple;
       
 
       void Reset(){
-	this->helix_list.clear();
+        this->helix_list.clear();
         this->track_list.clear();
         this->calocluster_list.clear();
         this->combohit_list.clear();
         this->crvpulse_list.clear();
-	this->timecluster_list.clear();
+        this->crvcoin_list.clear();
+        this->timecluster_list.clear();
         this->mctrack_list.clear();
+        
         this->track_labels.clear();
         this->calocluster_labels.clear();
         this->mctrack_labels.clear();
         this->combohit_labels.clear();
+        this->crvpulse_labels.clear();
+        this->helix_labels.clear();
+        this->crvcoin_labels.clear();
+        this->timecluster_labels.clear();
       }
       
       virtual ~DataCollections(){};

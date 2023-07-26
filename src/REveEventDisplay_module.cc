@@ -254,6 +254,7 @@ namespace mu2e
     <<" addHits : "<<filler_.addHits_
     <<" addTimeClusters : "<<filler_.addTimeClusters_
     <<" addCRVpulses : "<<filler_.addCrvHits_
+    <<" addCRVclusters : "<<filler_.addCrvClusters_
     <<" addClusters : "<<filler_.addClusters_
     <<" addHelices : "<<filler_.addHelixSeeds_
     <<" addTracks : "<<filler_.addKalSeeds_
@@ -338,8 +339,13 @@ namespace mu2e
         if(filler_.addCrvHits_) {
           if(specifyTag_) { filler_.FillRecoCollections(event, data, CRVRecoPulses); }
           else { FillAnyCollection<CrvRecoPulseCollection, const CrvRecoPulseCollection*>(event, _chits, data.crvpulse_tuple );}
-        }
+        } 
 
+        if(filler_.addCrvClusters_) {
+          if(specifyTag_) { filler_.FillRecoCollections(event, data, CRVCoincidenceCluster); }
+          else { FillAnyCollection<CrvCoincidenceClusterCollection, const CrvCoincidenceClusterCollection*>(event, _chits, data.crvcoin_tuple );}
+        }
+        
         if(filler_.addTrkHits_) filler_.FillRecoCollections(event, data, TrkHits); 
         if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
         
@@ -425,7 +431,7 @@ namespace mu2e
       REX::REveElement* scene = eveMng_->GetEventScene();
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
-      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_);
+      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addCrvClusters_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_);
       frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts, particles_, strawdisplay_, geomOpts);
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
