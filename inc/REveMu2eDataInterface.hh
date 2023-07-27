@@ -4,8 +4,13 @@
 #include <ROOT/REvePointSet.hxx>
 #include <ROOT/REveManager.hxx>
 #include <ROOT/REveLine.hxx>
+#include <ROOT/REveGeoShape.hxx>
+#include <ROOT/REveBox.hxx>
 #include <ROOT/REveScene.hxx>
+#include <TGeoBBox.h>
+#include <TGeoMatrix.h>
 #include <ROOT/REveTrackPropagator.hxx>
+#include <ROOT/REveTrans.hxx>
 #include "Offline/RecoDataProducts/inc/CrvCoincidenceCluster.hh"
 #include "Offline/CosmicRayShieldGeom/inc/CosmicRayShield.hh"
 #include "Offline/DataProducts/inc/CRSScintillatorBarIndex.hh"
@@ -39,7 +44,7 @@ namespace mu2e{
     class REveMu2eDataInterface {
         public:
           static int const mstyle = 5;
-          static int const msize = 6;
+          static int const msize = 2;
           explicit REveMu2eDataInterface(){};
           explicit REveMu2eDataInterface(const REveMu2eDataInterface &);
           REveMu2eDataInterface& operator=(const REveMu2eDataInterface &);

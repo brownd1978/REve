@@ -19,7 +19,7 @@ double FrontTracker_gdmltag;
 
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2, std::string name, int color)
  {
-    //std::cout<<" name "<<name<<std::endl;
+    std::cout<<" name "<<name<<std::endl;
     auto gss = n->GetVolume()->GetShape();
     auto b1s = new REX::REveGeoShape(n->GetName());
     
@@ -35,10 +35,8 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     holder->AddElement(b1s);
     if( crystal1 ){ 
         mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
-        //b1s->SetMainColor(632); 
     }if( crystal2 ){
         mngXYCaloDisk2->ImportElements(b1s, XYCaloDisk2GeomScene);
-        //b1s->SetMainColor(632); 
     }
     
     if( val == FrontTracker_gdmltag ){ 
@@ -46,99 +44,6 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     }
     mngRhoZ  ->ImportElements(b1s, rhoZGeomScene); 
  }
-
-/*void REveMainWindow::changeEveGeoShape(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level){//std::vector<int> crystals_hit){
-  std::vector<double> shift;
-  static std::vector <std::string> substrings_disk  {"caloCrystalPV_3870x3d4a220"}; 
-  for(auto& i: substrings_disk){
-    shift.at(0) = 0;  
-    shift.at(1) = 0;
-    shift.at(2) = 0;
-    changeNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, shift, false, false);
-  }
-    auto gss = n->GetVolume()->GetShape();
-    auto b1s = new REX::REveGeoShape(n->GetName());
-
-    b1s->InitMainTrans();
-    b1s->RefMainTrans().SetFrom(trans.Array());
-    b1s->SetShape(gss);
-    b1s->SetMainTransparency(drawconfigf.getInt("trans")); 
-    b1s->SetMainColor(432);
-    holder->AddElement(b1s);
-  
-}*/
-
-/*int j = 0;
-int fp =0;
-
-void REveMainWindow::changeNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal,  std::vector<double> shift, bool print, bool single, int color) { 
-    ++level;
-    if (level > maxlevel){
-       return;
-    }
-    std::string name(n->GetName());
-    
-    j++;
-    if(print) std::cout<<j<<" "<<name<<std::endl;
-    bool cry1 = false; // these help us know which disk and to draw crystals
-    bool cry2 = false;
-    int ndau = n->GetNdaughters();
-    if (name.find(str)!= std::string::npos and single){
-    REX::REveTrans ctrans;
-    ctrans.SetFrom(trans.Array());
-    {
-        TGeoMatrix     *gm = n->GetMatrix();
-        const Double_t *rm = gm->GetRotationMatrix();
-        const Double_t *tv = gm->GetTranslation();
-        REX::REveTrans t;
-        t(1,1) = rm[0]; t(1,2) = rm[1]; t(1,3) = rm[2];
-        t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
-        t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
-        t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
-        ctrans *= t;
-       }
-    n->ls();
-    makeEveGeoShape(n, ctrans, holder, j, cry1, cry2, name);
-    }
-    for ( int i=0; i<ndau; ++i ){
-        TGeoNode * pn = n->GetDaughter(i);
-        if (name.find(str)!= std::string::npos and i==0 ){ //To make the geometry translucant we only add i==0
-            REX::REveTrans ctrans;
-            ctrans.SetFrom(trans.Array());
-            {
-                TGeoMatrix     *gm = n->GetMatrix();
-                const Double_t *rm = gm->GetRotationMatrix();
-                const Double_t *tv = gm->GetTranslation();
-                REX::REveTrans t;
-                t(1,1) = rm[0]; t(1,2) = rm[1]; t(1,3) = rm[2];
-                t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
-                t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
-                t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
-
-                if(name == "caloDisk_00x3d71700") {
-                  disk1_center = tv[2] ;
-                 }
-                if(name == "caloDisk_10x3e1ec70") {
-                  disk2_center = tv[2] ;
-                 }
-                if(caloshift){
-                    fp++;
-                    double d = 0;
-                    if(fp < nCrystals) { d = disk1_center; }
-                    else { d = disk2_center; }
-                    if(crystal) { t(1,4) = tv[0]; t(2,4) = tv[1] ; t(3,4) = tv[2] + dz/10 + d; } 
-                    else { t(1,4) = tv[0]; t(2,4) = tv[1]; t(3,4) = tv[2] + dz/10; } 
-                    if (fp < nCrystals and crystal) cry1 = true; 
-                    if (fp >= nCrystals and crystal) cry2 = true; 
-                } 
-                ctrans *= t;
-               }
-            n->ls();
-            makeEveGeoShape(n, ctrans, holder, j, cry1, cry2, name, color);  
-        }
-       changeNodesByName( pn, str, onOff, _diagLevel, trans,  holder, maxlevel, level, caloshift, crystal, shift, print, single);
-       }
-    } */
 
 int j = 0;
 int fp =0;
@@ -263,7 +168,25 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
     }
     if(geomOpt.showCRV and geomOpt.extracted){
-      static std::vector <std::string> substrings_crv  {"CRSscintLayer"}; 
+      static std::vector <std::string> substrings_crv  {"CRSScintillatorBar_1_0","CRSscintLayer_0","CRSmotherLayer_CRV_EX"};//"CRSScintillatorBar_1_0_1","CRSScintillatorBar_1_0_2"}; 
+      shift.at(0) = 0;
+      shift.at(1) = 4730/10; 
+      shift.at(2) =  0;
+      for(auto& i: substrings_crv){
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
+      }
+    }
+    if(geomOpt.showCRV and geomOpt.extracted){
+      static std::vector <std::string> substrings_crv  {"CRSScintillatorBar_1_1","CRSscintLayer_1","CRSmotherLayer_CRV_T1"}; //"CRSAluminumSheet_1"
+      shift.at(0) = 0;
+      shift.at(1) = 4580/10;
+      shift.at(2) =  0;
+      for(auto& i: substrings_crv){
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
+      }
+    }
+    if(geomOpt.showCRV and geomOpt.extracted){
+      static std::vector <std::string> substrings_crv  {"CRSScintillatorBar_1_2","CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//"CRSscintLayer_2","CRSScintillatorBar_1_2"}; 
       shift.at(0) = 0;
       shift.at(1) = 4880/10;
       shift.at(2) =  0;

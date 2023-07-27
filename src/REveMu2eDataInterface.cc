@@ -197,15 +197,48 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           CLHEP::Hep3Vector sposi(0.0,0.0,0.0), sposf(0.0,0.0,0.0);
           sposi.set(pointInMu2e.x()-sibardetails.x(), pointInMu2e.y()-sibardetails.y(), pointInMu2e.z()-sibardetails.z());
           sposf.set(pointInMu2e.x()+sibardetails.x(), pointInMu2e.y()+sibardetails.y(), pointInMu2e.z()+sibardetails.z());
+          
+          /*std::cout<<"CRV counter pos "<<crvCounterPos.x()<<" "<<crvCounterPos.y()<<" "<<crvCounterPos.z()<<std::endl;
+          std::cout<<"CRV counter pos in Mu2e "<<pointInMu2e.x()<<" "<<pointInMu2e.y()<<" "<<pointInMu2e.z()<<std::endl;
+          std::cout<<"bar details "<<2*sibardetails.x()<<" "<<2*sibardetails.y()<<" "<<2*sibardetails.z()<<std::endl;*/
           // CRV hit scintillation bars highlighted
-          std::string bartitle = " bar : ";// + std::to_string(crvBarIndex):
-          auto scibar = new REX::REveLine("scintillationBar",bartitle,1); 
+          // std::string bartitle = " bar : " + std::to_string(crvBarIndex.asInt()) ;
+          // char const *bartitle_c = bartitle.c_str(); //TODO title
+          
+          
+          /*auto b = new REX::REveBox("box");
+          b->SetMainColor(632);
+//0th entry: thickness
+                                     //1st entry: width
+                                     //2nd entry: length
+
+          double  length = pointmmTocm(crvCounter.getHalfLength());
+          double  width = pointmmTocm(crvCounter.getHalfWidth());
+          double  height = pointmmTocm(crvCounter.getHalfThickness());
+std::cout<<"box "<<pointInMu2e.x()/10 + width <<" "<< pointInMu2e.y()/10  + height <<" "<< pointInMu2e.z()/10 - length <<std::endl;
+          b->SetVertex(0, pointmmTocm(pointInMu2e.z()) - length, pointmmTocm(pointInMu2e.y())  + height , pointmmTocm(pointInMu2e.x()) + width );
+          b->SetVertex(1, pointmmTocm(pointInMu2e.z()) - length , pointmmTocm(pointInMu2e.y())  + height , pointmmTocm(pointInMu2e.x()) - width);
+          b->SetVertex(2, pointmmTocm(pointInMu2e.z()) + length, pointmmTocm(pointInMu2e.y())   + height, pointmmTocm(pointInMu2e.x()) - width );
+          b->SetVertex(3, pointmmTocm(pointInMu2e.z()) + length, pointmmTocm(pointInMu2e.y())  + height , pointmmTocm(pointInMu2e.x()) + width );
+         // b->SetVertex(3, pointmmTocm(pointInMu2e.z()) + length, pointmmTocm(pointInMu2e.y())   + height, pointmmTocm(pointInMu2e.x()) - width );
+          b->SetVertex(4, pointmmTocm(pointInMu2e.z()) + length, pointmmTocm(pointInMu2e.y())  - height, pointmmTocm(pointInMu2e.x()) + width );
+          b->SetVertex(5, pointmmTocm(pointInMu2e.z()) + length, pointmmTocm(pointInMu2e.y())  - height , pointmmTocm(pointInMu2e.x()) - width );
+          b->SetVertex(6, pointmmTocm(pointInMu2e.z()) - length, pointmmTocm(pointInMu2e.y())  - height , pointmmTocm(pointInMu2e.x()) - width );
+          b->SetVertex(7, pointmmTocm(pointInMu2e.z()) - length, pointmmTocm(pointInMu2e.y())  - height, pointmmTocm(pointInMu2e.x()) + width);
+
+          scene->AddElement(b);*/
+
+          
+          //Draws lines:
+          auto scibar = new REX::REveLine("scintillationBar","bar",1); 
           scibar->SetPoint(0,pointmmTocm(sposi.x()),pointmmTocm(sposi.y()),pointmmTocm(sposi.z()));
-          scibar->SetNextPoint(pointmmTocm(sposf.x()),pointmmTocm(sposf.y()),pointmmTocm(sposf.z()));            
+          scibar->SetNextPoint(pointmmTocm(sposf.x()),pointmmTocm(sposf.y()),pointmmTocm(sposf.z())); 
+          std::cout<<"lines "<<pointmmTocm(sposf.z())<<" "<<pointmmTocm(sposf.y())<<" "<<pointmmTocm(sposf.x())<<std::endl;          
           scibar->SetLineWidth(1);
           scibar->SetLineColor(i+3);
           if(scibar->GetSize() !=0 ) scene->AddElement(scibar);
-          // CRV hits
+          
+          // Add Reco Pulses
           ps1->SetNextPoint(pointmmTocm(pointInMu2e.x()), pointmmTocm(pointInMu2e.y()) , pointmmTocm(pointInMu2e.z()));
         }
         
