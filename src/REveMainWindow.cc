@@ -19,7 +19,7 @@ double FrontTracker_gdmltag;
 
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2, std::string name, int color)
  {
-    std::cout<<" name "<<name<<std::endl;
+    //std::cout<<" name "<<name<<std::endl;
     auto gss = n->GetVolume()->GetShape();
     auto b1s = new REX::REveGeoShape(n->GetName());
     
@@ -168,30 +168,40 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
     }
     if(geomOpt.showCRV and geomOpt.extracted){
-      static std::vector <std::string> substrings_crv  {"CRSScintillatorBar_1_0","CRSscintLayer_0","CRSmotherLayer_CRV_EX"};//"CRSScintillatorBar_1_0_1","CRSScintillatorBar_1_0_2"}; 
+      std::string filename("Offline/Mu2eG4/geom/crv_counters_extracted_v01.txt");
+      SimpleConfig Config(filename);
+      std::vector<double> firstCounterEX;
+      std::vector<double> firstCounterT1;
+      std::vector<double> firstCounterT2;
+      Config.getVectorDouble("crs.firstCounterEX", firstCounterEX);
+      Config.getVectorDouble("crs.firstCounterT1", firstCounterT1);
+      Config.getVectorDouble("crs.firstCounterT2", firstCounterT2);
+
+      static std::vector <std::string> substrings_ex {"CRSScintillatorBar_1_0","CRSscintLayer_0","CRSmotherLayer_CRV_EX"};//"CRSScintillatorBar_1_0_1","CRSScintillatorBar_1_0_2"}; 
       shift.at(0) = 0;
-      shift.at(1) = 4730/10; 
+      shift.at(1) = firstCounterEX[1]/10; 
       shift.at(2) =  0;
-      for(auto& i: substrings_crv){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
+      for(auto& i: substrings_ex){
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
       }
-    }
-    if(geomOpt.showCRV and geomOpt.extracted){
-      static std::vector <std::string> substrings_crv  {"CRSScintillatorBar_1_1","CRSscintLayer_1","CRSmotherLayer_CRV_T1"}; //"CRSAluminumSheet_1"
+
+
+      static std::vector <std::string> substrings_t1  {"CRSScintillatorBar_1_1","CRSscintLayer_1","CRSmotherLayer_CRV_T1"}; //"CRSAluminumSheet_1"
       shift.at(0) = 0;
-      shift.at(1) = 4580/10;
+      shift.at(1) = firstCounterT1[1]/10;
       shift.at(2) =  0;
-      for(auto& i: substrings_crv){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
+      for(auto& i: substrings_t1){
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
       }
-    }
-    if(geomOpt.showCRV and geomOpt.extracted){
-      static std::vector <std::string> substrings_crv  {"CRSScintillatorBar_1_2","CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//"CRSscintLayer_2","CRSScintillatorBar_1_2"}; 
+
+
+      static std::vector <std::string> substrings_t2  {"CRSScintillatorBar_1_2","CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//"CRSScintillatorBar_1_2"}; 
       shift.at(0) = 0;
-      shift.at(1) = 4880/10;
+      shift.at(1) = firstCounterT2[1]/10;
       shift.at(2) =  0;
-      for(auto& i: substrings_crv){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false, 432);
+      for(auto& i: substrings_t2){
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false, 432);
+
       }
     }
     if(geomOpt.showCalo){
