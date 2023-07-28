@@ -21,7 +21,7 @@ namespace mu2e {
   void
   EventDisplayManager::QuitRoot()
   {
-    // This will wreak havoc if not thrown from the main thread.
+    // FIXME This will wreak havoc if not thrown from the main thread.
     std::unique_lock<std::mutex> lock{*m_};
     cv_->notify_all();
     throw std::runtime_error("EventDisplay");

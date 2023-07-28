@@ -10,8 +10,8 @@ std::string drawoptfilename("REve/config/drawutils.txt");
 SimpleConfig geomconfig(calfilename);
 SimpleConfig drawconfigf(drawoptfilename);
 
-double disk1_center = geomconfig.getDouble("disk1_center");
-double disk2_center = geomconfig.getDouble("disk2_center");
+double disk1_center = 0;
+double disk2_center = 0;
 double nCrystals = geomconfig.getDouble("nCrystals"); 
 double dz = geomconfig.getDouble("CaloTrackerdz"); 
 
@@ -19,7 +19,7 @@ double FrontTracker_gdmltag;
 
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2, std::string name, int color)
  {
-    std::cout<<" name "<<name<<std::endl;
+    //std::cout<<" name "<<name<<std::endl;
     auto gss = n->GetVolume()->GetShape();
     auto b1s = new REX::REveGeoShape(n->GetName());
     
@@ -96,16 +96,18 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                   FrontTracker_gdmltag = j;
                   
                  }
-                if(name == "caloDisk_00x3d71700") {
+                if(name == "caloDisk_00x3d71700" or name == "caloDisk_00x4f89e50") { // latter for extracted.
                   disk1_center = tv[2] ;
+                  std::cout<<"calo disk 1"<<disk1_center<<std::endl;
                  }
-                if(name == "caloDisk_10x3e1ec70") {
+                if(name == "caloDisk_10x3e1ec70" or name == "caloDisk_10x4fef6e0") {// latter for extracted.
                   disk2_center = tv[2] ;
+                  std::cout<<"calo disk 2"<<disk2_center<<std::endl;
                  }
                 if(caloshift){
                     fp++;
                     double d = 0;
-                    if(fp < nCrystals) { d = disk1_center; }
+                    if(fp < nCrystals) { d = disk1_center; } 
                     else { d = disk2_center; }
                     if(crystal) { t(1,4) = tv[0]; t(2,4) = tv[1] ; t(3,4) = tv[2] + dz/10 + d; } 
                     else { t(1,4) = tv[0]; t(2,4) = tv[1]; t(3,4) = tv[2] + dz/10; } 
@@ -168,30 +170,40 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
     }
     if(geomOpt.showCRV and geomOpt.extracted){
-      static std::vector <std::string> substrings_crv  {"CRSScintillatorBar_1_0","CRSscintLayer_0","CRSmotherLayer_CRV_EX"};//"CRSScintillatorBar_1_0_1","CRSScintillatorBar_1_0_2"}; 
+      std::string filename("Offline/Mu2eG4/geom/crv_counters_extracted_v01.txt");
+      SimpleConfig Config(filename);
+      std::vector<double> firstCounterEX;
+      std::vector<double> firstCounterT1;
+      std::vector<double> firstCounterT2;
+      Config.getVectorDouble("crs.firstCounterEX", firstCounterEX);
+      Config.getVectorDouble("crs.firstCounterT1", firstCounterT1);
+      Config.getVectorDouble("crs.firstCounterT2", firstCounterT2);
+
+      static std::vector <std::string> substrings_ex {"CRSScintillatorBar_1_0","CRSscintLayer_0","CRSmotherLayer_CRV_EX"};//"CRSScintillatorBar_1_0_1","CRSScintillatorBar_1_0_2"}; 
       shift.at(0) = 0;
-      shift.at(1) = 4730/10; 
+      shift.at(1) = firstCounterEX[1]/10; 
       shift.at(2) =  0;
-      for(auto& i: substrings_crv){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
+      for(auto& i: substrings_ex){
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
       }
-    }
-    if(geomOpt.showCRV and geomOpt.extracted){
-      static std::vector <std::string> substrings_crv  {"CRSScintillatorBar_1_1","CRSscintLayer_1","CRSmotherLayer_CRV_T1"}; //"CRSAluminumSheet_1"
+
+
+      static std::vector <std::string> substrings_t1  {"CRSScintillatorBar_1_1","CRSscintLayer_1","CRSmotherLayer_CRV_T1"}; //"CRSAluminumSheet_1"
       shift.at(0) = 0;
-      shift.at(1) = 4580/10;
+      shift.at(1) = firstCounterT1[1]/10;
       shift.at(2) =  0;
-      for(auto& i: substrings_crv){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
+      for(auto& i: substrings_t1){
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
       }
-    }
-    if(geomOpt.showCRV and geomOpt.extracted){
-      static std::vector <std::string> substrings_crv  {"CRSScintillatorBar_1_2","CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//"CRSscintLayer_2","CRSScintillatorBar_1_2"}; 
+
+
+      static std::vector <std::string> substrings_t2  {"CRSScintillatorBar_1_2","CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//"CRSScintillatorBar_1_2"}; 
       shift.at(0) = 0;
-      shift.at(1) = 4880/10;
+      shift.at(1) = firstCounterT2[1]/10;
       shift.at(2) =  0;
-      for(auto& i: substrings_crv){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false, 432);
+      for(auto& i: substrings_t2){
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false, 432);
+
       }
     }
     if(geomOpt.showCalo){
@@ -220,7 +232,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false, true, 432);
       }
     }
-    if(!geomOpt.extracted){
+   // if(!geomOpt.extracted){
       static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
       for(auto& i: substrings_crystals){
         shift.at(0) = 0;  
@@ -228,7 +240,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         shift.at(2) = 0;
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false, false, 432);
       }
-    }
+    //}
     if(geomOpt.showSTM){
       static std::vector <std::string> substrings_stm  {"stmDet1Can","stmDet1","stmDet2Can","stmDet2"};
       for(auto& i: substrings_stm){
@@ -310,12 +322,12 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     //...addReco:
     if(drawOpts.addComboHits) {
       std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
-      if(combohit_list.size() !=0 ) pass_data->AddComboHits(eveMng, firstLoop, data.combohit_tuple, eventScene, strawdisplay);
+      if(combohit_list.size() !=0 ) pass_data->AddComboHits(eveMng, firstLoop, data.combohit_tuple, eventScene, strawdisplay, drawOpts.addTrkErrBar);
     }
     
     if(drawOpts.addCRVInfo){
        std::vector<const CrvRecoPulseCollection*> crvpulse_list = std::get<1>(data.crvpulse_tuple);
-       if(crvpulse_list.size() !=0) pass_data->AddCRVInfo(eveMng, firstLoop, data.crvpulse_tuple, eventScene);
+       if(crvpulse_list.size() !=0) pass_data->AddCRVInfo(eveMng, firstLoop, data.crvpulse_tuple, eventScene, geomOpts.extracted);
     }
     
     if(drawOpts.addCRVClusters){
