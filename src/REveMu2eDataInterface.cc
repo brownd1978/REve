@@ -72,7 +72,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
     }
   }
 
-void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const ComboHitCollection*>> combohit_tuple, REX::REveElement* &scene, bool strawdisplay){
+void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const ComboHitCollection*>> combohit_tuple, REX::REveElement* &scene, bool strawdisplay, bool AddErrorBar_){
 
   std::vector<const ComboHitCollection*> combohit_list = std::get<1>(combohit_tuple);
   std::vector<std::string> names = std::get<0>(combohit_tuple);
@@ -127,7 +127,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
             }
           }
         }
-        bool AddErrorBar_ = true; //TODO turn off when mixed
+
         if(AddErrorBar_){
           //XY
           auto error = new REX::REveLine("errors","error title",1); 

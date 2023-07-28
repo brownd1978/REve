@@ -13,6 +13,7 @@ REveEventDisplay : {
     showSTM : false
     showCalo : true
     showTracker : true
+    addErrBar : true
     specifyTag : false // IMPORTANT: override to make the following selections!!!
     filler : {
       diagLevel : 0

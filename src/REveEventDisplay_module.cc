@@ -108,6 +108,7 @@ namespace mu2e
           fhicl::Atom<bool> showSTM{Name("showSTM"), Comment(""),false};
           fhicl::Atom<bool> showCalo{Name("showCalo"), Comment(""),true};
           fhicl::Atom<bool> showTracker{Name("showTracker"), Comment(""),true};
+          fhicl::Atom<bool> addErrBar{Name("addErrBar"), Comment("show combo hit err bar"),true};
           fhicl::Atom<bool> specifyTag{Name("specifyTag"), Comment("to only select events of selected input tag"),false};   
           fhicl::Table<CollectionFiller::Config> filler{Name("filler"),Comment("fill collections")};
           fhicl::Sequence<int>particles{Name("particles"),Comment("PDGcodes to plot")};
@@ -161,6 +162,7 @@ namespace mu2e
         bool showSTM_;
         bool showCalo_;
         bool showTracker_;
+        bool addErrBar_;
         bool specifyTag_ = false;
         TDirectory*   directory_ = nullptr;   
         CollectionFiller filler_;
@@ -199,6 +201,7 @@ namespace mu2e
     showSTM_(conf().showSTM()),
     showCalo_(conf().showCalo()),
     showTracker_(conf().showTracker()),
+    addErrBar_(conf().addErrBar()),
     specifyTag_(conf().specifyTag()),
     filler_(conf().filler()),
     particles_(conf().particles()),
@@ -431,7 +434,7 @@ namespace mu2e
       REX::REveElement* scene = eveMng_->GetEventScene();
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
-      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addCrvClusters_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_);
+      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addCrvClusters_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_, addErrBar_);
       frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts, particles_, strawdisplay_, geomOpts);
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
