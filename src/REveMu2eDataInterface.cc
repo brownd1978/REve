@@ -186,6 +186,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
         std::string crvtitle = " tag : " + names[i];
         auto ps1 = new REX::REvePointSet("CRVRecoPulse", crvtitle,0);
         for(unsigned int j=0; j< crvRecoPulse->size(); j++){
+          std::cout<<"----------------"<<" bars hits "<<j<<" of  "<<crvRecoPulse->size()<<"--------------------"<<std::endl;
           mu2e::CrvRecoPulse const &crvpulse = (*crvRecoPulse)[j];
           const CRSScintillatorBarIndex &crvBarIndex = crvpulse.GetScintillatorBarIndex();
           const CRSScintillatorBar &crvCounter = CRS->getBar(crvBarIndex);
@@ -193,13 +194,14 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           CLHEP::Hep3Vector crvCounterPos = crvCounter.getPosition();
           CLHEP::Hep3Vector HitPos(crvCounterPos.x(), crvCounterPos.y(), crvCounterPos.z());
           CLHEP::Hep3Vector pointInMu2e = det-> toDetector(crvCounterPos);
+          
           CLHEP::Hep3Vector sibardetails(barDetail.getHalfLengths()[0],barDetail.getHalfLengths()[1],barDetail.getHalfLengths()[2]);
           CLHEP::Hep3Vector sposi(0.0,0.0,0.0), sposf(0.0,0.0,0.0);
           sposi.set(pointInMu2e.x()-sibardetails.x(), pointInMu2e.y()-sibardetails.y(), pointInMu2e.z()-sibardetails.z());
           sposf.set(pointInMu2e.x()+sibardetails.x(), pointInMu2e.y()+sibardetails.y(), pointInMu2e.z()+sibardetails.z());
           
-          std::cout<<"CRV counter pos "<<crvCounterPos.x()<<" "<<crvCounterPos.y()<<" "<<crvCounterPos.z()<<std::endl;
-          std::cout<<"CRV counter pos in Mu2e "<<pointInMu2e.x()<<" "<<pointInMu2e.y()<<" "<<pointInMu2e.z()<<std::endl;
+          std::cout<<"CRV counter pos "<<pointmmTocm(crvCounterPos.x())<<" "<<pointmmTocm(crvCounterPos.y())<<" "<<pointmmTocm(crvCounterPos.z())<<std::endl;
+          std::cout<<"CRV counter pos in Mu2e "<<pointmmTocm(pointInMu2e.x())<<" "<<pointmmTocm(pointInMu2e.y())<<" "<<pointmmTocm(pointInMu2e.z())<<std::endl;
           std::cout<<"Dir "<<barDetail.getWidthDirection()<<" "<<barDetail.getThicknessDirection()<<" "<<barDetail.getLengthDirection()<<std::endl;
           std::cout<<"bar details "<<2*sibardetails.x()<<" "<<2*sibardetails.y()<<" "<<2*sibardetails.z()<<std::endl;
           // CRV hit scintillation bars highlighted
@@ -214,34 +216,45 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           double  length = pointmmTocm(crvCounter.getHalfLength());
           double  width = pointmmTocm(crvCounter.getHalfWidth());
           double  height = pointmmTocm(crvCounter.getHalfThickness());
-std::cout<<"box "<<pointInMu2e.x()/10 + width <<" "<< pointInMu2e.y()/10  + height <<" "<< pointInMu2e.z()/10 - length <<std::endl;
+          std::cout<<"box 1 "<<pointmmTocm(pointInMu2e.z()) - length - pointmmTocm(pointInMu2e.z()) <<" "<<pointmmTocm(pointInMu2e.y())  + height<<" "<< pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()) <<std::endl;//-++
+            std::cout<<"box 2 "<<pointmmTocm(pointInMu2e.z()) - length - pointmmTocm(pointInMu2e.z())<<" "<<pointmmTocm(pointInMu2e.y())  + height<<" "<< pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z())<<std::endl;///-+-
+            std::cout<<"box 3 "<<pointmmTocm(pointInMu2e.z()) + length - pointmmTocm(pointInMu2e.z())<<" "<<pointmmTocm(pointInMu2e.y())   + height<<" "<< pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z())<<std::endl;//++-
+            std::cout<<"box 4 "<<pointmmTocm(pointInMu2e.z()) + length - pointmmTocm(pointInMu2e.z())<< " "<< pointmmTocm(pointInMu2e.y())  + height <<" "<< pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z())<<std::endl;//+++
+            std::cout<<"box 5 "<<pointmmTocm(pointInMu2e.z()) + length - pointmmTocm(pointInMu2e.z())<<" "<< pointmmTocm(pointInMu2e.y())  - height <<" "<< pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z())<<std::endl;//+-+
+            std::cout<<"box 6 "<<pointmmTocm(pointInMu2e.z()) + length - pointmmTocm(pointInMu2e.z())<<" "<< pointmmTocm(pointInMu2e.y())  - height <<" "<< pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()) <<std::endl;//+--
+            std::cout<<"box 7 "<<pointmmTocm(pointInMu2e.z()) - length - pointmmTocm(pointInMu2e.z())<<" "<< pointmmTocm(pointInMu2e.y())  - height <<" "<< pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z())<<std::endl;//---
+            std::cout<<"box 8 "<<pointmmTocm(pointInMu2e.z()) - length - pointmmTocm(pointInMu2e.z())<<" "<< pointmmTocm(pointInMu2e.y())  - height<<" "<< pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z())<<std::endl;//--+
+            
+            
+            
             if(barDetail.getWidthDirection() == 2 and barDetail.getThicknessDirection() == 1 and barDetail.getLengthDirection() == 0){ //EX
-            b->SetVertex(0, pointmmTocm(pointInMu2e.z()) - length, pointmmTocm(pointInMu2e.y())  + height , pointmmTocm(pointInMu2e.x()) + width );
-            b->SetVertex(1, pointmmTocm(pointInMu2e.z()) - length , pointmmTocm(pointInMu2e.y())  + height , pointmmTocm(pointInMu2e.x()) - width);
-            b->SetVertex(2, pointmmTocm(pointInMu2e.z()) + length, pointmmTocm(pointInMu2e.y())   + height, pointmmTocm(pointInMu2e.x()) - width );
-            b->SetVertex(3, pointmmTocm(pointInMu2e.z()) + length, pointmmTocm(pointInMu2e.y())  + height , pointmmTocm(pointInMu2e.x()) + width );
-            b->SetVertex(4, pointmmTocm(pointInMu2e.z()) + length, pointmmTocm(pointInMu2e.y())  - height, pointmmTocm(pointInMu2e.x()) + width );
-            b->SetVertex(5, pointmmTocm(pointInMu2e.z()) + length, pointmmTocm(pointInMu2e.y())  - height , pointmmTocm(pointInMu2e.x()) - width );
-            b->SetVertex(6, pointmmTocm(pointInMu2e.z()) - length, pointmmTocm(pointInMu2e.y())  - height , pointmmTocm(pointInMu2e.x()) - width );
-            b->SetVertex(7, pointmmTocm(pointInMu2e.z()) - length, pointmmTocm(pointInMu2e.y())  - height, pointmmTocm(pointInMu2e.x()) + width);
+            b->SetVertex(0, -1*length, pointmmTocm(pointInMu2e.y())  + height , pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()) );
+            b->SetVertex(1,  -1*length, pointmmTocm(pointInMu2e.y())  + height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));
+            b->SetVertex(2, length , pointmmTocm(pointInMu2e.y())   + height, pointmmTocm(pointInMu2e.x()) - width  + pointmmTocm(pointInMu2e.z()));
+            b->SetVertex(3, length, pointmmTocm(pointInMu2e.y())  + height , pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()));
+            b->SetVertex(4,  length , pointmmTocm(pointInMu2e.y())  - height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()));
+            b->SetVertex(5, length, pointmmTocm(pointInMu2e.y())  - height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()) );
+            b->SetVertex(6, -1*length, pointmmTocm(pointInMu2e.y())  - height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));
+            b->SetVertex(7, -1*length , pointmmTocm(pointInMu2e.y())  - height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z())); //+ pointmmTocm(pointInMu2e.z()) = a proxy for how many previous counters??
 }
           if(barDetail.getWidthDirection() == 0 and barDetail.getThicknessDirection() == 1 and barDetail.getLengthDirection() == 2){ //T1
-            b->SetVertex(0, pointmmTocm(pointInMu2e.x()) + width  , pointmmTocm(pointInMu2e.y())  + height , pointmmTocm(pointInMu2e.z()) - length);
-            b->SetVertex(1, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y())  + height ,pointmmTocm(pointInMu2e.z()) - length  );
-            b->SetVertex(2, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y())   + height, pointmmTocm(pointInMu2e.z()) + length );
-            b->SetVertex(3, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  + height ,pointmmTocm(pointInMu2e.z()) + length );
-            b->SetVertex(4, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y())  - height, pointmmTocm(pointInMu2e.z()) + length );
-            b->SetVertex(5, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y())  - height ,  pointmmTocm(pointInMu2e.z()) + length );
-            b->SetVertex(6, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y())  - height , pointmmTocm(pointInMu2e.z()) - length  );
-            b->SetVertex(7,pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  - height, pointmmTocm(pointInMu2e.z()) - length);
+            b->SetVertex(0, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()) , pointmmTocm(pointInMu2e.y())  + height , -1*length);
+            b->SetVertex(1, pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()), pointmmTocm(pointInMu2e.y())  + height , -1*length  );
+            b->SetVertex(2, pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()), pointmmTocm(pointInMu2e.y())   + height, length );
+            b->SetVertex(3, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()) , pointmmTocm(pointInMu2e.y())  + height ,length );
+            b->SetVertex(4, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()), pointmmTocm(pointInMu2e.y())  - height, length );
+            b->SetVertex(5, pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()), pointmmTocm(pointInMu2e.y())  - height ,  length );
+            b->SetVertex(6, pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()), pointmmTocm(pointInMu2e.y())  - height , -1*length  );
+            b->SetVertex(7,pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()), pointmmTocm(pointInMu2e.y())  - height, -1*length);
 }
           scene->AddElement(b);
 
           //Draws lines:
           auto scibar = new REX::REveLine("scintillationBar","bar",1); 
           scibar->SetPoint(0,pointmmTocm(sposi.x()),pointmmTocm(sposi.y()),pointmmTocm(sposi.z()));
-          scibar->SetNextPoint(pointmmTocm(sposf.x()),pointmmTocm(sposf.y()),pointmmTocm(sposf.z())); 
-          std::cout<<"lines "<<pointmmTocm(sposf.z())<<" "<<pointmmTocm(sposf.y())<<" "<<pointmmTocm(sposf.x())<<std::endl;          
+          scibar->SetNextPoint(pointmmTocm(sposf.x()),pointmmTocm(sposf.y()),pointmmTocm(sposf.z()));
+          std::cout<<"line start "<<pointmmTocm(sposi.z())<<" "<<pointmmTocm(sposi.y())<<" "<<pointmmTocm(sposi.x())<<std::endl; 
+          std::cout<<"line end "<<pointmmTocm(sposf.z())<<" "<<pointmmTocm(sposf.y())<<" "<<pointmmTocm(sposf.x())<<std::endl;          
           scibar->SetLineWidth(1);
           scibar->SetLineColor(i+3);
           if(scibar->GetSize() !=0 ) scene->AddElement(scibar);
