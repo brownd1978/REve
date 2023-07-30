@@ -45,7 +45,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             
             // Add crystals
             bool addCrystalDraw = true; //TODO - need to make this a fcl parameter
-            std::cout<<"cog "<<COG.x()<< " "<<COG.y()<<" "<<COG.z()<<std::endl;
+
             if(addCrystalDraw){
               for(unsigned h =0 ; h < cluster.caloHitsPtrVector().size();h++)     {
                 
@@ -68,19 +68,19 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
                 char const *crytitle_c = crytitle.c_str();
                 
                 // plot the crystals which are present in this event:
-                auto b = new REX::REveBox("crystal",crytitle_c);//TODO - label needs to be more informative
+                auto b = new REX::REveBox("crystal",crytitle_c);
                 b->SetMainColor(416);
                 double width = crystalXLen/2;
                 double height = crystalYLen/2;
                 double thickness = crystalZLen/2;
-                b->SetVertex(0, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())-thickness + abs(pointmmTocm(pointInMu2e.z())));//---
-                b->SetVertex(1, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height, pointmmTocm(crystalPos.z())-thickness +abs(pointmmTocm(pointInMu2e.z())));//-+-
-                b->SetVertex(2, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height ,pointmmTocm(crystalPos.z())- thickness + abs(pointmmTocm(pointInMu2e.z())));//++-
-                b->SetVertex(3, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())-thickness + abs(pointmmTocm(pointInMu2e.z())));//+--
-                b->SetVertex(4, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())+thickness + abs(pointmmTocm(pointInMu2e.z())));//--+
+                b->SetVertex(0, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())- thickness + thickness + abs(pointmmTocm(pointInMu2e.z())));//---
+                b->SetVertex(1, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height, pointmmTocm(crystalPos.z())- thickness + thickness  +abs(pointmmTocm(pointInMu2e.z())));//-+-
+                b->SetVertex(2, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height ,pointmmTocm(crystalPos.z())- thickness + thickness  + abs(pointmmTocm(pointInMu2e.z())));//++-
+                b->SetVertex(3, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())-thickness  + thickness + abs(pointmmTocm(pointInMu2e.z())));//+--
+                b->SetVertex(4, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())+ thickness + thickness + abs(pointmmTocm(pointInMu2e.z())));//--+
                 b->SetVertex(5, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z())+thickness + abs(pointmmTocm(pointInMu2e.z())));//-++
-                b->SetVertex(6, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z()) + thickness +abs(pointmmTocm(pointInMu2e.z()))); //+++
-                b->SetVertex(7,pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())+thickness + abs(pointmmTocm(pointInMu2e.z())));//+-+
+                b->SetVertex(6, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z()) + thickness + thickness+abs(pointmmTocm(pointInMu2e.z()))); //+++
+                b->SetVertex(7,pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())+ thickness + thickness + abs(pointmmTocm(pointInMu2e.z())));//+-+
                 scene->AddElement(b);
               }
             }
