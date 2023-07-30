@@ -98,11 +98,9 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                  }
                 if(name == "caloDisk_00x3d71700" or name == "caloDisk_00x4f89e50") { // latter for extracted.
                   disk1_center = tv[2] ;
-                  std::cout<<"calo disk 1"<<disk1_center<<std::endl;
                  }
                 if(name == "caloDisk_10x3e1ec70" or name == "caloDisk_10x4fef6e0") {// latter for extracted.
                   disk2_center = tv[2] ;
-                  std::cout<<"calo disk 2"<<disk2_center<<std::endl;
                  }
                 if(caloshift){
                     fp++;
@@ -166,7 +164,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
       shift.at(2) = geomconfig.getDouble("psts_z")/10; 
       for(auto& i: substrings_crv){
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, true, false, 432);
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false, 432);
       }
     }
     if(geomOpt.showCRV and geomOpt.extracted){
@@ -202,7 +200,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = firstCounterT2[1]/10;
       shift.at(2) =  0;
       for(auto& i: substrings_t2){
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false, 432);
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
 
       }
     }

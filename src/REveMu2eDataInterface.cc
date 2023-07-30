@@ -29,7 +29,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             std::string cluster_y = std::to_string(cluster.cog3Vector().y());
             // Extract center of gravity, convert to coord sys
             CLHEP::Hep3Vector COG(cluster.cog3Vector().x(),cluster.cog3Vector().y(), cluster.cog3Vector().z());
-            CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDiskFF(cluster.diskID(),COG);
+            CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDisk(cluster.diskID(),COG);
             CLHEP::Hep3Vector pointInMu2e = det->toMu2e(crystalPos);
             //std::cout<<"crystal ID" <<cal.crystalIdxFromPosition(COG)<<std::endl;
 
@@ -43,6 +43,48 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
             auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
             
+            // Add crystals
+            bool addCrystalDraw = true; //TODO - need to make this a fcl parameter
+            std::cout<<"cog "<<COG.x()<< " "<<COG.y()<<" "<<COG.z()<<std::endl;
+            if(addCrystalDraw){
+              for(unsigned h =0 ; h < cluster.caloHitsPtrVector().size();h++)     {
+                
+                art::Ptr<CaloHit>  crystalhit = cluster.caloHitsPtrVector()[h];
+                int cryID = crystalhit->crystalID();
+
+                //int diskID = cal.crystal(crystalhit->crystalID()).diskID();
+                Crystal const &crystal = cal.crystal(cryID);
+                double crystalXLen = pointmmTocm(crystal.size().x());
+                double crystalYLen = pointmmTocm(crystal.size().y());
+                double crystalZLen = pointmmTocm(crystal.size().z());
+
+                
+                GeomHandle<DetectorSystem> det;
+                CLHEP::Hep3Vector crystalPos = cal.geomUtil().mu2eToDisk(cluster.diskID(),crystal.position()) ;
+
+                std::string crytitle =  "Crystal ID = " + std::to_string(cryID) +  '\n'
+                + " Energy Dep. = "+std::to_string(crystalhit->energyDep())+" MeV "+   '\n'
+                + " Time = "+std::to_string(crystalhit->time())+" ns ";
+                char const *crytitle_c = crytitle.c_str();
+                
+                // plot the crystals which are present in this event:
+                auto b = new REX::REveBox("crystal",crytitle_c);//TODO - label needs to be more informative
+                b->SetMainColor(416);
+                double width = crystalXLen/2;
+                double height = crystalYLen/2;
+                double thickness = crystalZLen/2;
+                b->SetVertex(0, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())-thickness + abs(pointmmTocm(pointInMu2e.z())));//---
+                b->SetVertex(1, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height, pointmmTocm(crystalPos.z())-thickness +abs(pointmmTocm(pointInMu2e.z())));//-+-
+                b->SetVertex(2, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height ,pointmmTocm(crystalPos.z())- thickness + abs(pointmmTocm(pointInMu2e.z())));//++-
+                b->SetVertex(3, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())-thickness + abs(pointmmTocm(pointInMu2e.z())));//+--
+                b->SetVertex(4, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())+thickness + abs(pointmmTocm(pointInMu2e.z())));//--+
+                b->SetVertex(5, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z())+thickness + abs(pointmmTocm(pointInMu2e.z())));//-++
+                b->SetVertex(6, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z()) + thickness +abs(pointmmTocm(pointInMu2e.z()))); //+++
+                b->SetVertex(7,pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())+thickness + abs(pointmmTocm(pointInMu2e.z())));//+-+
+                scene->AddElement(b);
+              }
+            }
+
             // Set positions
             if(cluster.diskID() == 0) ps1->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z()))); 
             if(cluster.diskID() == 1) ps2->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z()))); 
@@ -50,9 +92,9 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             Color_t color = kRed;//TODO - this needs improving
             if(cluster_energy < 10)  color = kRed - 10; 
             if(cluster_energy >= 10 and cluster_energy < 20) color = kRed - 7 ; 
-            if(cluster_energy >=20  and cluster_energy < 30) color = kRed - 5 ; 
-            if(cluster_energy >=30  and cluster_energy < 40) color = kRed - 3; 
-            if(cluster_energy >=40  and cluster_energy < 50) color = kRed - 1; 
+            if(cluster_energy >= 20  and cluster_energy < 30) color = kRed - 5 ; 
+            if(cluster_energy >= 30  and cluster_energy < 40) color = kRed - 3; 
+            if(cluster_energy >= 40  and cluster_energy < 50) color = kRed - 1; 
             if(cluster_energy >= 50) color = kRed; 
             
             ps1->SetMarkerColor(color); 
@@ -174,7 +216,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
 
 /*------------Function to add CRV information to the display:-------------*/
   void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CrvRecoPulseCollection*>>  crvpulse_tuple, REX::REveElement* &scene, bool extracted){
-    
+    std::cout<<"[ REveDataInterface::AddCRVInfo() ]"<<std::endl;
     std::vector<const CrvRecoPulseCollection*> crvpulse_list = std::get<1>(crvpulse_tuple);
     std::vector<std::string> names = std::get<0>(crvpulse_tuple); 
     GeomHandle<CosmicRayShield> CRS;
@@ -198,8 +240,8 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           CLHEP::Hep3Vector sposi(0.0,0.0,0.0), sposf(0.0,0.0,0.0);
           sposi.set(pointInMu2e.x()-sibardetails.x(), pointInMu2e.y()-sibardetails.y(), pointInMu2e.z()-sibardetails.z());
           sposf.set(pointInMu2e.x()+sibardetails.x(), pointInMu2e.y()+sibardetails.y(), pointInMu2e.z()+sibardetails.z());
-          
-          if(extracted){ // TODO same for nominal
+
+         if(extracted){ //TODO same for nominal geom
             // CRV hit scintillation bars highlighted
             // std::string const& base;
             // std::string bartitle = crvCounter.name( base );
