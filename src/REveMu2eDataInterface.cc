@@ -5,7 +5,7 @@ namespace REX = ROOT::Experimental;
 std::string drawfilename("REve/config/drawutils.txt");
 SimpleConfig drawconfig(drawfilename);
 
-void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CaloClusterCollection*>> calocluster_tuple, REX::REveElement* &scene, std::vector<int> crystals_hit){
+void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CaloClusterCollection*>> calocluster_tuple, REX::REveElement* &scene, std::vector<int> crystals_hit, bool addCrystalDraw){
 
     std::cout<<"[REveMu2eDataInterface] AddCaloClusters "<<std::endl;
     std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(calocluster_tuple);
@@ -44,8 +44,6 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
             
             // Add crystals
-            bool addCrystalDraw = true; //TODO - need to make this a fcl parameter
-
             if(addCrystalDraw){
               for(unsigned h =0 ; h < cluster.caloHitsPtrVector().size();h++)     {
                 
@@ -240,7 +238,11 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           CLHEP::Hep3Vector sposi(0.0,0.0,0.0), sposf(0.0,0.0,0.0);
           sposi.set(pointInMu2e.x()-sibardetails.x(), pointInMu2e.y()-sibardetails.y(), pointInMu2e.z()-sibardetails.z());
           sposf.set(pointInMu2e.x()+sibardetails.x(), pointInMu2e.y()+sibardetails.y(), pointInMu2e.z()+sibardetails.z());
-
+          if(!extracted){
+          
+            std::cout<<barDetail.getWidthDirection()<<" "<<barDetail.getThicknessDirection()<<" "<<barDetail.getLengthDirection()<<std::endl;
+            
+          }
          if(extracted){ //TODO same for nominal geom
             // CRV hit scintillation bars highlighted
             // std::string const& base;
@@ -264,8 +266,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
               b->SetVertex(5, pointmmTocm(pointInMu2e.x()) - width , pointmmTocm(pointInMu2e.y())   + height, length );//-++
               b->SetVertex(6, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  + height ,length );//+++
               b->SetVertex(7, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  - height, length );//+-+
-                
-                  
+      
             } else { //EX, T2
               b->SetVertex(0, -1*length, pointmmTocm(pointInMu2e.y()) - height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));//---
               b->SetVertex(1,-1*length, pointmmTocm(pointInMu2e.y()) + height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));//-+-
