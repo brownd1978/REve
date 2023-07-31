@@ -256,25 +256,27 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
             double  height = pointmmTocm(crvCounter.getHalfThickness());       
  
             if(barDetail.getWidthDirection() == 0 and barDetail.getThicknessDirection() == 1 and barDetail.getLengthDirection() == 2){ //T1
-              b->SetVertex(0, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  + height , -1*length);
-              b->SetVertex(1, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y())  + height , -1*length  );
-              b->SetVertex(2, pointmmTocm(pointInMu2e.x()) - width , pointmmTocm(pointInMu2e.y())   + height, length );
-              b->SetVertex(3, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  + height ,length );
-              b->SetVertex(4, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  - height, length );
-              b->SetVertex(5, pointmmTocm(pointInMu2e.x()) - width , pointmmTocm(pointInMu2e.y())  - height ,  length );
-              b->SetVertex(6, pointmmTocm(pointInMu2e.x()) - width , pointmmTocm(pointInMu2e.y())  - height , -1*length  );
-              b->SetVertex(7,pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  - height, -1*length);
-                    
+              b->SetVertex(0, pointmmTocm(pointInMu2e.x()) - width , pointmmTocm(pointInMu2e.y())  - height , -1*length); //---
+              b->SetVertex(1, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y())  + height , -1*length);//-+-
+              b->SetVertex(2, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  + height , -1*length);//++-
+              b->SetVertex(3,pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  - height, -1*length);//+--
+              b->SetVertex(4, pointmmTocm(pointInMu2e.x()) - width , pointmmTocm(pointInMu2e.y())  - height ,  length );//--+
+              b->SetVertex(5, pointmmTocm(pointInMu2e.x()) - width , pointmmTocm(pointInMu2e.y())   + height, length );//-++
+              b->SetVertex(6, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  + height ,length );//+++
+              b->SetVertex(7, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  - height, length );//+-+
+                
+                  
             } else { //EX, T2
-              b->SetVertex(0,-1*length, pointmmTocm(pointInMu2e.y()) + height , pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()) );
-              b->SetVertex(1,-1*length, pointmmTocm(pointInMu2e.y()) + height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));
-              b->SetVertex(2, length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.x()) - width  + pointmmTocm(pointInMu2e.z()));
-              b->SetVertex(3, length, pointmmTocm(pointInMu2e.y()) + height , pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()));
-              b->SetVertex(4,  length , pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()));
-              b->SetVertex(5, length, pointmmTocm(pointInMu2e.y()) - height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()) );
-              b->SetVertex(6, -1*length, pointmmTocm(pointInMu2e.y()) - height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));
-              b->SetVertex(7, -1*length , pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z())); //+ pointmmTocm(pointInMu2e.z()) = a proxy for how many previous counters??
-  }
+              b->SetVertex(0, -1*length, pointmmTocm(pointInMu2e.y()) - height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));//---
+              b->SetVertex(1,-1*length, pointmmTocm(pointInMu2e.y()) + height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));//-+-
+              b->SetVertex(2, length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.x()) - width  + pointmmTocm(pointInMu2e.z()));//++-
+              b->SetVertex(3, length, pointmmTocm(pointInMu2e.y()) - height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()) );//+--
+              b->SetVertex(4, -1*length , pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z())); //--+
+              b->SetVertex(5,-1*length, pointmmTocm(pointInMu2e.y()) + height , pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()) ); // -++
+              b->SetVertex(6, length, pointmmTocm(pointInMu2e.y()) + height , pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()));//+++
+              b->SetVertex(7,  length , pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()));//+-+
+ 
+          }
             scene->AddElement(b);
           }
           
