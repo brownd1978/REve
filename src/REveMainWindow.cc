@@ -4,7 +4,7 @@ namespace REX = ROOT::Experimental;
 using namespace std;
 using namespace mu2e;
 
-
+// Get geom information from configs:
 std::string calfilename("REve/config/geomutils.txt");
 std::string drawoptfilename("REve/config/drawutils.txt");
 SimpleConfig geomconfig(calfilename);
@@ -12,14 +12,25 @@ SimpleConfig drawconfigf(drawoptfilename);
 
 double disk1_center = 0;
 double disk2_center = 0;
-double nCrystals = geomconfig.getDouble("nCrystals"); 
-double dz = geomconfig.getDouble("CaloTrackerdz"); 
+double nCrystals = 674;
 
+SimpleConfig TConfig("Offline/Mu2eG4/geom/tracker_v6.txt");
+double trackerz0 = TConfig.getDouble("tracker.z0");//10171
+double motherhalflength = TConfig.getDouble("tracker.mother.halfLength",motherhalflength);
+
+SimpleConfig CConfig("Offline/Mu2eG4/geom/calorimeter_CsI.txt");
+double caloz0 = CConfig.getDouble("calorimeter.caloMotherZ0");//11842;
+double caloz1 = CConfig.getDouble("calorimeter.caloMotherZ1");//13220;
+double dz = (caloz1 - caloz0)/2 + caloz0 - trackerz0;
+
+SimpleConfig SConfig("Offline/Mu2eG4/geom/stoppingTarget_CD3C_34foils.txt");
+double STz0 = SConfig.getDouble("stoppingTarget.z0InMu2e");
+double STz = STz0 - motherhalflength;//4236
+      
 double FrontTracker_gdmltag; 
 
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2, std::string name, int color)
  {
-    //std::cout<<" name "<<name<<std::endl;
     auto gss = n->GetVolume()->GetShape();
     auto b1s = new REX::REveGeoShape(n->GetName());
     
@@ -29,20 +40,24 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     b1s->SetMainTransparency(drawconfigf.getInt("trans")); 
     b1s->SetMainColor(color);
     b1s->SetEditMainColor(true);
-    
     b1s-> SetEditMainTransparency(true);
-
     holder->AddElement(b1s);
-    if( crystal1 ){ 
+    
+    // make 2D projections
+    if( crystal1 ){ // add crystals to correct disk
         mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
     }if( crystal2 ){
         mngXYCaloDisk2->ImportElements(b1s, XYCaloDisk2GeomScene);
     }
     
+    //show only first tracker plane
     if( val == FrontTracker_gdmltag ){ 
         mngTrackerXY->ImportElements(b1s, TrackerXYGeomScene); //shows only one plane for 2D view for simplicity
     }
-    mngRhoZ  ->ImportElements(b1s, rhoZGeomScene); 
+    
+    bool isCRV = name.find("CRS") != string::npos;
+    // remove CRV from the YZ view as it blocks tracker/calo view (will have its own view)
+    if(!isCRV) { mngRhoZ->ImportElements(b1s, rhoZGeomScene); }
  }
 
 int j = 0;
@@ -133,7 +148,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     geomOpt.print();
     if(geomOpt.showTS){
       static std::vector <std::string> substrings_ts  {"TS"};  
-      shift.at(0) = geomconfig.getDouble("psts_x")/10;
+      shift.at(0) = geomconfig.getDouble("psts_x")/10; //TODO these numbers need to be better defined
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
       shift.at(2) = geomconfig.getDouble("psts_z")/10;
       for(auto& i: substrings_ts){
@@ -168,14 +183,13 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
     }
     if(geomOpt.showCRV and geomOpt.extracted){
-      std::string filename("Offline/Mu2eG4/geom/crv_counters_extracted_v01.txt");
-      SimpleConfig Config(filename);
+      SimpleConfig CRVConfig("Offline/Mu2eG4/geom/crv_counters_extracted_v01.txt");
       std::vector<double> firstCounterEX;
       std::vector<double> firstCounterT1;
       std::vector<double> firstCounterT2;
-      Config.getVectorDouble("crs.firstCounterEX", firstCounterEX);
-      Config.getVectorDouble("crs.firstCounterT1", firstCounterT1);
-      Config.getVectorDouble("crs.firstCounterT2", firstCounterT2);
+      CRVConfig.getVectorDouble("crs.firstCounterEX", firstCounterEX);
+      CRVConfig.getVectorDouble("crs.firstCounterT1", firstCounterT1);
+      CRVConfig.getVectorDouble("crs.firstCounterT2", firstCounterT2);
 
       static std::vector <std::string> substrings_ex {"CRSScintillatorBar_1_0","CRSscintLayer_0","CRSmotherLayer_CRV_EX"};//"CRSScintillatorBar_1_0_1","CRSScintillatorBar_1_0_2"}; 
       shift.at(0) = 0;
@@ -225,20 +239,18 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       static std::vector <std::string> substrings_stoppingtarget  {"TargetFoil","protonabs"};
       shift.at(0) = 0;  
       shift.at(1) = 0;
-      shift.at(2) = -1*geomconfig.getDouble("STz")/10; 
+      shift.at(2) = -1*STz/10; 
       for(auto& i: substrings_stoppingtarget){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false, true, 432);
       }
     }
-   // if(!geomOpt.extracted){
-      static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
-      for(auto& i: substrings_crystals){
-        shift.at(0) = 0;  
-        shift.at(1) = 0;
-        shift.at(2) = 0;
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false, false, 432);
-      }
-    //}
+    static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
+    for(auto& i: substrings_crystals){
+      shift.at(0) = 0;  
+      shift.at(1) = 0;
+      shift.at(2) = 0;
+      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false, false, 432);
+    }
     if(geomOpt.showSTM){
       static std::vector <std::string> substrings_stm  {"stmDet1Can","stmDet1","stmDet2Can","stmDet2"};
       for(auto& i: substrings_stm){
