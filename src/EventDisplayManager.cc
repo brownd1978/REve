@@ -22,9 +22,13 @@ namespace mu2e {
   EventDisplayManager::QuitRoot()
   {
     // FIXME This will wreak havoc if not thrown from the main thread.
-    std::unique_lock<std::mutex> lock{*m_};
-    cv_->notify_all();
-    throw std::runtime_error("EventDisplay");
+    //std::unique_lock<std::mutex> lock{*m_};
+    //cv_->notify_all();
+    std::cout<<"Exit Signal 9, leaving REve Display "<<std::endl;
+    exit(9);
+    //pgid = getpgid();
+    //std::kill(pgid, 15);
+    //throw std::runtime_error("EventDisplay");
   }
 
 }
