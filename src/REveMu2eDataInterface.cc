@@ -232,17 +232,75 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           const CRSScintillatorBarDetail &barDetail = crvCounter.getBarDetail();
           CLHEP::Hep3Vector crvCounterPos = crvCounter.getPosition();
           CLHEP::Hep3Vector HitPos(crvCounterPos.x(), crvCounterPos.y(), crvCounterPos.z());
+          std::cout<<HitPos.x()<<" "<<HitPos.y()<<" "<<HitPos.z()<<std::endl;
           CLHEP::Hep3Vector pointInMu2e = det-> toDetector(crvCounterPos);
           
           CLHEP::Hep3Vector sibardetails(barDetail.getHalfLengths()[0],barDetail.getHalfLengths()[1],barDetail.getHalfLengths()[2]);
           CLHEP::Hep3Vector sposi(0.0,0.0,0.0), sposf(0.0,0.0,0.0);
           sposi.set(pointInMu2e.x()-sibardetails.x(), pointInMu2e.y()-sibardetails.y(), pointInMu2e.z()-sibardetails.z());
           sposf.set(pointInMu2e.x()+sibardetails.x(), pointInMu2e.y()+sibardetails.y(), pointInMu2e.z()+sibardetails.z());
-          if(!extracted){
-          
-            std::cout<<barDetail.getWidthDirection()<<" "<<barDetail.getThicknessDirection()<<" "<<barDetail.getLengthDirection()<<std::endl;
+          /*if(!extracted){
+            auto b = new REX::REveBox("box","label");
+            b->SetMainColor(632);
+
+            double  length = pointmmTocm(crvCounter.getHalfLength());
+            double  width = pointmmTocm(crvCounter.getHalfWidth());
+            double  height = pointmmTocm(crvCounter.getHalfThickness());
             
-          }
+            std::cout<<" bar size "<<width<<","<<height<<","<<length<<std::endl;
+            std::cout<<barDetail.getWidthDirection()<<" "<<barDetail.getThicknessDirection()<<" "<<barDetail.getLengthDirection()<<std::endl;
+            if(barDetail.getWidthDirection() == 1 and barDetail.getThicknessDirection() == 2 and barDetail.getLengthDirection() == 0){ //CRV D, CRV U -- orientation DONE
+              b->SetVertex(0,  -1*length, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) - height); //---
+              b->SetVertex(1,  -1*length, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) + height);//-+-
+              b->SetVertex(2,  -1*length, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y()) + height );//++-
+              b->SetVertex(3,  -1*length, pointmmTocm(pointInMu2e.x()) + width  ,pointmmTocm(pointInMu2e.y()) - height);//+--
+              b->SetVertex(4, length, pointmmTocm(pointInMu2e.x()) - width,   pointmmTocm(pointInMu2e.y()) - height  );//--+
+              b->SetVertex(5,  length, pointmmTocm(pointInMu2e.x()) - width,  pointmmTocm(pointInMu2e.y()) + height );//-++
+              b->SetVertex(6, length, pointmmTocm(pointInMu2e.x()) + width,  pointmmTocm(pointInMu2e.y()) + height );//+++
+              b->SetVertex(7, length,pointmmTocm(pointInMu2e.x()) + width,  pointmmTocm(pointInMu2e.y()) - height );//+-+
+      
+            } 
+            
+            if(barDetail.getWidthDirection() == 0 and barDetail.getThicknessDirection() == 1 and barDetail.getLengthDirection() == 2){ //CRV TS -- orientation DONE
+              b->SetVertex(0, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + -1*length + length); //---
+              b->SetVertex(1, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + -1*length + length);//-+-
+              b->SetVertex(2, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + -1*length + length);//++-
+              b->SetVertex(3, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + -1*length + length);//+--
+              b->SetVertex(4, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + length + length);//--+
+              b->SetVertex(5, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + length + length);//-++
+              b->SetVertex(6, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + length + length);//+++
+              b->SetVertex(7, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + length + length);//+-+
+              std::cout<<"first bar at "<<pointmmTocm(pointInMu2e.x()) - width<<","<<pointmmTocm(pointInMu2e.y()) - height<<","<< pointmmTocm(pointInMu2e.z()) + -1*length + length<<std::endl;
+              
+              std::cout<<"last bar at "<<pointmmTocm(pointInMu2e.x()) - width<<","<<pointmmTocm(pointInMu2e.y()) - height<<","<< pointmmTocm(pointInMu2e.z()) + length + length<<std::endl;
+            }
+            
+            if(barDetail.getWidthDirection() == 2 and barDetail.getThicknessDirection() == 1 and barDetail.getLengthDirection() == 0){ //CRV T -- orientation DONE
+              b->SetVertex(0, -1*length, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) - width); //---
+              b->SetVertex(1, -1*length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.x()) - width);//-+-
+              b->SetVertex(2, -1*length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.x()) + width);//++-
+              b->SetVertex(3, -1*length, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) + width);//+--
+              b->SetVertex(4, length, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) - width );//--+
+              b->SetVertex(5, length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.x()) - width );//-++
+              b->SetVertex(6, length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.x()) + width );//+++
+              b->SetVertex(7, length, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) + width );//+-+
+      
+            }
+            
+             if(barDetail.getWidthDirection() == 1 and barDetail.getThicknessDirection() == 0 and barDetail.getLengthDirection() == 2){ //CRV R, CRV L -- orientation DONE
+              b->SetVertex(0, pointmmTocm(pointInMu2e.y()) - height, -1*length, pointmmTocm(pointInMu2e.x()) - width ); //---
+              b->SetVertex(1, pointmmTocm(pointInMu2e.y()) + height, -1*length,pointmmTocm(pointInMu2e.x()) - width);//-+-
+              b->SetVertex(2, pointmmTocm(pointInMu2e.y()) + height, -1*length,pointmmTocm(pointInMu2e.x()) + width);//++-
+              b->SetVertex(3, pointmmTocm(pointInMu2e.y()) - height, -1*length,pointmmTocm(pointInMu2e.x()) + width);//+--
+              b->SetVertex(4, pointmmTocm(pointInMu2e.y()) - height, length, pointmmTocm(pointInMu2e.x()) - width);//--+
+              b->SetVertex(5, pointmmTocm(pointInMu2e.y()) + height, length, pointmmTocm(pointInMu2e.x()) - width );//-++
+              b->SetVertex(6, pointmmTocm(pointInMu2e.y()) + height, length,pointmmTocm(pointInMu2e.x()) + width );//+++
+              b->SetVertex(7, pointmmTocm(pointInMu2e.y()) - height, length,pointmmTocm(pointInMu2e.x()) + width );//+-+
+      
+            } 
+            scene->AddElement(b);
+            
+          }*/
          if(extracted){ //TODO same for nominal geom
             // CRV hit scintillation bars highlighted
             // std::string const& base;
@@ -258,24 +316,24 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
             double  height = pointmmTocm(crvCounter.getHalfThickness());       
  
             if(barDetail.getWidthDirection() == 0 and barDetail.getThicknessDirection() == 1 and barDetail.getLengthDirection() == 2){ //T1
-              b->SetVertex(0, pointmmTocm(pointInMu2e.x()) - width , pointmmTocm(pointInMu2e.y())  - height , -1*length); //---
-              b->SetVertex(1, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y())  + height , -1*length);//-+-
-              b->SetVertex(2, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  + height , -1*length);//++-
-              b->SetVertex(3,pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  - height, -1*length);//+--
-              b->SetVertex(4, pointmmTocm(pointInMu2e.x()) - width , pointmmTocm(pointInMu2e.y())  - height ,  length );//--+
-              b->SetVertex(5, pointmmTocm(pointInMu2e.x()) - width , pointmmTocm(pointInMu2e.y())   + height, length );//-++
-              b->SetVertex(6, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  + height ,length );//+++
-              b->SetVertex(7, pointmmTocm(pointInMu2e.x()) + width , pointmmTocm(pointInMu2e.y())  - height, length );//+-+
+              b->SetVertex(0, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) - height, -1*length); //---
+              b->SetVertex(1, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y())  + height, -1*length);//-+-
+              b->SetVertex(2, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) + height, -1*length);//++-
+              b->SetVertex(3, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) - height, -1*length);//+--
+              b->SetVertex(4, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) - height,  length );//--+
+              b->SetVertex(5, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) + height, length );//-++
+              b->SetVertex(6, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) + height ,length );//+++
+              b->SetVertex(7, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) - height, length );//+-+
       
             } else { //EX, T2
-              b->SetVertex(0, -1*length, pointmmTocm(pointInMu2e.y()) - height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));//---
-              b->SetVertex(1,-1*length, pointmmTocm(pointInMu2e.y()) + height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));//-+-
+              b->SetVertex(0, -1*length, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));//---
+              b->SetVertex(1,-1*length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()));//-+-
               b->SetVertex(2, length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.x()) - width  + pointmmTocm(pointInMu2e.z()));//++-
-              b->SetVertex(3, length, pointmmTocm(pointInMu2e.y()) - height , pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()) );//+--
-              b->SetVertex(4, -1*length , pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z())); //--+
-              b->SetVertex(5,-1*length, pointmmTocm(pointInMu2e.y()) + height , pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()) ); // -++
-              b->SetVertex(6, length, pointmmTocm(pointInMu2e.y()) + height , pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()));//+++
-              b->SetVertex(7,  length , pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()));//+-+
+              b->SetVertex(3, length, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) - width + pointmmTocm(pointInMu2e.z()) );//+--
+              b->SetVertex(4, -1*length, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z())); //--+
+              b->SetVertex(5,-1*length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()) ); // -++
+              b->SetVertex(6, length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()));//+++
+              b->SetVertex(7,  length, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.x()) + width + pointmmTocm(pointInMu2e.z()));//+-+
  
           }
             scene->AddElement(b);
@@ -283,6 +341,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           
           // Add Reco Pulse to collection
           ps1->SetNextPoint(pointmmTocm(pointInMu2e.x()), pointmmTocm(pointInMu2e.y()) , pointmmTocm(pointInMu2e.z()));
+          std::cout<<" pulse at "<<pointmmTocm(pointInMu2e.x())<<","<< pointmmTocm(pointInMu2e.y())<<"," <<pointmmTocm(pointInMu2e.z())<<std::endl;
         }
         // Draw reco pulse collection
         ps1->SetMarkerColor(i+3);

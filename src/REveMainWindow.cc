@@ -69,7 +69,6 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
        return;
     }
     std::string name(n->GetName());
-    
     j++;
     if(print) std::cout<<j<<" "<<name<<std::endl;
     bool cry1 = false; // these help us know which disk and to draw crystals
@@ -89,8 +88,8 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
         ctrans *= t;
        }
-    n->ls();
-    makeEveGeoShape(n, ctrans, holder, j, cry1, cry2, name, color);
+        n->ls();
+        makeEveGeoShape(n, ctrans, holder, j, cry1, cry2, name, color);
     }
     for ( int i=0; i<ndau; ++i ){
         TGeoNode * pn = n->GetDaughter(i);
@@ -106,7 +105,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
-                
+                std::cout<<name<<" "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
                 if(name == "TrackerPlaneEnvelope_000x3acaae0" or name== "TrackerPlaneEnvelope_000x4ce11c0") { // latter for extracted.
                   FrontTracker_gdmltag = j;
                   
@@ -175,9 +174,9 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
      }
     if(geomOpt.showCRV and !geomOpt.extracted){
       static std::vector <std::string> substrings_crv  {"CRS"}; 
-      shift.at(0) = geomconfig.getDouble("psts_x")/10; 
-      shift.at(1) = geomconfig.getDouble("psts_y")/10;
-      shift.at(2) = geomconfig.getDouble("psts_z")/10; 
+      shift.at(0) = 445;//from GDML, find position of first and last in x, center it. (812.169-78.25)/2 +78.25
+      shift.at(1) = 557.86;//(668.11 - 299.284)/5 x 1.5 + - 668. 11 = - 557.86 this is y position of the "0" point 
+      shift.at(2) = -431;//1280.07-849 first is from GML latter is from Offline (TODO - CRV geometry needs to be formally and easily defined in Offline without need for GeomService, or we have to cope with hardcoding....)
       for(auto& i: substrings_crv){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false, 432);
       }
@@ -191,7 +190,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       CRVConfig.getVectorDouble("crs.firstCounterT1", firstCounterT1);
       CRVConfig.getVectorDouble("crs.firstCounterT2", firstCounterT2);
 
-      static std::vector <std::string> substrings_ex {"CRSScintillatorBar_1_0","CRSscintLayer_0","CRSmotherLayer_CRV_EX"};//"CRSScintillatorBar_1_0_1","CRSScintillatorBar_1_0_2"}; 
+      static std::vector <std::string> substrings_ex {"CRSScintillatorBar_1_0","CRSscintLayer_0","CRSmotherLayer_CRV_EX"};
       shift.at(0) = 0;
       shift.at(1) = firstCounterEX[1]/10; 
       shift.at(2) =  0;
@@ -200,7 +199,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
 
 
-      static std::vector <std::string> substrings_t1  {"CRSScintillatorBar_1_1","CRSscintLayer_1","CRSmotherLayer_CRV_T1"}; //"CRSAluminumSheet_1"
+      static std::vector <std::string> substrings_t1  {"CRSScintillatorBar_1_1","CRSscintLayer_1","CRSmotherLayer_CRV_T1"}; 
       shift.at(0) = 0;
       shift.at(1) = firstCounterT1[1]/10;
       shift.at(2) =  0;
@@ -209,7 +208,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
 
 
-      static std::vector <std::string> substrings_t2  {"CRSScintillatorBar_1_2","CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//"CRSScintillatorBar_1_2"}; 
+      static std::vector <std::string> substrings_t2  {"CRSScintillatorBar_1_2","CRSscintLayer_2","CRSmotherLayer_CRV_T2"};
       shift.at(0) = 0;
       shift.at(1) = firstCounterT2[1]/10;
       shift.at(2) =  0;

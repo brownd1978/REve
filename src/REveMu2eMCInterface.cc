@@ -114,7 +114,7 @@ namespace REX = ROOT::Experimental;
               if(x == 1){
                 const std::vector<MCTrajectoryPoint> &points = trajectoryIter->second.points();
                 // Make label
-                std::string energy = std::to_string(points[0].kineticEnergy());//+ names[j] +  '\n'
+                std::string energy = std::to_string(points[0].kineticEnergy());
                 std::string mctitle = " MCTrajectory tag : particle = " + std::string(particlename)  +  '\n'
                 + " energy = " + energy + "MeV" +  '\n'
                 + " creation code = " + std::to_string(trajectoryIter->first->creationCode()) +  '\n'
@@ -128,7 +128,9 @@ namespace REX = ROOT::Experimental;
                   CLHEP::Hep3Vector Pos(points[i].x(), points[i].y(), points[i].z());
                     GeomHandle<DetectorSystem> det;
                     CLHEP::Hep3Vector HitPos = det->toDetector(Pos); 
-                    line->SetNextPoint(pointmmTocm((HitPos.x())),pointmmTocm((HitPos.y())),pointmmTocm(HitPos.z()));
+                    if(pointmmTocm(HitPos.z()) < 1000){ // a reasonable height above the CRV
+                      line->SetNextPoint(pointmmTocm((HitPos.x())),pointmmTocm((HitPos.y())),pointmmTocm(HitPos.z()));
+                    }
                 }
                 // set line colour
                 SetLineColorPID(trajectoryIter->first->pdgId(),line);
