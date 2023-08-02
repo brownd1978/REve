@@ -174,9 +174,9 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
      }
     if(geomOpt.showCRV and !geomOpt.extracted){
       static std::vector <std::string> substrings_crv  {"CRS"}; 
-      shift.at(0) = 445;//from GDML, find position of first and last in x, center it. (812.169-78.25)/2 +78.25
-      shift.at(1) = 557.86;//(668.11 - 299.284)/5 x 1.5 + - 668. 11 = - 557.86 this is y position of the "0" point 
-      shift.at(2) = -431;//1280.07-849 first is from GML latter is from Offline (TODO - CRV geometry needs to be formally and easily defined in Offline without need for GeomService, or we have to cope with hardcoding....)
+      shift.at(0) = 481.75;//from GDML, look at CRS layer 18, center is where 0 should be. 6.45 to shift by comparing to Offline, need to understand.
+      shift.at(1) = 585.31  + 6.45;//from GDML, look at layer 16, 17 these should be centered at 0
+      shift.at(2) = -431   + 6.45 ;//1280.07-849 first is from GDML latter is from Offline
       for(auto& i: substrings_crv){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false, 432);
       }
@@ -208,7 +208,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
 
 
-      static std::vector <std::string> substrings_t2  {"CRSScintillatorBar_1_2","CRSscintLayer_2","CRSmotherLayer_CRV_T2"};
+      static std::vector <std::string> substrings_t2  {"CRSScintillatorBar_1_2","CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//note for the bar, maybe first number changes?
       shift.at(0) = 0;
       shift.at(1) = firstCounterT2[1]/10;
       shift.at(2) =  0;
