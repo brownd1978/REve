@@ -239,7 +239,7 @@ void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop
           sposi.set(pointInMu2e.x()-sibardetails.x(), pointInMu2e.y()-sibardetails.y(), pointInMu2e.z()-sibardetails.z());
           sposf.set(pointInMu2e.x()+sibardetails.x(), pointInMu2e.y()+sibardetails.y(), pointInMu2e.z()+sibardetails.z());
 
-          /*if(!extracted){
+          if(!extracted){
             auto b = new REX::REveBox("box","label");
             b->SetMainColor(632);
 
@@ -261,16 +261,16 @@ void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop
       
             } 
             
-            if(barDetail.getWidthDirection() == 0 and barDetail.getThicknessDirection() == 1 and barDetail.getLengthDirection() == 2){ //CRV TS -- orientation DONE
-              b->SetVertex(0, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + -1*length + length); //---
-              b->SetVertex(1, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + -1*length + length);//-+-
-              b->SetVertex(2, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + -1*length + length);//++-
-              b->SetVertex(3, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + -1*length + length);//+--
-              b->SetVertex(4, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + length + length);//--+
-              b->SetVertex(5, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + length + length);//-++
-              b->SetVertex(6, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + length + length);//+++
-              b->SetVertex(7, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + length + length);//+-+
-              std::cout<<"first bar at "<<pointmmTocm(pointInMu2e.x()) - width<<","<<pointmmTocm(pointInMu2e.y()) - height<<","<< pointmmTocm(pointInMu2e.z()) + -1*length + length<<std::endl;
+            if(barDetail.getWidthDirection() == 0 and barDetail.getThicknessDirection() == 1 and barDetail.getLengthDirection() == 2){ //CRV TS -- WORKS
+              b->SetVertex(0, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + -1*length ); //---
+              b->SetVertex(1, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + -1*length);//-+-
+              b->SetVertex(2, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + -1*length);//++-
+              b->SetVertex(3, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + -1*length);//+--
+              b->SetVertex(4, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + length);//--+
+              b->SetVertex(5, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + length);//-++
+              b->SetVertex(6, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + length);//+++
+              b->SetVertex(7, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + length);//+-+
+              std::cout<<"first bar at "<<pointmmTocm(pointInMu2e.x()) - width<<","<<pointmmTocm(pointInMu2e.y()) - height<<","<< pointmmTocm(pointInMu2e.z()) + -1*length<<std::endl;
               
               std::cout<<"last bar at "<<pointmmTocm(pointInMu2e.x()) - width<<","<<pointmmTocm(pointInMu2e.y()) - height<<","<< pointmmTocm(pointInMu2e.z()) + length + length<<std::endl;
             }
@@ -300,7 +300,7 @@ void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop
             } 
             scene->AddElement(b);
             
-          }*/
+          }
           if(extracted){ //TODO same for nominal geom
 
             // CRV hit scintillation bars highlighted
