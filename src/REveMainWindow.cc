@@ -336,7 +336,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     
     if(drawOpts.addCRVInfo){
        std::vector<const CrvRecoPulseCollection*> crvpulse_list = std::get<1>(data.crvpulse_tuple);
-       if(crvpulse_list.size() !=0) pass_data->AddCRVInfo(eveMng, firstLoop, data.crvpulse_tuple, eventScene, geomOpts.extracted);
+       if(crvpulse_list.size() !=0) pass_data->AddCRVInfo(eveMng, firstLoop, data.crvpulse_tuple, eventScene, geomOpts.extracted, drawOpts.addCRVBars);
     }
     
     if(drawOpts.addCRVClusters){

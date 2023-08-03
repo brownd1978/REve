@@ -1,17 +1,16 @@
 // TS
-
+CRSscintLayer_12
 // T
-
+CRSscintLayer_11
 
 // U
-
+CRSscintLayer_15
 //D
-
+CRSscintLayer_16,17,18
 // L
-
-
+CRSscintLayer_6,7
 //R
-
+CRSscintLayer_0-5, 19-22
 
 
 //EX - 4 modules with 4 layers

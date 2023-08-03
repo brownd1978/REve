@@ -15,6 +15,7 @@ REveEventDisplay : {
     showTracker : true
     addErrBar : true
     addCrystalHits : false
+    addCRVBars : false
     specifyTag : false // IMPORTANT: override to make the following selections!!!
     filler : {
       diagLevel : 0
