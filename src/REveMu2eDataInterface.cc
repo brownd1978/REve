@@ -128,7 +128,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
               + " Energy Dep. = "+std::to_string(crystalhit->energyDep())+" MeV "+   '\n'
               + " Time = "+std::to_string(crystalhit->time())+" ns ";
             char const *crytitle_c = crytitle.c_str();
-            std::cout<<pointInMu2e.z()<<std::endl;
+            
             // plot the crystals which are present in this event:
             auto b = new REX::REveBox("crystal",crytitle_c);
             b->SetMainColor(416);
