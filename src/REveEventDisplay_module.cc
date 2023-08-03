@@ -320,6 +320,11 @@ namespace mu2e
           else { FillAnyCollection<CaloClusterCollection, const CaloClusterCollection*>(event, _chits, data.calocluster_tuple);}
         }
         
+        if(filler_.addCaloDigis_) {
+          if(specifyTag_) filler_.FillRecoCollections(event, data, CaloDigis);
+          else { FillAnyCollection<CaloDigiCollection, const CaloDigiCollection*>(event, _chits, data.calodigi_tuple);}
+        }
+        
         if(filler_.addHits_) {
           if(specifyTag_) { filler_.FillRecoCollections(event, data, ComboHits); }
           else { FillAnyCollection<ComboHitCollection, const ComboHitCollection*>(event, _chits, data.combohit_tuple ); }
@@ -440,7 +445,7 @@ namespace mu2e
       REX::REveElement* scene = eveMng_->GetEventScene();
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
-      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addCrvClusters_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_, addErrBar_, addCrystalHits_, addCRVBars_);
+      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addCaloDigis_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addCrvClusters_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_, addErrBar_, addCrystalHits_, addCRVBars_);
       frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts, particles_, strawdisplay_, geomOpts);
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;

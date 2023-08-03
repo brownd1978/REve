@@ -18,11 +18,13 @@ physics :
 physics.analyzers.REveEventDisplay.showCRV : true
 physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
-physics.analyzers.REveEventDisplay.addCRVBars : true
+physics.analyzers.REveEventDisplay.addCRVBars : false
+physics.analyzers.REveEventDisplay.addCrystalHits : false
 physics.analyzers.REveEventDisplay.filler.addHelixSeeds : false
 //physics.analyzers.REveEventDisplay.filler.KalSeedCollection : ["KKDeM"]
 physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
-physics.analyzers.REveEventDisplay.filler.addClusters : false
+physics.analyzers.REveEventDisplay.filler.addCaloDigis : true
+physics.analyzers.REveEventDisplay.filler.addClusters : true
 physics.analyzers.REveEventDisplay.filler.addHits : false
 physics.analyzers.REveEventDisplay.filler.addCrvHits : true
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false

@@ -23,6 +23,7 @@ REveEventDisplay : {
       CrvRecoPulseCollection : ["SelectRecoMC"]
       CrvCoincidenceClusterCollection : ["SelectRecoMC"]
       TimeClusterCollection : ["MHDeM"]
+      CaloDigiCollection : ["CaloDigiMaker"]
       CaloClusterCollection : ["CaloClusterFast"]
       KalSeedCollection : ["KFFDeM"]//KKDeM
       HelixSeedCollection : ["MHFinderDe"]
@@ -33,6 +34,7 @@ REveEventDisplay : {
       addCrvClusters : false
       addTimeClusters : false
       addTrkHits : false
+      addCaloDigis : false
       addClusters : false
       addKalSeeds : false
       addCosmicTrackSeeds : false

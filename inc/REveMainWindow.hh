@@ -100,6 +100,7 @@ namespace mu2e {
       bool addCosmicTracks = false;
       bool addHelices = false;
       bool addTracks = false;
+      bool addCaloDigis = false; 
       bool addClusters = false; 
       bool addComboHits = false;
       bool addCRVInfo = false;
@@ -111,8 +112,8 @@ namespace mu2e {
       bool addCrystalDraw = false;
       bool addCRVBars = false;
       DrawOptions(){};
-      DrawOptions(bool cosmictracks, bool helices, bool tracks, bool clusters, bool combohits, bool crv, bool crvclu, bool timeclusters, bool trkhits, bool mctraj, bool errbar, bool crys, bool crvbars) 
-      : addCosmicTracks(cosmictracks), addHelices(helices), addTracks(tracks), addClusters(clusters), addComboHits(combohits), addCRVInfo(crv), addCRVClusters(crvclu), addTimeClusters(timeclusters), addTrkHits(trkhits), addMCTrajectories(mctraj), addTrkErrBar(errbar), addCrystalDraw(crys), addCRVBars(crvbars) {};
+      DrawOptions(bool cosmictracks, bool helices, bool tracks, bool calodigis, bool clusters, bool combohits, bool crv, bool crvclu, bool timeclusters, bool trkhits, bool mctraj, bool errbar, bool crys, bool crvbars) 
+      : addCosmicTracks(cosmictracks), addHelices(helices), addTracks(tracks), addCaloDigis(calodigis), addClusters(clusters), addComboHits(combohits), addCRVInfo(crv), addCRVClusters(crvclu), addTimeClusters(timeclusters), addTrkHits(trkhits), addMCTrajectories(mctraj), addTrkErrBar(errbar), addCrystalDraw(crys), addCRVBars(crvbars) {};
      };
      
     class REveMainWindow  : public REX::REveElement {
@@ -148,7 +149,6 @@ namespace mu2e {
             REX::REveViewer *XYCaloDisk1View = nullptr;
             REX::REveViewer *XYCaloDisk2View = nullptr;
             REX::REveViewer *rhoZView = nullptr;
-            std::vector<int> crystals_hit;
             
             #else
                 ClassDef(REveMainWindow, 0);

@@ -344,9 +344,14 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
        if(crvcoin_list.size() !=0) pass_data->AddCRVClusters(eveMng, firstLoop, data.crvcoin_tuple, eventScene);
     }
     
+    if(drawOpts.addCaloDigis){
+      std::vector<const CaloDigiCollection*> calodigi_list = std::get<1>(data.calodigi_tuple);
+      if(calodigi_list.size() !=0 ) pass_data->AddCaloDigis(eveMng, firstLoop, data.calodigi_tuple, eventScene, drawOpts.addCrystalDraw);
+    }
+    
     if(drawOpts.addClusters){
       std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(data.calocluster_tuple);
-      if(calocluster_list.size() !=0 ) pass_data->AddCaloClusters(eveMng, firstLoop, data.calocluster_tuple, eventScene, crystals_hit, drawOpts.addCrystalDraw);
+      if(calocluster_list.size() !=0 ) pass_data->AddCaloClusters(eveMng, firstLoop, data.calocluster_tuple, eventScene, drawOpts.addCrystalDraw);
     }
     
     std::vector<const HelixSeedCollection*> helix_list = std::get<1>(data.helix_tuple);

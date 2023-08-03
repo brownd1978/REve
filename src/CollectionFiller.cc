@@ -12,6 +12,7 @@ namespace mu2e{
       tcTag_(conf.tcTag()),
       crvrecoTag_(conf.crvrecoTag()),
       crvcoinTag_(conf.crvcoinTag()),
+      calodigTag_(conf.cluTag()),
       cluTag_(conf.cluTag()),
       helixSeedTag_(conf.helixSeedTag()),
       kalSeedTag_(conf.kalSeedTag()),
@@ -22,6 +23,7 @@ namespace mu2e{
       addCrvClusters_(conf.addCrvClusters()),
       addTimeClusters_(conf.addTimeClusters()),
       addTrkHits_(conf.addTrkHits()),
+      addCaloDigis_(conf.addCaloDigis()),
       addClusters_(conf.addClusters()),
       addHelixSeeds_(conf.addHelixSeeds()),
       addKalSeeds_(conf.addKalSeeds()),
@@ -93,6 +95,17 @@ namespace mu2e{
                 data.combohit_labels.push_back(name);
             }
             data.combohit_tuple = std::make_tuple(data.combohit_labels,data.combohit_list);
+        }
+        if(FillAll_  or (CollectionName == CaloDigis)){
+            for(const auto &tag : calodigTag_){
+                auto chH = evt.getValidHandle<mu2e::CaloDigiCollection>(tag);
+                data.calodigicol = chH.product();
+                data.calodigi_list.push_back(data.calodigicol);
+                std::string name = TurnNameToString(tag);
+                std::cout<<"Plotting CaloDigi Instance: "<<name<<std::endl;
+                data.calodigi_labels.push_back(name);
+            }
+            data.calocluster_tuple = std::make_tuple(data.calocluster_labels,data.calocluster_list);
         }
         if(FillAll_  or (CollectionName == CaloClusters)){
             for(const auto &tag : cluTag_){
