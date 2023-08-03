@@ -341,7 +341,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     
     if(drawOpts.addCRVClusters){
        std::vector<const CrvCoincidenceClusterCollection*> crvcoin_list = std::get<1>(data.crvcoin_tuple);
-       if(crvcoin_list.size() !=0) pass_data->AddCRVClusters(eveMng, firstLoop, data.crvcoin_tuple, eventScene);
+       if(crvcoin_list.size() !=0) pass_data->AddCRVClusters(eveMng, firstLoop, data.crvcoin_tuple, eventScene, geomOpts.extracted, drawOpts.addCRVBars);
     }
     
     if(drawOpts.addCaloDigis){
