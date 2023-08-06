@@ -247,12 +247,13 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           double y1 = (p.y()+s*w.y());
           double y2 = (p.y()-s*w.y());
 
-          std::string errorbar = "ErrorBar Length: %d, %d, %d";
+          std::string errorbar = "ErrorBar";// Length: %d, %d, %d";
           auto error = new REX::REveLine("errors",errorbar.c_str(),1);
           error->SetPoint(0, pointmmTocm(x1),pointmmTocm(y1),pointmmTocm(z1));
           error->SetNextPoint(pointmmTocm(x2),pointmmTocm(y2),pointmmTocm(z2));
 
           error->SetLineColor(colour);
+          error->SetLineWidth(drawconfig.getInt("TrackLineWidth"));
           scene->AddElement(error);
           //TODO - Z - drift cricle, might have to be series of lines in a circle (?)
         }

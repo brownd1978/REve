@@ -44,7 +44,7 @@ namespace mu2e{
     class REveMu2eDataInterface {
         public:
           static int const mstyle = 5;
-          static int const msize = 2;
+          static int const msize = 4;
           explicit REveMu2eDataInterface(){};
           explicit REveMu2eDataInterface(const REveMu2eDataInterface &);
           REveMu2eDataInterface& operator=(const REveMu2eDataInterface &);

@@ -26,11 +26,19 @@ double dz = (caloz1 - caloz0)/2 + caloz0 - trackerz0;
 SimpleConfig SConfig("Offline/Mu2eG4/geom/stoppingTarget_CD3C_34foils.txt");
 double STz0 = SConfig.getDouble("stoppingTarget.z0InMu2e");
 double STz = STz0 - motherhalflength;//4236
-      
+
+SimpleConfig PTConfig("Offline/Mu2eG4/geom/ProductionTargetInPS.txt");
+SimpleConfig PSConfig("Offline/Mu2eG4/geom/ProductionSolenoid_v02.txt");
+SimpleConfig PTHConfig("Offline/Mu2eG4/geom/ProductionTarget_Hayman_v2_0.txt");
+double PScoilRefZ  = PSConfig.getDouble("PS.coilRefZ"); // from PS 
+double PTz0 = PTConfig.getDouble("productionTarget.zNominal");
+double PTHL = 110;//PTHConfig.getDouble("targetPS_halfHaymanLength ");
+double PTz = PTz0;// - PTHL;
 double FrontTracker_gdmltag; 
 
 void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2, std::string name, int color)
  {
+    bool isMother = name.find("ProductionTargetMother") != string::npos;
     auto gss = n->GetVolume()->GetShape();
     auto b1s = new REX::REveGeoShape(n->GetName());
     
@@ -41,7 +49,7 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     b1s->SetMainColor(color);
     b1s->SetEditMainColor(true);
     b1s-> SetEditMainTransparency(true);
-    holder->AddElement(b1s);
+    if(!isMother) holder->AddElement(b1s);
     
     // make 2D projections
     if( crystal1 ){ // add crystals to correct disk
@@ -105,7 +113,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
-                //std::cout<<name<<" "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
+                std::cout<<name<<" "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
                 if(name == "TrackerPlaneEnvelope_000x3acaae0" or name== "TrackerPlaneEnvelope_000x4ce11c0") { // latter for extracted.
                   FrontTracker_gdmltag = j;
                   
@@ -163,6 +171,15 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, false, 432);
       }
     }
+    if(geomOpt.showPS){
+      static std::vector <std::string> substrings_ps  {"ProductionTarget"};  
+      shift.at(0) = 780.85;
+      shift.at(1) = -0.06;
+      shift.at(2) = 1*PTz/10 -1*trackerz0/10 + 120/10;
+      for(auto& i: substrings_ps){
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
+      }
+    }
     if(geomOpt.showDS){
       static std::vector <std::string> substrings_ds {"DS1Vacuum","DS2Vacuum","DS3Vacuum","StoppingTarget_Al"}; 
       for(auto& i: substrings_ds){
@@ -174,7 +191,8 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
      }
     if(geomOpt.showCRV and !geomOpt.extracted){
       static std::vector <std::string> substrings_crv  {"CRS"}; 
-      shift.at(0) = 481.75;//from GDML, look at CRS layer 18, center is where 0 should be. 6.45 to shift by comparing to Offline, need to understand.
+      shift.at(0) = 481.75;//from GDML, look at CRS layer 18, center is where 0 should be. 
+      //6.45 to shift by comparing to Offline, need to understand.
       shift.at(1) = 585.31  + 6.45;//from GDML, look at layer 16, 17 these should be centered at 0
       shift.at(2) = -431   + 6.45 ;//1280.07-849 first is from GDML latter is from Offline
       for(auto& i: substrings_crv){
@@ -225,6 +243,13 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         shift.at(2) = 0;
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, shift, false, false, 432 );
       }
+      static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
+      for(auto& i: substrings_crystals){
+        shift.at(0) = 0;  
+        shift.at(1) = 0;
+        shift.at(2) = 0;
+        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false, false, 432);
+      }
     }
     if(geomOpt.showTracker){
       static std::vector <std::string> substring_tracker  {"TrackerPlaneEnvelope"};
@@ -243,13 +268,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, false, false, shift, false, true, 432);
       }
     }
-    static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
-    for(auto& i: substrings_crystals){
-      shift.at(0) = 0;  
-      shift.at(1) = 0;
-      shift.at(2) = 0;
-      showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false, false, 432);
-    }
+    
     if(geomOpt.showSTM){
       static std::vector <std::string> substrings_stm  {"stmDet1Can","stmDet1","stmDet2Can","stmDet2"};
       for(auto& i: substrings_stm){

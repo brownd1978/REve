@@ -19,6 +19,11 @@ physics.analyzers.REveEventDisplay.showCRV : false
 physics.analyzers.REveEventDisplay.showPS : true
 physics.analyzers.REveEventDisplay.showTS : true
 physics.analyzers.REveEventDisplay.showDS : true
+physics.analyzers.REveEventDisplay.showTracker : false
+physics.analyzers.REveEventDisplay.showCalo : false
+physics.analyzers.REveEventDisplay.showST : false
+physics.analyzers.REveEventDisplay.showSTM : false
+physics.analyzers.REveEventDisplay.filler.addMCTraj : true
 physics.EndPath  : [ @sequence::REveDis.seqBase] 
 
 services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
