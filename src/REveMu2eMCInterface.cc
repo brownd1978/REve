@@ -57,25 +57,25 @@ namespace REX = ROOT::Experimental;
         color = kGreen;
         break;
       case PDGCode::mu_minus:
-        color = kOrange-7;
+        color = kBlack;
         break;
       case PDGCode::mu_plus:
-        color = kRed-9;
+        color = kViolet;
         break;
       case PDGCode::pi_minus:
         color = kMagenta;
         break;
       case PDGCode::pi_plus:
-        color = kViolet;
+        color = kRed-7;
         break;
       case PDGCode::pi0:
-        color = kCyan;
+        color = kGreen-7;
         break;
       case PDGCode::proton:
         color = kBlue;
         break;
       case PDGCode::n0:
-        color = kViolet;
+        color = kViolet-2;
         break;
       case PDGCode::gamma:
         color = kOrange;
@@ -127,8 +127,8 @@ namespace REX = ROOT::Experimental;
                 for(unsigned int i=0; i < points.size();i++){
                   CLHEP::Hep3Vector Pos(points[i].x(), points[i].y(), points[i].z());
                     GeomHandle<DetectorSystem> det;
-                    CLHEP::Hep3Vector HitPos = det->toDetector(Pos); 
-                    if(pointmmTocm(HitPos.z()) < 1000){ // a reasonable height above the CRV
+                    CLHEP::Hep3Vector HitPos = det->toDetector(Pos);
+                    if(pointmmTocm(HitPos.y()) < 500){ // a reasonable height above the CRV
                       line->SetNextPoint(pointmmTocm((HitPos.x())),pointmmTocm((HitPos.y())),pointmmTocm(HitPos.z()));
                     }
                 }

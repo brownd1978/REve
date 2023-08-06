@@ -172,7 +172,8 @@ namespace mu2e
         CollectionFiller filler_;
         REveMainWindow *frame_;
         DataCollections data;
-        bool firstLoop_ = true; 
+        bool firstLoop_ = true;
+        bool firstLoopCalo_ = true; 
         std::vector<int> particles_;
         std::string gdmlname_;
         bool strawdisplay_; 
@@ -298,9 +299,8 @@ namespace mu2e
     }
     
   void REveEventDisplay::analyze(art::Event const& event){
-      //remove previous event objects
+      //remove previous event objects;
       data.Reset();
-      
       // Update state relevant for displaying new event.
       displayedEventID_ = event.id();
       eventid_ = event.id().event(); 
@@ -446,9 +446,19 @@ namespace mu2e
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
       DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addCaloDigis_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addCrvClusters_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_, addErrBar_, addCrystalHits_, addCRVBars_);
-      frame_->showEvents(eveMng_, scene, firstLoop_, data, drawOpts, particles_, strawdisplay_, geomOpts);
+      frame_->showEvents(eveMng_, scene, firstLoop_, firstLoopCalo_, data, drawOpts, particles_, strawdisplay_, geomOpts);
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
+      
+      
+      bool isEmpty = false;
+      if(std::get<1>(data.calocluster_tuple)[0]->size() == 0) isEmpty = true;//if calocluster list is empty you dont need to reset the next event.
+    
+      if(!isEmpty) {
+        firstLoopCalo_ = false; //if true then seg fault is removed when previous event was empty
+      } else {
+       firstLoopCalo_ = true; 
+      }
       firstLoop_ = false;
       eveMng_->GetScenes()->AcceptChanges(false);
       eveMng_->GetWorld()->EndAcceptingChanges();

@@ -190,7 +190,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       CRVConfig.getVectorDouble("crs.firstCounterT1", firstCounterT1);
       CRVConfig.getVectorDouble("crs.firstCounterT2", firstCounterT2);
 
-      static std::vector <std::string> substrings_ex {"CRSScintillatorBar_1_0","CRSscintLayer_0","CRSmotherLayer_CRV_EX"};
+      static std::vector <std::string> substrings_ex {"CRSscintLayer_0","CRSmotherLayer_CRV_EX"};//
       shift.at(0) = 0;
       shift.at(1) = firstCounterEX[1]/10; 
       shift.at(2) =  0;
@@ -199,7 +199,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
 
 
-      static std::vector <std::string> substrings_t1  {"CRSScintillatorBar_1_1","CRSscintLayer_1","CRSmotherLayer_CRV_T1"}; 
+      static std::vector <std::string> substrings_t1  {"CRSscintLayer_1","CRSmotherLayer_CRV_T1"};//"CRSScintillatorBar_1_1",
       shift.at(0) = 0;
       shift.at(1) = firstCounterT1[1]/10;
       shift.at(2) =  0;
@@ -208,7 +208,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
 
 
-      static std::vector <std::string> substrings_t2  {"CRSScintillatorBar_1_2","CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//note for the bar, maybe first number changes?
+      static std::vector <std::string> substrings_t2  {"CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//"CRSScintillatorBar_1_2",note for the bar, maybe first number changes?
       shift.at(0) = 0;
       shift.at(1) = firstCounterT2[1]/10;
       shift.at(2) =  0;
@@ -324,7 +324,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
  }
 
 
- void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts){
+ void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, bool firstLoopCalo, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts){
     if(!firstLoop){
       eventScene->DestroyElements();;
     }
@@ -351,7 +351,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     
     if(drawOpts.addClusters){
       std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(data.calocluster_tuple);
-      if(calocluster_list.size() !=0 ) pass_data->AddCaloClusters(eveMng, firstLoop, data.calocluster_tuple, eventScene, drawOpts.addCrystalDraw);
+      if(calocluster_list.size() !=0 ) pass_data->AddCaloClusters(eveMng, firstLoopCalo, data.calocluster_tuple, eventScene, drawOpts.addCrystalDraw);
     }
     
     std::vector<const HelixSeedCollection*> helix_list = std::get<1>(data.helix_tuple);

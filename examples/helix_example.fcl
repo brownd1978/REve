@@ -15,21 +15,21 @@ physics :
 {
  analyzers : { @table::REveDis.analyzers}
 }
-physics.analyzers.REveEventDisplay.showCRV : true
+physics.analyzers.REveEventDisplay.showCRV : false
 physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
 physics.analyzers.REveEventDisplay.addCRVBars : false
-physics.analyzers.REveEventDisplay.addCrystalHits : false
+physics.analyzers.REveEventDisplay.addCrystalHits : true
 physics.analyzers.REveEventDisplay.filler.addHelixSeeds : false
 //physics.analyzers.REveEventDisplay.filler.KalSeedCollection : ["KKDeM"]
 physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
-physics.analyzers.REveEventDisplay.filler.addCaloDigis : true
+physics.analyzers.REveEventDisplay.filler.addCaloDigis : false
 physics.analyzers.REveEventDisplay.filler.addClusters : true
 physics.analyzers.REveEventDisplay.filler.addHits : false
 physics.analyzers.REveEventDisplay.filler.addCrvClusters : true
-physics.analyzers.REveEventDisplay.filler.addCrvHits : false
+physics.analyzers.REveEventDisplay.filler.addCrvHits : true
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
-physics.analyzers.REveEventDisplay.filler.addTrkHits : false
+physics.analyzers.REveEventDisplay.filler.addTrkHits : true
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
 physics.analyzers.REveEventDisplay.filler.addMCTraj : true
 physics.analyzers.REveEventDisplay.seqMode : true

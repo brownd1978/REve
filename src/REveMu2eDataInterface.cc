@@ -67,8 +67,6 @@ void REveMu2eDataInterface::AddCaloDigis(REX::REveManager *&eveMng, bool firstLo
     }
   }
 }
-
-      
 void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CaloClusterCollection*>> calocluster_tuple, REX::REveElement* &scene, bool addCrystalDraw){
 
   std::cout<<"[REveMu2eDataInterface] AddCaloClusters "<<std::endl;
@@ -76,16 +74,19 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
   std::vector<std::string> names = std::get<0>(calocluster_tuple);
   //std::cout<<"size of list in drawing "<<calocluster_list.size()<<std::endl;
   for(unsigned int j = 0; j< calocluster_list.size(); j++){
+    
     // Extract cluster list
     const CaloClusterCollection* clustercol = calocluster_list[j];
     if(clustercol->size() != 0){
       if(!firstLoop_){
         scene->DestroyElements();;
       }
+      
       mu2e::Calorimeter const &cal = *(mu2e::GeomHandle<mu2e::Calorimeter>());
       GeomHandle<DetectorSystem> det;
       for(unsigned int i = 0; i < clustercol->size(); i++){
         mu2e::CaloCluster const  &cluster= (*clustercol)[i];
+        
         // Info for label:
         std::string cluster_energy = std::to_string(cluster.energyDep());
         std::string cluster_time = std::to_string(cluster.time());
@@ -107,49 +108,11 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
         auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
         auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
 
-        // Add crystals
-        if(addCrystalDraw){
-          for(unsigned h =0 ; h < cluster.caloHitsPtrVector().size();h++)     {
-
-            art::Ptr<CaloHit>  crystalhit = cluster.caloHitsPtrVector()[h];
-            int cryID = crystalhit->crystalID();
-
-            //int diskID = cal.crystal(crystalhit->crystalID()).diskID();
-            Crystal const &crystal = cal.crystal(cryID);
-            double crystalXLen = pointmmTocm(crystal.size().x());
-            double crystalYLen = pointmmTocm(crystal.size().y());
-            double crystalZLen = pointmmTocm(crystal.size().z());
-
-
-            GeomHandle<DetectorSystem> det;
-            CLHEP::Hep3Vector crystalPos = cal.geomUtil().mu2eToDisk(cluster.diskID(),crystal.position()) ;
-
-            std::string crytitle =  "Crystal ID = " + std::to_string(cryID) +  '\n'
-              + " Energy Dep. = "+std::to_string(crystalhit->energyDep())+" MeV "+   '\n'
-              + " Time = "+std::to_string(crystalhit->time())+" ns ";
-            char const *crytitle_c = crytitle.c_str();
-            
-            // plot the crystals which are present in this event:
-            auto b = new REX::REveBox("crystal",crytitle_c);
-            b->SetMainColor(416);
-            double width = crystalXLen/2;
-            double height = crystalYLen/2;
-            double thickness = crystalZLen/2;
-            b->SetVertex(0, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())- thickness + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//---
-            b->SetVertex(1, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height, pointmmTocm(crystalPos.z())- thickness + 2*thickness  +abs(pointmmTocm(pointInMu2e.z())));//-+-
-            b->SetVertex(2, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height ,pointmmTocm(crystalPos.z())- thickness + 2*thickness  + abs(pointmmTocm(pointInMu2e.z())));//++-
-            b->SetVertex(3, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())-thickness  + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//+--
-            b->SetVertex(4, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())+ thickness + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//--+
-            b->SetVertex(5, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z())+ thickness  + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//-++
-            b->SetVertex(6, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z()) + thickness + 2*thickness+abs(pointmmTocm(pointInMu2e.z()))); //+++
-            b->SetVertex(7,pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())+ thickness + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//+-+
-            scene->AddElement(b);
-          }
-        }
-
+        
         // Set positions of clusters
         if(cluster.diskID() == 0) ps1->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z())));
         if(cluster.diskID() == 1) ps2->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z())));
+
         // Set draw options
         Color_t color = kRed;//TODO - this needs improving
         if(cluster_energy < 10)  color = kRed - 10;
@@ -168,8 +131,48 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
         ps2->SetMarkerSize(REveMu2eDataInterface::mstyle);
 
         // Add to REve world
-        if(ps1->GetSize() !=0 ) scene->AddElement(ps1);
-        if(ps2->GetSize() !=0 ) scene->AddElement(ps2);
+        scene->AddElement(ps1);
+        scene->AddElement(ps2);
+
+        // Add crystals
+        if(addCrystalDraw){
+          for(unsigned h =0 ; h < cluster.caloHitsPtrVector().size();h++)     {
+
+            art::Ptr<CaloHit>  crystalhit = cluster.caloHitsPtrVector()[h];
+            int cryID = crystalhit->crystalID();
+            
+            //int diskID = cal.crystal(crystalhit->crystalID()).diskID();
+            Crystal const &crystal = cal.crystal(cryID);
+            double crystalXLen = pointmmTocm(crystal.size().x());
+            double crystalYLen = pointmmTocm(crystal.size().y());
+            double crystalZLen = pointmmTocm(crystal.size().z());
+
+            
+            GeomHandle<DetectorSystem> det;
+            CLHEP::Hep3Vector crystalPos = cal.geomUtil().mu2eToDisk(cluster.diskID(),crystal.position()) ;
+
+            std::string crytitle =  "Crystal ID = " + std::to_string(cryID) +  '\n'
+              + " Energy Dep. = "+std::to_string(crystalhit->energyDep())+" MeV "+   '\n'
+              + " Time = "+std::to_string(crystalhit->time())+" ns ";
+            char const *crytitle_c = crytitle.c_str();
+            
+            // plot the crystals which are present in this event:
+            auto b = new REX::REveBox("crystal",crytitle_c);
+            b->SetMainColor(color);
+            double width = crystalXLen/2;
+            double height = crystalYLen/2;
+            double thickness = crystalZLen/2;
+            b->SetVertex(0, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())- thickness + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//---
+            b->SetVertex(1, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height, pointmmTocm(crystalPos.z())- thickness + 2*thickness  +abs(pointmmTocm(pointInMu2e.z())));//-+-
+            b->SetVertex(2, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height ,pointmmTocm(crystalPos.z())- thickness + 2*thickness  + abs(pointmmTocm(pointInMu2e.z())));//++-
+            b->SetVertex(3, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())-thickness  + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//+--
+            b->SetVertex(4, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())+ thickness + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//--+
+            b->SetVertex(5, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z())+ thickness  + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//-++
+            b->SetVertex(6, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z()) + thickness + 2*thickness+abs(pointmmTocm(pointInMu2e.z()))); //+++
+            b->SetVertex(7,pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())+ thickness + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//+-+
+            scene->AddElement(b);
+          }
+        }
 
       }
     }
@@ -234,7 +237,6 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
 
         if(AddErrorBar_){
           //XY
-          auto error = new REX::REveLine("errors","error title",1);
           auto const& p = hit.pos();
           auto const& w = hit.wdir();
           auto const& s = hit.wireRes();
@@ -246,7 +248,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           double y2 = (p.y()-s*w.y());
 
           std::string errorbar = "ErrorBar Length: %d, %d, %d";
-
+          auto error = new REX::REveLine("errors",errorbar.c_str(),1);
           error->SetPoint(0, pointmmTocm(x1),pointmmTocm(y1),pointmmTocm(z1));
           error->SetNextPoint(pointmmTocm(x2),pointmmTocm(y2),pointmmTocm(z2));
 
