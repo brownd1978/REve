@@ -72,7 +72,6 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
   std::cout<<"[REveMu2eDataInterface] AddCaloClusters "<<std::endl;
   std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(calocluster_tuple);
   std::vector<std::string> names = std::get<0>(calocluster_tuple);
-  //std::cout<<"size of list in drawing "<<calocluster_list.size()<<std::endl;
   for(unsigned int j = 0; j< calocluster_list.size(); j++){
     
     // Extract cluster list
@@ -247,7 +246,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
           double y1 = (p.y()+s*w.y());
           double y2 = (p.y()-s*w.y());
 
-          std::string errorbar = "ErrorBar";// Length: %d, %d, %d";
+          std::string errorbar = Form("ErrorBar Length: %f, %f, %f",x2-x1,y2-y1,z2-z1);
           auto error = new REX::REveLine("errors",errorbar.c_str(),1);
           error->SetPoint(0, pointmmTocm(x1),pointmmTocm(y1),pointmmTocm(z1));
           error->SetNextPoint(pointmmTocm(x2),pointmmTocm(y2),pointmmTocm(z2));

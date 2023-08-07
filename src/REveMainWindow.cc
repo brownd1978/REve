@@ -32,7 +32,7 @@ SimpleConfig PSConfig("Offline/Mu2eG4/geom/ProductionSolenoid_v02.txt");
 SimpleConfig PTHConfig("Offline/Mu2eG4/geom/ProductionTarget_Hayman_v2_0.txt");
 double PScoilRefZ  = PSConfig.getDouble("PS.coilRefZ"); // from PS 
 double PTz0 = PTConfig.getDouble("productionTarget.zNominal");
-double PTHL = 110;//PTHConfig.getDouble("targetPS_halfHaymanLength ");
+double PTHL = 120;//PTHConfig.getDouble("targetPS_halfHaymanLength ");
 double PTz = PTz0;// - PTHL;
 double FrontTracker_gdmltag; 
 
@@ -113,7 +113,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
-                std::cout<<name<<" "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
+                //std::cout<<name<<" "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
                 if(name == "TrackerPlaneEnvelope_000x3acaae0" or name== "TrackerPlaneEnvelope_000x4ce11c0") { // latter for extracted.
                   FrontTracker_gdmltag = j;
                   
@@ -163,7 +163,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
     }
     if(geomOpt.showPS){
-      static std::vector <std::string> substrings_ps  {"PSVacuum"};  
+      static std::vector <std::string> substrings_ps  {"PSVacuum"};//,"PS"};  
       shift.at(0) = geomconfig.getDouble("psts_x")/10;
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
       shift.at(2) = geomconfig.getDouble("psts_z")/10;
@@ -173,9 +173,9 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     }
     if(geomOpt.showPS){
       static std::vector <std::string> substrings_ps  {"ProductionTarget"};  
-      shift.at(0) = 780.85;
-      shift.at(1) = -0.06;
-      shift.at(2) = 1*PTz/10 -1*trackerz0/10 + 120/10;
+      shift.at(0) = 780.85; //GDML
+      shift.at(1) = -0.06; //GDML
+      shift.at(2) = 1*PTz/10 -1*trackerz0/10 + PTHL/10;
       for(auto& i: substrings_ps){
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
       }
