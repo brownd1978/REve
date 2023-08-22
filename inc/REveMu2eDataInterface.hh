@@ -29,6 +29,7 @@
 #include "Offline/GeometryService/inc/DetectorSystem.hh"
 #include "Offline/Mu2eInterfaces/inc/Detector.hh"
 #include "Offline/DataProducts/inc/GenVector.hh"
+#include "Offline/RecoDataProducts/inc/KalIntersection.hh"
 #include <TApplication.h>
 #include <TEvePad.h>
 #include <TObject.h>
@@ -60,8 +61,11 @@ namespace mu2e{
           void AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CrvRecoPulseCollection*>> crvpulse_tuple, REX::REveElement* &scene, bool extracted, bool addCRVBars);
           void AddCRVClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CrvCoincidenceClusterCollection*>>  crvpulse_tuple, REX::REveElement* &scene, bool extracted, bool addCRVBars);
           void AddHelixSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const HelixSeedCollection*>> helix_tuple, REX::REveElement* &scene);
+          void AddKalIntersection(KalSeed kalseed, REX::REveElement* &scene);
+          void AddTrkStrawHit(KalSeed kalseed, REX::REveElement* &scene);
+          void AddTrkCaloHit(KalSeed kalseed, REX::REveElement* &scene);
           void AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene );
-          template<class KTRAJ> void AddKinKalTrajectory( std::unique_ptr<KTRAJ> &trajectory, REX::REveLine *line);
+          template<class KTRAJ> void AddKinKalTrajectory( std::unique_ptr<KTRAJ> &trajectory, REX::REveElement* &scene, unsigned int j, std::string kaltitle);
           void FillKinKalTrajectory(REX::REveManager *&eveMng, bool firstloop, REX::REveElement* &scene, std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple);
           void AddCosmicTrackFit(REX::REveManager *&eveMng, bool firstLoop_, const mu2e::CosmicTrackSeedCollection *cosmiccol, REX::REveElement* &scene);
 
