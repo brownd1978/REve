@@ -651,16 +651,40 @@ void REveMu2eDataInterface::AddKalIntersection(KalSeed kalseed, REX::REveElement
 void REveMu2eDataInterface::AddTrkStrawHit(KalSeed kalseed, REX::REveElement* &scene){
   //Plot trk straw hits
   /*const std::vector<mu2e::TrkStrawHitSeed> &hits = kalseed.hits();
-  auto trkstrawpoint = new REX::REvePointSet("TrkStrawHIts", "TrkStrawHIts",1);
   for(unsigned int i = 0; i < hits.size(); i++){
+    auto trkstrawpoint = new REX::REvePointSet("TrkStrawHit", "TrkStrawHit",1);
     const mu2e::TrkStrawHitSeed &hit = hits.at(i);
-    trksid[i] = hit._sid;
+    //trksid[i] = hit._sid;
+    auto rad = hit.driftRadius();
+    auto sid = hit.strawId().asUint16();
+    mu2e::GeomHandle<mu2e::Tracker> tracker;
+    const auto& allStraws = tracker->getStraws();
+    CLHEP::Hep3Vector sposi(0.0,0.0,0.0), sposf(0.0,0.0,0.0);
+    const mu2e::Straw& s = allStraws[sid];
+          const CLHEP::Hep3Vector& p = s.getMidPoint();
+          const CLHEP::Hep3Vector& d = s.getDirection();
+          double x = p.x();
+          double y = p.y();
+          double z = p.z();
+          double l = s.halfLength();
+          double st=sin(d.theta());
+          double ct=cos(d.theta());
+          double sp=sin(d.phi()+TMath::Pi()/2.0);
+          double cp=cos(d.phi()+TMath::Pi()/2.0);
+          if(sid < drawconfig.getInt("maxSID")){
+            double x1=x+l*st*sp;
+            double y1=y-l*st*cp;
+            double z1=z+l*ct;
+            double x2=x-l*st*sp;
+            double y2=y+l*st*cp;
+            double z2=z-l*ct;
     trkstrawpoint->SetMarkerStyle(REveMu2eDataInterface::mstyle);
     trkstrawpoint->SetMarkerSize(REveMu2eDataInterface::msize);
     trkstrawpoint->SetMarkerColor(kRed);
-    trkstrawpoint->SetNextPoint(pointmmTocm(0),pointmmTocm(0) ,pointmmTocm(0)); //TODO
-  }
-  if(trkstrawpoint->GetSize() !=0 ) scene->AddElement(interpoint);*/
+    trkstrawpoint->SetNextPoint(pointmmTocm(0),pointmmTocm(0) ,pointmmTocm(0));
+  
+    if(trkstrawpoint->GetSize() !=0 ) scene->AddElement(interpoint);
+  }*/
 }
 
 void REveMu2eDataInterface::AddTrkCaloHit(KalSeed kalseed, REX::REveElement* &scene){
@@ -818,14 +842,17 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
 
 
 void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, REX::REveElement* &scene){
-  bool useKinKal = true; //TODO this will eventually be the default
-  if(useKinKal) FillKinKalTrajectory(eveMng, firstloop, scene,  track_tuple);
-  if(!useKinKal){
+  //bool useKinKal = true; //TODO this will eventually be the default
+
   std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
   std::vector<std::string> names = std::get<0>(track_tuple);
-
+  
   for(unsigned int j=0; j< track_list.size(); j++){
     const KalSeedCollection* seedcol = track_list[j];
+    bool useKinKal = names[j].find("KK") != std::string::npos;
+    if(useKinKal) FillKinKalTrajectory(eveMng, firstloop, scene,  track_tuple);
+  
+    if(!useKinKal){
     if(seedcol!=0){
       for(unsigned int k = 0; k < seedcol->size(); k = k + 20){
         mu2e::KalSeed kseed = (*seedcol)[k];
