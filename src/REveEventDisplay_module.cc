@@ -111,6 +111,10 @@ namespace mu2e
           fhicl::Atom<bool> addErrBar{Name("addErrBar"), Comment("show combo hit err bar"),true};
           fhicl::Atom<bool> addCrystalHits{Name("addCrystalHits"), Comment("show crystal hits if presrnt"),true};
           fhicl::Atom<bool> addCRVBars{Name("addCRVBars"), Comment("show crv bars hit if presrnt"),true};
+          fhicl::Atom<bool> addKalInter{Name("addKalInter"), Comment("show Kal intersections"),true};
+          fhicl::Atom<bool> addTrkStrawHits{Name("addTrkStrawHits"), Comment("show Kal trk straw hits"),true};
+          fhicl::Atom<bool> addTrkCaloHits{Name("addTrkCaloHits"), Comment("show Kal trk cal ohits"),true};
+          fhicl::Atom<bool> useBTrk{Name("useBTrk"), Comment("to use older kal seed views"),false};
           fhicl::Atom<bool> specifyTag{Name("specifyTag"), Comment("to only select events of selected input tag"),false};   
           fhicl::Table<CollectionFiller::Config> filler{Name("filler"),Comment("fill collections")};
           fhicl::Sequence<int>particles{Name("particles"),Comment("PDGcodes to plot")};
@@ -167,6 +171,11 @@ namespace mu2e
         bool addErrBar_;
         bool addCrystalHits_;
         bool addCRVBars_;
+        bool addKalInter_;
+        bool addTrkStrawHits_;
+        bool addTrkCaloHits_;
+        bool useBTrk_;
+        
         bool specifyTag_ = false;
         TDirectory*   directory_ = nullptr;   
         CollectionFiller filler_;
@@ -209,6 +218,10 @@ namespace mu2e
     addErrBar_(conf().addErrBar()),
     addCrystalHits_(conf().addCrystalHits()),
     addCRVBars_(conf().addCRVBars()),
+    addKalInter_(conf().addKalInter()),
+    addTrkStrawHits_(conf().addTrkStrawHits()),
+    addTrkCaloHits_(conf().addTrkCaloHits()),
+    useBTrk_(conf().useBTrk()),
     specifyTag_(conf().specifyTag()),
     filler_(conf().filler()),
     particles_(conf().particles()),
@@ -261,7 +274,7 @@ namespace mu2e
   void REveEventDisplay::printOpts(){
     std::cout<<"*********** REve Mu2e **************"
     <<" User Options: "
-    <<" addHits : "<<filler_.addHits_
+    <<" addHits : "<< filler_.addHits_
     <<" addTimeClusters : "<<filler_.addTimeClusters_
     <<" addCRVpulses : "<<filler_.addCrvHits_
     <<" addCRVclusters : "<<filler_.addCrvClusters_
@@ -445,8 +458,14 @@ namespace mu2e
       REX::REveElement* scene = eveMng_->GetEventScene();
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
-      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addCaloDigis_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addCrvClusters_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_, addErrBar_, addCrystalHits_, addCRVBars_);
-      frame_->showEvents(eveMng_, scene, firstLoop_, firstLoopCalo_, data, drawOpts, particles_, strawdisplay_, geomOpts);
+      // fill draw options 
+      DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addCaloDigis_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addCrvClusters_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_, addErrBar_, addCrystalHits_, addCRVBars_, useBTrk_);
+      
+      // fill kinkal options
+      KinKalOptions KKOpts(addKalInter_, addTrkStrawHits_, addTrkCaloHits_);
+      
+      // call the "show events" function to add the data
+      frame_->showEvents(eveMng_, scene, firstLoop_, firstLoopCalo_, data, drawOpts, particles_, strawdisplay_, geomOpts, KKOpts);
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
       

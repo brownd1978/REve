@@ -18,25 +18,26 @@ physics :
 physics.analyzers.REveEventDisplay.showCRV : true
 physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
-physics.analyzers.REveEventDisplay.showST : false
+physics.analyzers.REveEventDisplay.showDS : false
 physics.analyzers.REveEventDisplay.addCRVBars : true
-physics.analyzers.REveEventDisplay.addKalInter : true
-physics.analyzers.REveEventDisplay.addTrkStrawHits : true
-physics.analyzers.REveEventDisplay.diagLevel : 1
+physics.analyzers.REveEventDisplay.addKalInter : false
+physics.analyzers.REveEventDisplay.addCrystalHits : false
+physics.analyzers.REveEventDisplay.useBTrk : true
+physics.analyzers.REveEventDisplay.filler.addHelixSeeds : false
+//physics.analyzers.REveEventDisplay.filler.KalSeedCollection : ["KKDeM"]
 physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
-//physics.analyzers.REveEventDisplay.filler.KalSeedCollection : ["KKSeed"]
+physics.analyzers.REveEventDisplay.filler.addCaloDigis : false
 physics.analyzers.REveEventDisplay.filler.addClusters : false
-physics.analyzers.REveEventDisplay.filler.addHits : false
+physics.analyzers.REveEventDisplay.filler.addHits : true
+physics.analyzers.REveEventDisplay.filler.addCrvClusters : true
 physics.analyzers.REveEventDisplay.filler.addCrvHits : false
-physics.analyzers.REveEventDisplay.filler.addCrvClusters : false
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
-physics.analyzers.REveEventDisplay.filler.addTrkHits : false 
+physics.analyzers.REveEventDisplay.filler.addTrkHits : true
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
 physics.analyzers.REveEventDisplay.filler.addMCTraj : true
-physics.analyzers.REveEventDisplay.extracted : true
-physics.analyzers.REveEventDisplay.gdmlname :"REve/mu2e_extracted.gdml"
 physics.analyzers.REveEventDisplay.seqMode : true
+physics.analyzers.REveEventDisplay.strawdisplay : false
 physics.EndPath  : [ @sequence::REveDis.seqBase] 
 
 services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
-services.GeometryService.inputFile: "Offline/Mu2eG4/geom/geom_common_extracted.txt"
+

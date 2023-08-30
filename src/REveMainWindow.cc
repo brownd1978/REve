@@ -343,7 +343,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
  }
 
 
- void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, bool firstLoopCalo, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts){
+ void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, bool firstLoopCalo, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts, KinKalOptions KKOpts){
     if(!firstLoop){
       eventScene->DestroyElements();;
     }
@@ -380,9 +380,9 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
     if(drawOpts.addTracks and track_list.size() !=0) {
-      pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
-      pass_data->FillKinKalTrajectory(eveMng, firstLoop, eventScene, data.track_tuple );
-      if(drawOpts.addTrkHits) {   
+      if(drawOpts.useBTrk) { pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene); }
+      if(!drawOpts.useBTrk){ pass_data->FillKinKalTrajectory(eveMng, firstLoop, eventScene, data.track_tuple, KKOpts.addKalInter,  KKOpts.addTrkStrawHits); }
+      if(drawOpts.useBTrk and drawOpts.addTrkHits and drawOpts.addComboHits ) {   // Note this is legacy, requires combo hits in .art
         std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
         pass_data->AddTrkHits(eveMng, firstLoop, data.combohit_tuple,data.track_tuple, eventScene);
         }
