@@ -1,4 +1,4 @@
-# author : Sophie Middleton 
+# author : Sophie Middleton
 # purpose : example for helix tracks
 #include "Offline/fcl/minimalMessageService.fcl"
 #include "Offline/fcl/standardProducers.fcl"
@@ -21,12 +21,12 @@ physics.analyzers.REveEventDisplay.showTS : false
 physics.analyzers.REveEventDisplay.showST : false
 physics.analyzers.REveEventDisplay.addCRVBars : true
 physics.analyzers.REveEventDisplay.diagLevel : 1
-physics.analyzers.REveEventDisplay.filler.addKalSeeds : false
-physics.analyzers.REveEventDisplay.filler.KalSeedCollection : ["KKSeed"]
+physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
+physics.analyzers.REveEventDisplay.filler.KalSeedCollection : ["KKLine"]
 physics.analyzers.REveEventDisplay.filler.addClusters : false
 physics.analyzers.REveEventDisplay.filler.addHits : false
 physics.analyzers.REveEventDisplay.filler.addCrvHits : true
-physics.analyzers.REveEventDisplay.filler.addCrvClusters : false
+physics.analyzers.REveEventDisplay.filler.addCrvClusters : true
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
 physics.analyzers.REveEventDisplay.filler.addTrkHits : false
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
@@ -34,7 +34,8 @@ physics.analyzers.REveEventDisplay.filler.addMCTraj : true
 physics.analyzers.REveEventDisplay.extracted : true
 physics.analyzers.REveEventDisplay.gdmlname :"REve/mu2e_extracted.gdml"
 physics.analyzers.REveEventDisplay.seqMode : true
-physics.EndPath  : [ @sequence::REveDis.seqBase] 
+physics.analyzers.REveEventDisplay.filler.CrvCoincidenceClusterCollection: [ "SelectRecoMC:CrvCoincidenceClusterFinder" ]
+physics.EndPath  : [ @sequence::REveDis.seqBase]
 
 services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
 services.GeometryService.inputFile: "Offline/Mu2eG4/geom/geom_common_extracted.txt"
