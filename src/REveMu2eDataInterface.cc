@@ -833,7 +833,7 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
         {
            auto kl = segments[0].kinematicLine();
            std::string kaltitle = "KalSeed tag : " + names[j]
-              + " mom " + std::to_string(segments[0].mom());
+              + " mom " + std::to_string(segments[0].mom())
               + " MeV/c t0 " + std::to_string(kl.t0()) +  '\n'
               + " d0 " + std::to_string(kl.d0() ) +  '\n'
               + " z0 " + std::to_string(kl.z0() ) +  '\n'
@@ -907,8 +907,8 @@ void REveMu2eDataInterface::AddKalSeedCollection(REX::REveManager *&eveMng,bool 
           if(kseed.kinematicLineFit() ){
             auto kl = segment.kinematicLine();
             kaltitle = "KalSeed tag : " + names[j]
-              + " mom " + std::to_string(segment.mom());
-            + " MeV/c t0 " + std::to_string(kl.t0()) +  '\n'
+              + " mom " + std::to_string(segment.mom())
+              + " MeV/c t0 " + std::to_string(kl.t0()) +  '\n'
               + " d0 " + std::to_string(kl.d0() ) +  '\n'
               + " z0 " + std::to_string(kl.z0() ) +  '\n'
               + " phi0 " + std::to_string(kl.phi0() ) +  '\n'
