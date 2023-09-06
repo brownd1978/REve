@@ -443,7 +443,7 @@ void REveMu2eDataInterface::AddCRVClusters(REX::REveManager *&eveMng, bool first
 
             CLHEP::Hep3Vector pointInMu2e = det-> toDetector(crvCounterPos);
             CLHEP::Hep3Vector sibardetails(barDetail.getHalfLengths()[0],barDetail.getHalfLengths()[1],barDetail.getHalfLengths()[2]);
-            
+           
             if(addCRVBars){
             if(!extracted){
               auto b = new REX::REveBox("box","label");

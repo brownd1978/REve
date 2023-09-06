@@ -464,7 +464,7 @@ namespace mu2e
       // fill kinkal options
       KinKalOptions KKOpts(addKalInter_, addTrkStrawHits_, addTrkCaloHits_);
       
-      // call the "show events" function to add the data
+      // call the "show events" function to add the 
       frame_->showEvents(eveMng_, scene, firstLoop_, firstLoopCalo_, data, drawOpts, particles_, strawdisplay_, geomOpts, KKOpts);
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;

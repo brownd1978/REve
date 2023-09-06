@@ -121,7 +121,7 @@ namespace mu2e {
       bool addMCTrajectories = false;
       bool addTrkErrBar = true;
       bool addCrystalDraw = false;
-      bool addCRVBars = false;
+      bool addCRVBars = true;
       bool useBTrk = false;
       DrawOptions(){};
       DrawOptions(bool cosmictracks, bool helices, bool tracks, bool calodigis, bool clusters, bool combohits, bool crv, bool crvclu, bool timeclusters, bool trkhits, bool mctraj, bool errbar, bool crys, bool crvbars, bool usebtrk) 

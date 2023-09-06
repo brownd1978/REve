@@ -28,7 +28,7 @@ physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
 physics.analyzers.REveEventDisplay.filler.addClusters : false
 physics.analyzers.REveEventDisplay.filler.addHits : false
 physics.analyzers.REveEventDisplay.filler.addCrvHits : false
-physics.analyzers.REveEventDisplay.filler.addCrvClusters : false
+physics.analyzers.REveEventDisplay.filler.addCrvClusters : true
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
 physics.analyzers.REveEventDisplay.filler.addTrkHits : false 
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
