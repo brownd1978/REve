@@ -450,7 +450,7 @@ namespace mu2e
       eveMng_->GetScenes()->AcceptChanges(true);
 
       fGui->feventid = eventid_;
-      fGui->frunid = subrunid_;
+      fGui->fsubrunid = subrunid_;
       fGui->frunid = runid_;
       fGui->StampObjProps();
 
