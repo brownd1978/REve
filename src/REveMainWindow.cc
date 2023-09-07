@@ -115,7 +115,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
-                //std::cout<<name<<"  "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
+                std::cout<<name<<"  "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
                 if(name == "TrackerPlaneEnvelope_000x3acaae0" or name== "TrackerPlaneEnvelope_000x4ce11c0") { // latter for extracted.
                   FrontTracker_gdmltag = j;
                   
@@ -213,26 +213,24 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       static std::vector <std::string> substrings_ex {"CRSscintLayer_0","CRSmotherLayer_CRV_EX"};//
       shift.at(0) = 0;
       shift.at(1) = firstCounterEX[1]/10; 
-      shift.at(2) =  124.2;//from GDML print
-      //std::cout<<"Posiotion of CRV "<<firstCounterEX[2] - trackerz0_extracted<<std::endl;
+      shift.at(2) =  82.8/2 + 124.2 + firstCounterEX[2]/10 - trackerz0_extracted/10; //tracker - first counter pos plus GDML position of first + wisth of module
+      std::cout<<"Position of CRV "<<firstCounterEX[2] - trackerz0_extracted<<std::endl;
       for(auto& i: substrings_ex){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
       }
 
-
       static std::vector <std::string> substrings_t1  {"CRSscintLayer_1","CRSmotherLayer_CRV_T1"};//"CRSScintillatorBar_1_1",
       shift.at(0) = 0;
       shift.at(1) = firstCounterT1[1]/10;
-      shift.at(2) = -(2370/2)/10;//from GDML print
+      shift.at(2) = firstCounterT1[2]/10 - trackerz0_extracted/10; //tracker - first counter pos
       for(auto& i: substrings_t1){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
       }
 
-
       static std::vector <std::string> substrings_t2  {"CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//"CRSScintillatorBar_1_2",note for the bar, maybe first number changes?
       shift.at(0) = 0;
       shift.at(1) = firstCounterT2[1]/10;
-      shift.at(2) = -41.4;//from GDML print
+      shift.at(2) = 82.8/2 +41.4 + firstCounterT2[2]/10 - trackerz0_extracted/10; //tracker - first counter pos
       for(auto& i: substrings_t2){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
 
