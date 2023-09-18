@@ -115,7 +115,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
-                std::cout<<name<<"  "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
+                //std::cout<<name<<"  "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
                 if(name == "TrackerPlaneEnvelope_000x3acaae0" or name== "TrackerPlaneEnvelope_000x4ce11c0") { // latter for extracted.
                   FrontTracker_gdmltag = j;
                   

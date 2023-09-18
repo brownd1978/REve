@@ -196,6 +196,7 @@ namespace mu2e
         bool seqMode_;
         int eventn;
         int runn;
+        int subrunn;
         
         std::vector<std::shared_ptr<REveDataProduct>> listoflists;
         GeomOptions geomOpts;
@@ -234,6 +235,8 @@ namespace mu2e
         // Take in Run, Event number
           std::cout<<" Event Number : "<<std::endl;
           cin>>eventn;
+          std::cout<<" SubRun Number : "<<std::endl;
+          cin>>subrunn;
           std::cout<<" Run Number : "<<std::endl;
           cin>>runn;
       }
@@ -321,8 +324,8 @@ namespace mu2e
       subrunid_ = event.subRun();
 
       std::vector<std::shared_ptr<REveDataProduct>> _chits;
-     
-      if((seqMode_) or ( runid_ == runn and eventid_ == eventn)){
+      std::cout<<"PRINT    "<<runid_ <<" "<<runn <<" "<< subrunid_<<" "<<subrunn <<" "<< eventid_ <<" "<< eventn<<std::endl;
+      if((seqMode_) or ( runid_ == runn and subrunid_ == subrunn and eventid_ == eventn)){
         // Hand off control to display thread
         std::unique_lock lock{m_};
         if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;

@@ -430,7 +430,7 @@ void REveMu2eDataInterface::AddCRVClusters(REX::REveManager *&eveMng, bool first
         auto ps1 = new REX::REvePointSet("CRVCoincidenceClusters", crvtitle,0);
         for(unsigned int j=0; j< crvClusters->size(); j++){
           mu2e::CrvCoincidenceCluster const &crvclu = (*crvClusters)[j];
-          CLHEP::Hep3Vector pointInMu2e = det-> toDetector(crvclu.GetAvgCounterPos());
+          CLHEP::Hep3Vector pointInMu2e = det-> toDetector(crvclu.GetAvgHitPos());
           ps1->SetNextPoint(pointmmTocm(pointInMu2e.x()), pointmmTocm(pointInMu2e.y()) , pointmmTocm(pointInMu2e.z()));
           for(unsigned h =0 ; h < crvclu.GetCrvRecoPulses().size();h++)     {
             
