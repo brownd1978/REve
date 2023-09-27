@@ -20,15 +20,19 @@ physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
 physics.analyzers.REveEventDisplay.showST : false
 physics.analyzers.REveEventDisplay.addCRVBars : true
+physics.analyzers.REveEventDisplay.addKalInter : true
+physics.analyzers.REveEventDisplay.addTrkStrawHits : true
 physics.analyzers.REveEventDisplay.diagLevel : 1
 physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
+
 physics.analyzers.REveEventDisplay.filler.KalSeedCollection : ["KKLine"]
 physics.analyzers.REveEventDisplay.filler.addClusters : false
 physics.analyzers.REveEventDisplay.filler.addHits : false
 physics.analyzers.REveEventDisplay.filler.addCrvHits : true
+
 physics.analyzers.REveEventDisplay.filler.addCrvClusters : true
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
-physics.analyzers.REveEventDisplay.filler.addTrkHits : false
+physics.analyzers.REveEventDisplay.filler.addTrkHits : false 
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
 physics.analyzers.REveEventDisplay.filler.addMCTraj : true
 physics.analyzers.REveEventDisplay.extracted : true

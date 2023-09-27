@@ -16,6 +16,8 @@ double nCrystals = 674;
 
 SimpleConfig TConfig("Offline/Mu2eG4/geom/tracker_v6.txt");
 double trackerz0 = TConfig.getDouble("tracker.z0");//10171
+SimpleConfig ExConfig("Offline/Mu2eG4/geom/geom_common_extracted.txt");
+double trackerz0_extracted = ExConfig.getDouble("tracker.z0");//24175
 double motherhalflength = TConfig.getDouble("tracker.mother.halfLength",motherhalflength);
 
 SimpleConfig CConfig("Offline/Mu2eG4/geom/calorimeter_CsI.txt");
@@ -113,7 +115,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
-                //std::cout<<name<<" "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
+                //std::cout<<name<<"  "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
                 if(name == "TrackerPlaneEnvelope_000x3acaae0" or name== "TrackerPlaneEnvelope_000x4ce11c0") { // latter for extracted.
                   FrontTracker_gdmltag = j;
                   
@@ -211,25 +213,24 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       static std::vector <std::string> substrings_ex {"CRSscintLayer_0","CRSmotherLayer_CRV_EX"};//
       shift.at(0) = 0;
       shift.at(1) = firstCounterEX[1]/10; 
-      shift.at(2) =  0;
+      shift.at(2) =  82.8/2 + 124.2 + firstCounterEX[2]/10 - trackerz0_extracted/10; //tracker - first counter pos plus GDML position of first + wisth of module
+      std::cout<<"Position of CRV "<<firstCounterEX[2] - trackerz0_extracted<<std::endl;
       for(auto& i: substrings_ex){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
       }
 
-
       static std::vector <std::string> substrings_t1  {"CRSscintLayer_1","CRSmotherLayer_CRV_T1"};//"CRSScintillatorBar_1_1",
       shift.at(0) = 0;
       shift.at(1) = firstCounterT1[1]/10;
-      shift.at(2) =  0;
+      shift.at(2) = firstCounterT1[2]/10 - trackerz0_extracted/10; //tracker - first counter pos
       for(auto& i: substrings_t1){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
       }
 
-
       static std::vector <std::string> substrings_t2  {"CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//"CRSScintillatorBar_1_2",note for the bar, maybe first number changes?
       shift.at(0) = 0;
       shift.at(1) = firstCounterT2[1]/10;
-      shift.at(2) =  0;
+      shift.at(2) = 82.8/2 +41.4 + firstCounterT2[2]/10 - trackerz0_extracted/10; //tracker - first counter pos
       for(auto& i: substrings_t2){
       showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level,  false, false, shift, false, true, 432);
 
@@ -343,7 +344,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
  }
 
 
- void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, bool firstLoopCalo, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts){
+ void REveMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* &eventScene, bool firstLoop, bool firstLoopCalo, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts, KinKalOptions KKOpts){
     if(!firstLoop){
       eventScene->DestroyElements();;
     }
@@ -380,9 +381,10 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     
     std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
     if(drawOpts.addTracks and track_list.size() !=0) {
-      pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene);
-      pass_data->FillKinKalTrajectory(eveMng, firstLoop, eventScene, data.track_tuple );
-      if(drawOpts.addTrkHits) {   
+      if(drawOpts.useBTrk) { pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene); }
+      if(!drawOpts.useBTrk){ pass_data->FillKinKalTrajectory(eveMng, firstLoop, eventScene, data.track_tuple, KKOpts.addKalInter,  KKOpts.addTrkStrawHits); }
+      
+      if(drawOpts.useBTrk and drawOpts.addTrkHits and drawOpts.addComboHits ) {   // Note this is legacy, requires combo hits in .art
         std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
         pass_data->AddTrkHits(eveMng, firstLoop, data.combohit_tuple,data.track_tuple, eventScene);
         }

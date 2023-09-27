@@ -94,7 +94,18 @@ namespace mu2e {
         <<"************************ "<<std::endl;
       }
      };
-     
+  
+  struct KinKalOptions{
+    bool addKalInter = false;
+    bool addTrkStrawHits = false;
+    bool addTrkCaloHits = false;
+    KinKalOptions(){};
+    KinKalOptions(bool kalinter, bool trkstrawhits, bool trkcalohits) 
+      : addKalInter(kalinter), addTrkStrawHits(trkstrawhits), addTrkCaloHits(trkcalohits){};
+      
+  };
+  
+  
   struct DrawOptions{
       // data options
       bool addCosmicTracks = false;
@@ -106,14 +117,15 @@ namespace mu2e {
       bool addCRVInfo = false;
       bool addCRVClusters = false;
       bool addTimeClusters = false;
-      bool addTrkHits = false;
+      bool addTrkHits = false; // legacy
       bool addMCTrajectories = false;
       bool addTrkErrBar = true;
       bool addCrystalDraw = false;
-      bool addCRVBars = false;
+      bool addCRVBars = true;
+      bool useBTrk = false;
       DrawOptions(){};
-      DrawOptions(bool cosmictracks, bool helices, bool tracks, bool calodigis, bool clusters, bool combohits, bool crv, bool crvclu, bool timeclusters, bool trkhits, bool mctraj, bool errbar, bool crys, bool crvbars) 
-      : addCosmicTracks(cosmictracks), addHelices(helices), addTracks(tracks), addCaloDigis(calodigis), addClusters(clusters), addComboHits(combohits), addCRVInfo(crv), addCRVClusters(crvclu), addTimeClusters(timeclusters), addTrkHits(trkhits), addMCTrajectories(mctraj), addTrkErrBar(errbar), addCrystalDraw(crys), addCRVBars(crvbars) {};
+      DrawOptions(bool cosmictracks, bool helices, bool tracks, bool calodigis, bool clusters, bool combohits, bool crv, bool crvclu, bool timeclusters, bool trkhits, bool mctraj, bool errbar, bool crys, bool crvbars, bool usebtrk) 
+      : addCosmicTracks(cosmictracks), addHelices(helices), addTracks(tracks), addCaloDigis(calodigis), addClusters(clusters), addComboHits(combohits), addCRVInfo(crv), addCRVClusters(crvclu), addTimeClusters(timeclusters), addTrkHits(trkhits), addMCTrajectories(mctraj), addTrkErrBar(errbar), addCrystalDraw(crys), addCRVBars(crvbars), useBTrk(usebtrk) {};
      };
      
     class REveMainWindow  : public REX::REveElement {
@@ -131,7 +143,7 @@ namespace mu2e {
             void changeNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, std::vector<double> shift, bool print, bool single);
             void GeomDrawer(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, GeomOptions geomOpts); 
             void makeGeometryScene(REX::REveManager *eveMng,  GeomOptions geomOpts, std::string filename);
-            void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop,  bool firstLoopCalo, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts);
+            void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop,  bool firstLoopCalo, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts, KinKalOptions KKOpts);
             void changeEveGeoShape(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level);
             void createProjectionStuff(REX::REveManager *eveMng);
             void AddTrackerProjection(REX::REveManager *eveMng);

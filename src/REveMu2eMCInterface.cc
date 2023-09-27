@@ -128,11 +128,12 @@ namespace REX = ROOT::Experimental;
                   CLHEP::Hep3Vector Pos(points[i].x(), points[i].y(), points[i].z());
                     GeomHandle<DetectorSystem> det;
                     CLHEP::Hep3Vector HitPos = det->toDetector(Pos);
-                    if(pointmmTocm(HitPos.y()) < 500){ // a reasonable height above the CRV
+                    if(pointmmTocm(HitPos.y()) < 800){ // a reasonable height above the CRV
                       line->SetNextPoint(pointmmTocm((HitPos.x())),pointmmTocm((HitPos.y())),pointmmTocm(HitPos.z()));
                     }
                 }
                 // set line colour
+                //std::cout<<"MC>>>>>>>> "<<trajectoryIter->first->pdgId().typeName()<<std::endl;
                 SetLineColorPID(trajectoryIter->first->pdgId(),line);
                 line->SetLineWidth(drawconfig.getInt("TrackLineWidth"));
                 scene->AddElement(line); 
