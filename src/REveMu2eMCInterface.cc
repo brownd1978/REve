@@ -133,7 +133,6 @@ namespace REX = ROOT::Experimental;
                     }
                 }
                 // set line colour
-                //std::cout<<"MC>>>>>>>> "<<trajectoryIter->first->pdgId().typeName()<<std::endl;
                 SetLineColorPID(trajectoryIter->first->pdgId(),line);
                 line->SetLineWidth(drawconfig.getInt("TrackLineWidth"));
                 scene->AddElement(line); 

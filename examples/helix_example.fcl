@@ -15,31 +15,62 @@ physics :
 {
  analyzers : { @table::REveDis.analyzers}
 }
-physics.analyzers.REveEventDisplay.showCRV : true
+
+//geometry options
+physics.analyzers.REveEventDisplay.showCRV : false
 physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
-
 physics.analyzers.REveEventDisplay.showDS : false
+
+//highlight CRV bars which are "hit"
 physics.analyzers.REveEventDisplay.addCRVBars : true
-physics.analyzers.REveEventDisplay.addKalInter : true
-physics.analyzers.REveEventDisplay.addCrystalHits : false
 
+//for KinKal development
+physics.analyzers.REveEventDisplay.addKalInter : false
+
+//show crystal hits in cluster
+physics.analyzers.REveEventDisplay.addCrystalHits : true
+
+//show pat rec helix
 physics.analyzers.REveEventDisplay.filler.addHelixSeeds : false
-physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
-physics.analyzers.REveEventDisplay.filler.KalSeedCollection : ["KKDeM"]
-physics.analyzers.REveEventDisplay.filler.addClusters : false
-physics.analyzers.REveEventDisplay.filler.addHits : false
-physics.analyzers.REveEventDisplay.filler.addCrvClusters : true
 
+//show final KalSeed
+physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
+
+//show CaloCluster
+physics.analyzers.REveEventDisplay.filler.addClusters : true
+
+//show ComboHits
+physics.analyzers.REveEventDisplay.filler.addHits : false // adds ComboHits
+
+//show CRV reco information
+physics.analyzers.REveEventDisplay.filler.addCrvClusters : true
 physics.analyzers.REveEventDisplay.filler.addCrvHits : false
+
+//show TimeClusters
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
-physics.analyzers.REveEventDisplay.filler.addTrkHits : true
+
+//highlight ComboHits (needs development)
+physics.analyzers.REveEventDisplay.addTrkStrawHits : false
+
+//add straight pat reco CosmicTrackSeed
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
+
+//add MCTrajecotry
 physics.analyzers.REveEventDisplay.filler.addMCTraj : true
+
+//allows movement through events in sequential order
 physics.analyzers.REveEventDisplay.seqMode : true
+
+//highlights straws
 physics.analyzers.REveEventDisplay.strawdisplay : false
+
+//print statements
 physics.analyzers.REveEventDisplay.diagLevel : 10
+
+//the path
 physics.EndPath  : [ @sequence::REveDis.seqBase]
 
+//useless file name
 services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
 

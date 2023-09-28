@@ -324,7 +324,7 @@ namespace mu2e
       subrunid_ = event.subRun();
 
       std::vector<std::shared_ptr<REveDataProduct>> _chits;
-      std::cout<<"PRINT    "<<runid_ <<" "<<runn <<" "<< subrunid_<<" "<<subrunn <<" "<< eventid_ <<" "<< eventn<<std::endl;
+
       if((seqMode_) or ( runid_ == runn and subrunid_ == subrunn and eventid_ == eventn)){
         // Hand off control to display thread
         std::unique_lock lock{m_};
@@ -466,7 +466,7 @@ namespace mu2e
       
       // fill kinkal options
       KinKalOptions KKOpts(addKalInter_, addTrkStrawHits_, addTrkCaloHits_);
-      
+
       // call the "show events" function to add the 
       frame_->showEvents(eveMng_, scene, firstLoop_, firstLoopCalo_, data, drawOpts, particles_, strawdisplay_, geomOpts, KKOpts);
 

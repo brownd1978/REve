@@ -27,7 +27,7 @@ REveEventDisplay : {
       TimeClusterCollection : ["MHDeM"]
       CaloDigiCollection : ["CaloDigiMaker"]
       CaloClusterCollection : ["CaloClusterFast"]
-      KalSeedCollection : ["KFFDeM"]//KKDeM
+      KalSeedCollection : ["KKDeM"]
       HelixSeedCollection : ["MHFinderDe"]
       CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
       MCTrajectoryCollection :  ["compressRecoMCs"]
