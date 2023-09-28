@@ -104,8 +104,8 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
           + " Energy Dep. = "+cluster_energy+" MeV "+   '\n'
           + " Time = "+cluster_time+" ns " +  '\n'
           + " Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
-        auto ps1 = new REX::REvePointSet("disk1", "CaloClusters Disk 1: "+label,0);
-        auto ps2 = new REX::REvePointSet("disk2", "CaloClusters Disk 2: "+label,0);
+        auto ps1 = new REX::REvePointSet(label, "CaloClusters Disk 1: "+label,0);
+        auto ps2 = new REX::REvePointSet(label, "CaloClusters Disk 2: "+label,0);
 
         
         // Set positions of clusters
@@ -145,7 +145,6 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             double crystalXLen = pointmmTocm(crystal.size().x());
             double crystalYLen = pointmmTocm(crystal.size().y());
             double crystalZLen = pointmmTocm(crystal.size().z());
-
             
             GeomHandle<DetectorSystem> det;
             CLHEP::Hep3Vector crystalPos = cal.geomUtil().mu2eToDisk(cluster.diskID(),crystal.position()) ;
@@ -430,7 +429,7 @@ void REveMu2eDataInterface::AddCRVClusters(REX::REveManager *&eveMng, bool first
         auto ps1 = new REX::REvePointSet("CRVCoincidenceClusters", crvtitle,0);
         for(unsigned int j=0; j< crvClusters->size(); j++){
           mu2e::CrvCoincidenceCluster const &crvclu = (*crvClusters)[j];
-          CLHEP::Hep3Vector pointInMu2e = det-> toDetector(crvclu.GetAvgCounterPos());
+          CLHEP::Hep3Vector pointInMu2e = det-> toDetector(crvclu.GetAvgHitPos());
           ps1->SetNextPoint(pointmmTocm(pointInMu2e.x()), pointmmTocm(pointInMu2e.y()) , pointmmTocm(pointInMu2e.z()));
           for(unsigned h =0 ; h < crvclu.GetCrvRecoPulses().size();h++)     {
             
