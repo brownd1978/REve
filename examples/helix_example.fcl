@@ -51,7 +51,7 @@ physics.analyzers.REveEventDisplay.filler.addCrvHits : false
 physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
 
 //highlight ComboHits (needs development)
-physics.analyzers.REveEventDisplay.addTrkStrawHits : false
+physics.analyzers.REveEventDisplay.addTrkStrawHits : true
 
 //add straight pat reco CosmicTrackSeed
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
