@@ -1,4 +1,7 @@
 #include "REve/inc/REveMu2eDataInterface.hh"
+#include "Offline/DataProducts/inc/GenVector.hh"
+#include "Offline/Mu2eKinKal/inc/WireHitState.hh"
+#include "Offline/RecoDataProducts/inc/TrkStrawHitSeed.hh"
 using namespace mu2e;
 namespace REX = ROOT::Experimental;
 
@@ -658,26 +661,31 @@ template<class KTRAJc> void REveMu2eDataInterface::AddTrkStrawHit(KalSeed kalsee
     auto trkstrawpoint = new REX::REvePointSet("TrkStrawHit", "TrkStrawHit",1);
     auto line = new REX::REveLine("TrkStrawHit Error","TrkStrawHit Error" , 1);
     const mu2e::TrkStrawHitSeed &tshs = hits.at(i);
-    const mu2e::Straw& straw = tracker.straw(tshs.strawId());
-    bool active = tshs._flag.hasAnyProperty(StrawHitFlag::active);
-    bool usedrift = tshs._ambig != 0;
+    auto const& straw = tracker->straw(tshs.strawId());
+    mu2e::WireHitState whs(mu2e::WireHitState::State(tshs._ambig),
+        mu2e::StrawHitUpdaters::algorithm(tshs._algo),
+        tshs._kkshflag);
+    bool active = whs.active();
+    bool usedrift = whs.driftConstraint();
     if(active){ // maybe draw inactive hits but with a different color? TODO
       // then find the position at the reference POCA: start with the position on the wire
       auto tshspos = XYZVectorF(straw.wirePosition(tshs._rupos));
-      double herr = usedrift ? tshs._sderr : tshs._uderr;
+      double herr(0.0);
+      //find the direction along DOCA
+      auto tdir = lhptr->direction(tshs._ptoca);
+      auto wdir = XYZVectorF(straw.wireDirection(tshs._rupos));
+      auto ddir = wdir.Cross(tdir).Unit()*whs.lrSign();
       if(usedrift){
         // move the position out on the signed drift direction.
-        //find the direction along DOCA
-        auto tdir = lhptr.direction(tshs._stoca);
-        auto wdir = XYZvectorF(straw.wireDirection(tshs._rupos));
-        WireHitState whs(tshs._ambig,tshs.algo_, tshs.kkshflag_);
-        auto ddir = wdir.Cross(tdir).Unit()*whs.lrSign();
         tshspos += tshs._rdrift*ddir;
+        herr = tshs._sderr;
+      } else {
+        herr = tshs._uderr;
       }
       // set the line length to be N sigma.  1 may be too short to see, TODO
       double nsigma(1.0);
-      auto end1 = tshspos + nsigma*ddir;
-      auto end2 = tshspos - nsigma*ddir;
+      auto end1 = tshspos + nsigma*herr*ddir;
+      auto end2 = tshspos - nsigma*herr*ddir;
       line->SetNextPoint(pointmmTocm(end1.x()),pointmmTocm(end1.y()) ,pointmmTocm(end1.z()));
       line->SetNextPoint(pointmmTocm(end2.x()),pointmmTocm(end2.y()) ,pointmmTocm(end2.z()));
       //goes along that same line (ddir)
@@ -685,7 +693,7 @@ template<class KTRAJc> void REveMu2eDataInterface::AddTrkStrawHit(KalSeed kalsee
       trkstrawpoint->SetMarkerSize(REveMu2eDataInterface::msize);
       trkstrawpoint->SetMarkerColor(kRed);
       if(!usedrift)trkstrawpoint->SetMarkerColor(kBlue);
-      trkstrawpoint->SetNextPoint(pointmmTocm(tocapos.x()),pointmmTocm(tocapos.y()) ,pointmmTocm(tocapos.z()));
+      trkstrawpoint->SetNextPoint(pointmmTocm(tshspos.x()),pointmmTocm(tshspos.y()) ,pointmmTocm(tshspos.z()));
       scene->AddElement(trkstrawpoint);
       scene->AddElement(line);
     }
