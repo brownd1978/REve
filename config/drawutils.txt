@@ -1,13 +1,14 @@
 // draw options
 
 int trans  = 1;
-int maxlevel = 8;
+int maxlevel = 8; //8=calocrystals
 int level = 0;
 int maxSID = 20000;
 int maxStrawID = 70;
 int TrackLineWidth = 5;
 
-int ThreeDimColor = 432; //kCyan
+int ThreeDimColor = 432; //kCyan = 432
+int TrackerColor = 0; //kCyan = 432
 int RecoTrackColor = 416; //kGreen
 
 int CRVHitColor = 600; //kBlue
