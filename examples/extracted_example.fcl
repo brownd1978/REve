@@ -42,7 +42,7 @@ physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
 physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
 
 // MC Trajectory:
-physics.analyzers.REveEventDisplay.filler.addMCTraj : false
+physics.analyzers.REveEventDisplay.filler.addMCTraj : true
 
 //setup extracted geometry
 physics.analyzers.REveEventDisplay.extracted : true

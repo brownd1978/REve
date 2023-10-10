@@ -117,11 +117,11 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
 
         // Set draw options
         Color_t color = kRed;//TODO - this needs improving
-        if(cluster_energy < 10)  color = kRed - 10;
-        if(cluster_energy >= 10 and cluster_energy < 20) color = kRed - 7 ;
-        if(cluster_energy >= 20  and cluster_energy < 30) color = kRed - 5 ;
-        if(cluster_energy >= 30  and cluster_energy < 40) color = kRed - 3;
-        if(cluster_energy >= 40  and cluster_energy < 50) color = kRed - 1;
+        if(cluster_energy < 10)  color = kViolet;
+        if(cluster_energy >= 10 and cluster_energy < 20) color = kBlue ;
+        if(cluster_energy >= 20  and cluster_energy < 30) color = kGreen ;
+        if(cluster_energy >= 30  and cluster_energy < 40) color = kYellow;
+        if(cluster_energy >= 40  and cluster_energy < 50) color = kOrange;
         if(cluster_energy >= 50) color = kRed;
 
         ps1->SetMarkerColor(color);
@@ -138,11 +138,22 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
 
         // Add crystals
         if(addCrystalDraw){
+          double maxE = 0;
+          double minE = 1000;
+          for(unsigned h =0 ; h < cluster.caloHitsPtrVector().size();h++)     {
+            art::Ptr<CaloHit>  crystalhit = cluster.caloHitsPtrVector()[h];
+            if(crystalhit->energyDep() > maxE) maxE = crystalhit->energyDep();
+            if(crystalhit->energyDep() < minE) minE = crystalhit->energyDep();
+          }
           for(unsigned h =0 ; h < cluster.caloHitsPtrVector().size();h++)     {
 
             art::Ptr<CaloHit>  crystalhit = cluster.caloHitsPtrVector()[h];
             int cryID = crystalhit->crystalID();
-
+            
+            // Set draw options
+            Color_t color;
+            std::array<Color_t,9> colors = {kViolet,kBlue,kGreen,kGreen,kYellow,kYellow,kOrange,kOrange,kRed};
+            
             //int diskID = cal.crystal(crystalhit->crystalID()).diskID();
             Crystal const &crystal = cal.crystal(cryID);
             double crystalXLen = pointmmTocm(crystal.size().x());
@@ -152,25 +163,45 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             GeomHandle<DetectorSystem> det;
             CLHEP::Hep3Vector crystalPos = cal.geomUtil().mu2eToDisk(cluster.diskID(),crystal.position()) ;
 
+            //  make title
             std::string crytitle =  "Crystal ID = " + std::to_string(cryID) +  '\n'
               + " Energy Dep. = "+std::to_string(crystalhit->energyDep())+" MeV "+   '\n'
               + " Time = "+std::to_string(crystalhit->time())+" ns ";
             char const *crytitle_c = crytitle.c_str();
-
-            // plot the crystals which are present in this event:
             auto b = new REX::REveBox("crystal",crytitle_c);
-            b->SetMainColor(color);
+            
+            // plot the crystals which are present in this event in lego:
+            if(crystalhit->energyDep() == minE)  color = kViolet;
+            unsigned int n = 1;
+            
+            if(cluster.caloHitsPtrVector().size() > 2){
+              double dE = (maxE - minE)/(cluster.caloHitsPtrVector().size() - 2);
+              int remain = cluster.caloHitsPtrVector().size() -2;
+
+              while(remain > 0 and n < colors.size()){
+                if(crystalhit->energyDep() >= minE + n*dE and crystalhit->energyDep() < minE + (n+1)*dE) {
+                  color = colors.at(n);
+                  b->SetMainColor(color);
+                }
+                remain -=1;
+                n++;
+              }
+            }
+            
+            if(crystalhit->energyDep() == maxE or n >= colors.size()) color = kRed;
+        
+            
             double width = crystalXLen/2;
             double height = crystalYLen/2;
-            double thickness = crystalZLen/2;
-            b->SetVertex(0, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())- thickness + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//---
-            b->SetVertex(1, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height, pointmmTocm(crystalPos.z())- thickness + 2*thickness  +abs(pointmmTocm(pointInMu2e.z())));//-+-
-            b->SetVertex(2, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height ,pointmmTocm(crystalPos.z())- thickness + 2*thickness  + abs(pointmmTocm(pointInMu2e.z())));//++-
-            b->SetVertex(3, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())-thickness  + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//+--
-            b->SetVertex(4, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())+ thickness + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//--+
-            b->SetVertex(5, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z())+ thickness  + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//-++
-            b->SetVertex(6, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z()) + thickness + 2*thickness+abs(pointmmTocm(pointInMu2e.z()))); //+++
-            b->SetVertex(7,pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())+ thickness + 2*thickness + abs(pointmmTocm(pointInMu2e.z())));//+-+
+            double thickness = crystalhit->energyDep()/maxE * crystalZLen/2; //length proportional to energy
+            b->SetVertex(0, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())- thickness + 1.5*crystalZLen + abs(pointmmTocm(pointInMu2e.z())));//---
+            b->SetVertex(1, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height, pointmmTocm(crystalPos.z())- thickness + 1.5*crystalZLen  +abs(pointmmTocm(pointInMu2e.z())));//-+-
+            b->SetVertex(2, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height ,pointmmTocm(crystalPos.z())- thickness + 1.5*crystalZLen  + abs(pointmmTocm(pointInMu2e.z())));//++-
+            b->SetVertex(3, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())-thickness  + 1.5*crystalZLen + abs(pointmmTocm(pointInMu2e.z())));//+--
+            b->SetVertex(4, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())+ thickness + 1.5*crystalZLen + abs(pointmmTocm(pointInMu2e.z())));//--+
+            b->SetVertex(5, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z())+ thickness  + 1.5*crystalZLen + abs(pointmmTocm(pointInMu2e.z())));//-++
+            b->SetVertex(6, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z()) + thickness + 1.5*crystalZLen+abs(pointmmTocm(pointInMu2e.z()))); //+++
+            b->SetVertex(7,pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())+ thickness + 1.5*crystalZLen + abs(pointmmTocm(pointInMu2e.z())));//+-+
             scene->AddElement(b);
           }
         }
