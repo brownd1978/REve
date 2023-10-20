@@ -108,6 +108,7 @@ namespace mu2e
           fhicl::Atom<bool> showSTM{Name("showSTM"), Comment(""),false};
           fhicl::Atom<bool> showCalo{Name("showCalo"), Comment(""),true};
           fhicl::Atom<bool> showTracker{Name("showTracker"), Comment(""),true};
+          fhicl::Atom<bool> showCaloCrystals{Name("showCaloCrystals"), Comment(""),true};
           fhicl::Atom<bool> addErrBar{Name("addErrBar"), Comment("show combo hit err bar"),true};
           fhicl::Atom<bool> addCrystalHits{Name("addCrystalHits"), Comment("show crystal hits if presrnt"),true};
           fhicl::Atom<bool> addCRVBars{Name("addCRVBars"), Comment("show crv bars hit if presrnt"),true};
@@ -168,6 +169,7 @@ namespace mu2e
         bool showSTM_;
         bool showCalo_;
         bool showTracker_;
+        bool showCaloCrystals_;
         bool addErrBar_;
         bool addCrystalHits_;
         bool addCRVBars_;
@@ -216,6 +218,7 @@ namespace mu2e
     showSTM_(conf().showSTM()),
     showCalo_(conf().showCalo()),
     showTracker_(conf().showTracker()),
+    showCaloCrystals_(conf().showCaloCrystals()),
     addErrBar_(conf().addErrBar()),
     addCrystalHits_(conf().addCrystalHits()),
     addCRVBars_(conf().addCRVBars()),
@@ -240,7 +243,7 @@ namespace mu2e
           std::cout<<" Run Number : "<<std::endl;
           cin>>runn;
       }
-      geomOpts.fill(showCRV_,showPS_, showTS_, showDS_, show2D_, caloVST_, showST_, extracted_, showSTM_, showCalo_, showTracker_ );
+      geomOpts.fill(showCRV_,showPS_, showTS_, showDS_, show2D_, caloVST_, showST_, extracted_, showSTM_, showCalo_, showTracker_, showCaloCrystals_ );
     }
 
   REveEventDisplay::~REveEventDisplay() {}

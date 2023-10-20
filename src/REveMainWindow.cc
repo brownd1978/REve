@@ -55,9 +55,9 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     
     // make 2D projections
     if( crystal1 ){ // add crystals to correct disk
-        mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
+        mngXYCaloDisk0->ImportElements(b1s, XYCaloDisk0GeomScene);
     }if( crystal2 ){
-        mngXYCaloDisk2->ImportElements(b1s, XYCaloDisk2GeomScene);
+        mngXYCaloDisk1->ImportElements(b1s, XYCaloDisk1GeomScene);
     }
     
     //show only first tracker plane
@@ -244,12 +244,15 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         shift.at(2) = 0;
         showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, false, shift, false, false, drawconfigf.getInt("TrackerColor") );
       }
-      static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
-      for(auto& i: substrings_crystals){
-        shift.at(0) = 0;  
-        shift.at(1) = 0;
-        shift.at(2) = 0;
-        showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false, false, drawconfigf.getInt("ThreeDimColor"));
+      
+      if(geomOpt.showCaloCrystals){
+        static std::vector <std::string> substrings_crystals  {"caloCrystal"};  
+        for(auto& i: substrings_crystals){
+          shift.at(0) = 0;  
+          shift.at(1) = 0;
+          shift.at(2) = 0;
+          showNodesByName(node,i,kFALSE, 0, trans, holder, maxlevel, level, true, true, shift, false, false, drawconfigf.getInt("ThreeDimColor"));
+        }
       }
     }
     if(geomOpt.showTracker){
@@ -295,14 +298,15 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
        for (auto &ie : eveMng->GetEventScene()->RefChildren())
        {
           TrackerXYView->SetCameraType(REX::REveViewer::kCameraOrthoXOY);
+          XYCaloDisk0View->SetCameraType(REX::REveViewer::kCameraOrthoXOY);
           XYCaloDisk1View->SetCameraType(REX::REveViewer::kCameraOrthoXOY);
-          XYCaloDisk2View->SetCameraType(REX::REveViewer::kCameraOrthoXOY);
           rhoZView->SetCameraType(REX::REveViewer::kCameraOrthoXOY);
           mngTrackerXY->ImportElements(ie, TrackerXYEventScene);
           
           mngRhoZ  ->ImportElements(ie, rhoZEventScene);
-          if(ie->GetName() == "disk1") mngXYCaloDisk1->ImportElements(ie, XYCaloDisk1EventScene);
-          if(ie->GetName() == "disk2") mngXYCaloDisk2->ImportElements(ie, XYCaloDisk2EventScene);
+
+          if(ie->GetName().find("disk0") != string::npos ) mngXYCaloDisk0->ImportElements(ie, XYCaloDisk0EventScene);
+          if(ie->GetName().find("disk1") != string::npos ) mngXYCaloDisk1->ImportElements(ie, XYCaloDisk1EventScene);
        }
  }
 
@@ -331,6 +335,17 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     
      // ---------------------Calo Disk 1 XY View ----------------------------
     
+    XYCaloDisk0GeomScene  = eveMng->SpawnNewScene("XYCaloDisk0 Geometry", "XYCaloDisk0");
+    XYCaloDisk0EventScene = eveMng->SpawnNewScene("XYCaloDisk0 Event Data","XYCaloDisk0");
+  
+    mngXYCaloDisk0 = new REX::REveProjectionManager(REX::REveProjection::kPT_RPhi);
+  
+    XYCaloDisk0View = eveMng->SpawnNewViewer("XYCaloDisk0 View", "");
+    XYCaloDisk0View->AddScene(XYCaloDisk0GeomScene);
+    XYCaloDisk0View->AddScene(XYCaloDisk0EventScene);
+    
+    // -------------------- Calo Disk 2 XY View ------------------------
+    
     XYCaloDisk1GeomScene  = eveMng->SpawnNewScene("XYCaloDisk1 Geometry", "XYCaloDisk1");
     XYCaloDisk1EventScene = eveMng->SpawnNewScene("XYCaloDisk1 Event Data","XYCaloDisk1");
   
@@ -338,18 +353,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
   
     XYCaloDisk1View = eveMng->SpawnNewViewer("XYCaloDisk1 View", "");
     XYCaloDisk1View->AddScene(XYCaloDisk1GeomScene);
-    XYCaloDisk1View->AddScene(XYCaloDisk1EventScene);
-    
-    // -------------------- Calo Disk 2 XY View ------------------------
-    
-    XYCaloDisk2GeomScene  = eveMng->SpawnNewScene("XYCaloDisk2 Geometry", "XYCaloDisk2");
-    XYCaloDisk2EventScene = eveMng->SpawnNewScene("XYCaloDisk2 Event Data","XYCaloDisk2");
-  
-    mngXYCaloDisk2 = new REX::REveProjectionManager(REX::REveProjection::kPT_RPhi);
-  
-    XYCaloDisk2View = eveMng->SpawnNewViewer("XYCaloDisk2 View", "");
-    XYCaloDisk2View->AddScene(XYCaloDisk2GeomScene);
-    XYCaloDisk2View->AddScene(XYCaloDisk2EventScene); 
+    XYCaloDisk1View->AddScene(XYCaloDisk1EventScene); 
  }
 
 

@@ -21,7 +21,7 @@ physics.analyzers.REveEventDisplay.showCRV : false
 physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
 physics.analyzers.REveEventDisplay.showDS : false
-
+physics.analyzers.REveEventDisplay.showCaloCrystals : true
 //highlight CRV bars which are "hit"
 physics.analyzers.REveEventDisplay.addCRVBars : true
 

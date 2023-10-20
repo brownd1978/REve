@@ -157,12 +157,13 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
         // Info for label
         std::string cluster_z = std::to_string(abs(pointInMu2e.z()));
         // Make label and REve objects
-        std::string label =  "Instance = " + names[0] +  '\n'
+        std::string label =   " Instance = " + names[0] +  '\n'
           + " Energy Dep. = "+cluster_energy+" MeV "+   '\n'
           + " Time = "+cluster_time+" ns " +  '\n'
           + " Pos =  ("+cluster_x+","+cluster_y+","+cluster_z+") mm";
-        auto ps1 = new REX::REvePointSet(label, "CaloClusters Disk 1: "+label,0);
-        auto ps2 = new REX::REvePointSet(label, "CaloClusters Disk 2: "+label,0);
+        std::string name = "disk" + std::to_string(cluster.diskID());
+        auto ps1 = new REX::REvePointSet(name, "CaloClusters Disk 1: "+label,0);
+        auto ps2 = new REX::REvePointSet(name, "CaloClusters Disk 2: "+label,0);
 
 
         // Set positions of clusters
@@ -201,11 +202,11 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             CLHEP::Hep3Vector crystalPos = cal.geomUtil().mu2eToDisk(cluster.diskID(),crystal.position()) ;
 
             //  make title
-            std::string crytitle =  "Crystal ID = " + std::to_string(cryID) +  '\n'
+            std::string crytitle =   "disk"+std::to_string(cal.crystal(crystalhit->crystalID()).diskID()) + " Crystal ID = " + std::to_string(cryID) +  '\n'
               + " Energy Dep. = "+std::to_string(crystalhit->energyDep())+" MeV "+   '\n'
               + " Time = "+std::to_string(crystalhit->time())+" ns ";
             char const *crytitle_c = crytitle.c_str();
-            auto b = new REX::REveBox("crystal",crytitle_c);
+            auto b = new REX::REveBox(crytitle_c,crytitle_c);
             
             // plot the crystals which are present in this event in lego:
             b->SetMainColor(colors[i]);
@@ -215,14 +216,14 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             double height = crystalYLen/2;
             double thickness = crystalhit->energyDep()/maxE * crystalZLen/2; //length proportional to energy
 
-            b->SetVertex(0, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())- thickness + 1.5*crystalZLen + abs(pointmmTocm(pointInMu2e.z())));//---
-            b->SetVertex(1, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height, pointmmTocm(crystalPos.z())- thickness + 1.5*crystalZLen  +abs(pointmmTocm(pointInMu2e.z())));//-+-
-            b->SetVertex(2, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height ,pointmmTocm(crystalPos.z())- thickness + 1.5*crystalZLen  + abs(pointmmTocm(pointInMu2e.z())));//++-
-            b->SetVertex(3, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())-thickness  + 1.5*crystalZLen + abs(pointmmTocm(pointInMu2e.z())));//+--
-            b->SetVertex(4, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())+ thickness + 1.5*crystalZLen + abs(pointmmTocm(pointInMu2e.z())));//--+
-            b->SetVertex(5, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z())+ thickness  + 1.5*crystalZLen + abs(pointmmTocm(pointInMu2e.z())));//-++
-            b->SetVertex(6, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z()) + thickness + 1.5*crystalZLen+abs(pointmmTocm(pointInMu2e.z()))); //+++
-            b->SetVertex(7,pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())+ thickness + 1.5*crystalZLen + abs(pointmmTocm(pointInMu2e.z())));//+-+
+            b->SetVertex(0, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())- thickness  + abs(pointmmTocm(pointInMu2e.z()))+crystalZLen/2);//---
+            b->SetVertex(1, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height, pointmmTocm(crystalPos.z())- thickness   +abs(pointmmTocm(pointInMu2e.z()))+crystalZLen/2);//-+-
+            b->SetVertex(2, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height ,pointmmTocm(crystalPos.z())- thickness   + abs(pointmmTocm(pointInMu2e.z()))+crystalZLen/2);//++-
+            b->SetVertex(3, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())-thickness   + abs(pointmmTocm(pointInMu2e.z()))+crystalZLen/2);//+--
+            b->SetVertex(4, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())- height ,pointmmTocm(crystalPos.z())+ thickness  + abs(pointmmTocm(pointInMu2e.z()))+crystalZLen/2);//--+
+            b->SetVertex(5, pointmmTocm(crystalPos.x()) - width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z())+ thickness   + abs(pointmmTocm(pointInMu2e.z()))+crystalZLen/2);//-++
+            b->SetVertex(6, pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())+ height , pointmmTocm(crystalPos.z()) + thickness +abs(pointmmTocm(pointInMu2e.z()))+crystalZLen/2); //+++
+            b->SetVertex(7,pointmmTocm(crystalPos.x()) + width, pointmmTocm(crystalPos.y())- height, pointmmTocm(crystalPos.z())+ thickness + abs(pointmmTocm(pointInMu2e.z()))+crystalZLen/2);//+-+
             scene->AddElement(b);
           }
         }

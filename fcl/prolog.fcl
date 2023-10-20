@@ -13,6 +13,7 @@ REveEventDisplay : {
     showSTM : false
     showCalo : true
     showTracker : true
+    showCaloCrystals : true
     addErrBar : true
     addCrystalHits : false
     addCRVBars : false

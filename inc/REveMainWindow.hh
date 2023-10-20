@@ -63,10 +63,11 @@ namespace mu2e {
       bool showSTM = false;
       bool showCalo = true;
       bool showTracker = true;
+      bool showCaloCrystals = true;
       GeomOptions(){};
-      GeomOptions(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool calo, bool trk) 
-      : showCRV(crv), showPS(ps), showTS(ts), showDS(ds), show2D(twodim), caloVST(cVST), showST(st), extracted(ext), showSTM(stm), showCalo(calo), showTracker(trk) {};
-      void fill(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool cal, bool trk) {
+      GeomOptions(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool calo, bool trk, bool crys) 
+      : showCRV(crv), showPS(ps), showTS(ts), showDS(ds), show2D(twodim), caloVST(cVST), showST(st), extracted(ext), showSTM(stm), showCalo(calo), showTracker(trk), showCaloCrystals(crys) {};
+      void fill(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool cal, bool trk, bool crys) {
         showCRV = (crv);
         showPS = (ps);
         showTS = (ts);
@@ -78,6 +79,7 @@ namespace mu2e {
         showSTM = (stm);
         showCalo = (cal);
         showTracker = (trk);
+        showCaloCrystals = (crys);
       }
       void print(){
         std::cout<<"***** Geom Options ****** "<<'\n'
@@ -90,6 +92,7 @@ namespace mu2e {
         <<" show STM : "<<showSTM <<'\n'
         <<" show Calo : "<<showCalo <<'\n'
         <<" show Trk : "<<showTracker <<'\n'
+        <<" show crystals : "<<showCaloCrystals <<'\n'
         <<" show Extracted : "<<extracted <<'\n'
         <<"************************ "<<std::endl;
       }
@@ -150,16 +153,16 @@ namespace mu2e {
             void projectScenes(REX::REveManager *eveMng, bool geomp, bool eventp);
             void projectEvents(REX::REveManager *eveMng);
             REX::REveProjectionManager *mngTrackerXY = nullptr;
+            REX::REveProjectionManager *mngXYCaloDisk0 = nullptr;
             REX::REveProjectionManager *mngXYCaloDisk1 = nullptr;
-            REX::REveProjectionManager *mngXYCaloDisk2 = nullptr;
             REX::REveProjectionManager *mngRhoZ   = nullptr;
             REX::REveScene  *TrackerXYGeomScene = nullptr, *TrackerXYEventScene = nullptr;
+            REX::REveScene  *XYCaloDisk0GeomScene = nullptr, *XYCaloDisk0EventScene = nullptr;
             REX::REveScene  *XYCaloDisk1GeomScene = nullptr, *XYCaloDisk1EventScene = nullptr;
-            REX::REveScene  *XYCaloDisk2GeomScene = nullptr, *XYCaloDisk2EventScene = nullptr;
             REX::REveScene  *rhoZGeomScene = nullptr, *rhoZEventScene = nullptr;
             REX::REveViewer *TrackerXYView = nullptr;
+            REX::REveViewer *XYCaloDisk0View = nullptr;
             REX::REveViewer *XYCaloDisk1View = nullptr;
-            REX::REveViewer *XYCaloDisk2View = nullptr;
             REX::REveViewer *rhoZView = nullptr;
             
             #else
