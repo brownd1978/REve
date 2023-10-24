@@ -475,7 +475,7 @@ namespace mu2e
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
       
-      if(filler_.addClusters_){
+      /*if(filler_.addClusters_){
         bool isEmpty = false;
         if(std::get<1>(data.calocluster_tuple)[0]->size() == 0) isEmpty = true;//if calocluster list is empty you dont need to reset the next event.
       
@@ -484,7 +484,7 @@ namespace mu2e
         } else {
          firstLoopCalo_ = true; 
         }
-      }
+      }*/
       firstLoop_ = false;
       eveMng_->GetScenes()->AcceptChanges(false);
       eveMng_->GetWorld()->EndAcceptingChanges();

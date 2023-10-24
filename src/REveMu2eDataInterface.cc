@@ -70,7 +70,7 @@ void REveMu2eDataInterface::AddCaloDigis(REX::REveManager *&eveMng, bool firstLo
     }
   }
 }
-void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CaloClusterCollection*>> calocluster_tuple, REX::REveElement* &scene, bool addCrystalDraw){
+void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, std::tuple<std::vector<std::string>, std::vector<const CaloClusterCollection*>> calocluster_tuple, REX::REveElement* &scene, bool addCrystalDraw, double t1, double t2){
 
   std::cout<<"[REveMu2eDataInterface] AddCaloClusters "<<std::endl;
   std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(calocluster_tuple);
@@ -83,15 +83,16 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
       if(!firstLoop_){
         scene->DestroyElements();;
       }
-
+      Color_t color = kWhite;
       mu2e::Calorimeter const &cal = *(mu2e::GeomHandle<mu2e::Calorimeter>());
       GeomHandle<DetectorSystem> det;
       // Add crystals
       double maxE = 1e-6;
       double minE = 1000;
       std::list<CaloCluster> cluList;
-      std::array<Color_t, 10> colorList {kViolet, kBlue, kBlue, kGreen, kGreen, kYellow, kYellow, kOrange, kOrange, kRed};
-      std::vector<Color_t> colors;
+      //std::array<Color_t, 10> colorList {kViolet, kBlue, kBlue, kGreen, kGreen, kYellow, kYellow, kOrange, kOrange, kRed};
+      //std::vector<Color_t> colors;
+
       for(unsigned int i = 0; i < clustercol->size(); i++){
         mu2e::CaloCluster const  &cluster= (*clustercol)[i];
         cluList.push_back(cluster);
@@ -101,9 +102,8 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
       // sort in energy
       cluList.sort([] (CaloCluster lhs, CaloCluster rhs) {return lhs.energyDep() > rhs.energyDep();} );
       }
-
-      std::cout<<cluList.size()<<std::endl;
-      if(cluList.size() <= 2){
+     
+      /*if(cluList.size() <= 2){
           Color_t color;
           for(auto const& cluster : cluList){
             if(cluster.energyDep() == minE){
@@ -138,11 +138,13 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             colors.push_back(color);
           } 
         }
-      } 
-      unsigned int i = -1;
+      } */
+      
+      //unsigned int i = -1;
       for(auto const& cluster : cluList){
         //mu2e::CaloCluster const  &cluster= cluList.at(i); 
-        i += 1;
+        //i += 1;
+        
         // Info for label:
         std::string cluster_energy = std::to_string(cluster.energyDep());
         std::string cluster_time = std::to_string(cluster.time());
@@ -152,8 +154,6 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
         CLHEP::Hep3Vector COG(cluster.cog3Vector().x(),cluster.cog3Vector().y(), cluster.cog3Vector().z());
         CLHEP::Hep3Vector crystalPos   = cal.geomUtil().mu2eToDisk(cluster.diskID(),COG);
         CLHEP::Hep3Vector pointInMu2e = det->toMu2e(crystalPos);
-        //std::cout<<"crystal ID" <<cal.crystalIdxFromPosition(COG)<<std::endl;
-
         // Info for label
         std::string cluster_z = std::to_string(abs(pointInMu2e.z()));
         // Make label and REve objects
@@ -171,8 +171,17 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
         if(cluster.diskID() == 1) ps2->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z())));
 
         // Set draw options
-        Color_t color  = colors[i];
-
+        /*TColor color1;
+        color1.SetPalette(1,0);
+        Color_t color = color1.GetNumber();// colors[i];*/
+        
+        if(abs(cluster.time() - t2) < 20) color = kRed;
+        if(abs(cluster.time() - t2) >=  20 and abs(cluster.time() - t2) < 100) color = kOrange;
+        if(abs(cluster.time() - t2) >= 100 and abs(cluster.time() - t2) < 200) color = kYellow;
+        if(abs(cluster.time() - t2) >= 200 and abs(cluster.time() - t2) < 400) color = kGreen;
+        if(abs(cluster.time() - t2) >= 400 and abs(cluster.time() - t2) < 600) color = kBlue;
+        if(abs(cluster.time() - t2) >= 600 ) color = kViolet;
+      
         ps1->SetMarkerColor(color);
         ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
         ps1->SetMarkerSize(REveMu2eDataInterface::mstyle);
@@ -209,7 +218,7 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
             auto b = new REX::REveBox(crytitle_c,crytitle_c);
             
             // plot the crystals which are present in this event in lego:
-            b->SetMainColor(colors[i]);
+            b->SetMainColor(color);//s[i]);
             
             
             double width = crystalXLen/2;
@@ -711,8 +720,8 @@ template<class KTRAJc> void REveMu2eDataInterface::AddTrkStrawHit(KalSeed kalsee
   const std::vector<mu2e::TrkStrawHitSeed> &hits = kalseed.hits();
 
   for(unsigned int i = 0; i < hits.size(); i++){
-    auto trkstrawpoint = new REX::REvePointSet("TrkStrawHit", "TrkStrawHit",1);
-    auto line = new REX::REveLine("TrkStrawHit Error","TrkStrawHit Error" , 1);
+  
+    
     const mu2e::TrkStrawHitSeed &tshs = hits.at(i);
     auto const& straw = tracker->straw(tshs.strawId());
     mu2e::WireHitState whs(mu2e::WireHitState::State(tshs._ambig),
@@ -739,9 +748,16 @@ template<class KTRAJc> void REveMu2eDataInterface::AddTrkStrawHit(KalSeed kalsee
       double nsigma(1.0);
       auto end1 = tshspos + nsigma*herr*ddir;
       auto end2 = tshspos - nsigma*herr*ddir;
+      auto line = new REX::REveLine("TrkStrawHit Error","TrkStrawHit Error" , 1);
       line->SetNextPoint(pointmmTocm(end1.x()),pointmmTocm(end1.y()) ,pointmmTocm(end1.z()));
       line->SetNextPoint(pointmmTocm(end2.x()),pointmmTocm(end2.y()) ,pointmmTocm(end2.z()));
       //goes along that same line (ddir)
+      std::string title = "TrkStrawHitSeed : x "  + std::to_string(pointmmTocm(tshspos.x()))  +  '\n'
+                  + " y " + std::to_string(pointmmTocm(tshspos.y()))  +  '\n'
+                  + " z " + std::to_string(pointmmTocm(tshspos.z()))  +  '\n'
+                  + " time :" + std::to_string(tshs.hitTime())+  '\n'
+                  + " energyDep :" + std::to_string(tshs.energyDep())+ "MeV";
+      auto trkstrawpoint = new REX::REvePointSet("TrkStrawHit", title,1);
       trkstrawpoint->SetMarkerStyle(REveMu2eDataInterface::mstyle);
       trkstrawpoint->SetMarkerSize(REveMu2eDataInterface::msize);
       trkstrawpoint->SetMarkerColor(kRed);
@@ -822,10 +838,10 @@ void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop
 using LHPT = KalSeed::LHPT;
 using CHPT = KalSeed::CHPT;
 using KLPT = KalSeed::KLPT;
-template<class KTRAJ> void REveMu2eDataInterface::AddKinKalTrajectory( std::unique_ptr<KTRAJ> &trajectory, REX::REveElement* &scene, unsigned int j, std::string kaltitle){
-  double t1=trajectory->range().begin();
-  double t2=trajectory->range().end();
-
+template<class KTRAJ> void REveMu2eDataInterface::AddKinKalTrajectory( std::unique_ptr<KTRAJ> &trajectory, REX::REveElement* &scene, unsigned int j, std::string kaltitle, double& t1, double& t2){
+  t1=trajectory->range().begin();
+  t2=trajectory->range().end();
+  std::cout<<"Track time "<<t1<<" to "<<t2<<std::endl;
   double x1=trajectory->position3(t1).x();
   double y1=trajectory->position3(t1).y();
   double z1=trajectory->position3(t1).z();
@@ -845,7 +861,7 @@ template<class KTRAJ> void REveMu2eDataInterface::AddKinKalTrajectory( std::uniq
   scene->AddElement(line);
 }
 
-void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool firstloop, REX::REveElement* &scene, std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, bool plotKalIntersection, bool addTrkHits){
+void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool firstloop, REX::REveElement* &scene, std::tuple<std::vector<std::string>, std::vector<const KalSeedCollection*>> track_tuple, bool plotKalIntersection, bool addTrkHits, double& t1, double& t2){
 
   std::vector<const KalSeedCollection*> track_list = std::get<1>(track_tuple);
   std::vector<std::string> names = std::get<0>(track_tuple);
@@ -869,8 +885,9 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
               + " rad "  + std::to_string(lh.rad() ) +  '\n'
               + " cx "  + std::to_string(lh.cx() ) +  '\n'
               + " cy "  + std::to_string(lh.cy() ) +  '\n'
-              + " phi0 "  + std::to_string(lh.phi0() );
-          AddKinKalTrajectory<LHPT>(trajectory,scene,j, kaltitle);
+              + " phi0 "  + std::to_string(lh.phi0() )+  '\n'
+              + " track arrival time " + std::to_string(t1);
+          AddKinKalTrajectory<LHPT>(trajectory,scene,j, kaltitle, t1, t2);
           if(addTrkHits) AddTrkStrawHit<LHPT>(kseed, scene, trajectory);
         }
         else if(kseed.centralHelixFit())
@@ -883,9 +900,10 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
             + " d0 " + std::to_string(ch.d0() ) +  '\n'
             + " z0 " + std::to_string(ch.z0() ) +  '\n'
             + " phi0 " + std::to_string(ch.phi0() ) +  '\n'
-            + " omega " + std::to_string(ch.omega() );
+            + " omega " + std::to_string(ch.omega() )+  '\n'
+              + " track arrival time " + std::to_string(t1);
           auto trajectory=kseed.centralHelixFitTrajectory();
-          AddKinKalTrajectory<CHPT>(trajectory,scene,j, kaltitle);
+          AddKinKalTrajectory<CHPT>(trajectory,scene,j, kaltitle, t1, t2);
           if(addTrkHits) AddTrkStrawHit<CHPT>(kseed, scene, trajectory);
         }
         else if(kseed.kinematicLineFit())
@@ -897,9 +915,10 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
               + " d0 " + std::to_string(kl.d0() ) +  '\n'
               + " z0 " + std::to_string(kl.z0() ) +  '\n'
               + " phi0 " + std::to_string(kl.phi0() ) +  '\n'
-              + " theta " + std::to_string(kl.theta() );
+              + " theta " + std::to_string(kl.theta() ) +  '\n'
+              + " track arrival time " + std::to_string(t1);
           auto trajectory=kseed.kinematicLineFitTrajectory();
-          AddKinKalTrajectory<KLPT>(trajectory,scene,j, kaltitle);
+          AddKinKalTrajectory<KLPT>(trajectory,scene,j, kaltitle, t1, t2);
           if(addTrkHits) AddTrkStrawHit<KLPT>(kseed, scene, trajectory);
         }
 

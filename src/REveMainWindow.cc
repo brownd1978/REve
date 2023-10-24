@@ -307,6 +307,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
 
           if(ie->GetName().find("disk0") != string::npos ) mngXYCaloDisk0->ImportElements(ie, XYCaloDisk0EventScene);
           if(ie->GetName().find("disk1") != string::npos ) mngXYCaloDisk1->ImportElements(ie, XYCaloDisk1EventScene);
+
        }
  }
 
@@ -362,6 +363,19 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       eventScene->DestroyElements();;
     }
     //...addReco:
+    // for start and end of track
+    double t1 = 0.;
+    double t2 = 1696.;
+    std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
+    if(drawOpts.addTracks and track_list.size() !=0) {
+
+      if(drawOpts.useBTrk) { pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene); }
+      if(!drawOpts.useBTrk){ pass_data->FillKinKalTrajectory(eveMng, firstLoop, eventScene, data.track_tuple, KKOpts.addKalInter,  KKOpts.addTrkStrawHits, t1, t2); }
+     /* if(drawOpts.useBTrk and drawOpts.addTrkHits and drawOpts.addComboHits ) {   // Note this is legacy, requires combo hits in .art
+        std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
+        pass_data->AddTrkHits(eveMng, firstLoop, data.combohit_tuple,data.track_tuple, eventScene);
+        }*/
+    }
     if(drawOpts.addComboHits) {
       std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
       if(combohit_list.size() !=0 ) pass_data->AddComboHits(eveMng, firstLoop, data.combohit_tuple, eventScene, strawdisplay, drawOpts.addTrkErrBar);
@@ -384,7 +398,8 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     
     if(drawOpts.addClusters){
       std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(data.calocluster_tuple);
-      if(calocluster_list.size() !=0 ) pass_data->AddCaloClusters(eveMng, firstLoopCalo, data.calocluster_tuple, eventScene, drawOpts.addCrystalDraw);
+      if(calocluster_list.size() !=0 ) pass_data->AddCaloClusters(eveMng, firstLoopCalo, data.calocluster_tuple, eventScene, drawOpts.addCrystalDraw, t1, t2);
+      std::cout<<t1<<" "<<t2<<std::endl;
     }
     
     std::vector<const HelixSeedCollection*> helix_list = std::get<1>(data.helix_tuple);
@@ -392,16 +407,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       pass_data->AddHelixSeedCollection(eveMng, firstLoop, data.helix_tuple, eventScene);
     }
     
-    std::vector<const KalSeedCollection*> track_list = std::get<1>(data.track_tuple);
-    if(drawOpts.addTracks and track_list.size() !=0) {
-      if(drawOpts.useBTrk) { pass_data->AddKalSeedCollection(eveMng, firstLoop, data.track_tuple, eventScene); }
-      if(!drawOpts.useBTrk){ pass_data->FillKinKalTrajectory(eveMng, firstLoop, eventScene, data.track_tuple, KKOpts.addKalInter,  KKOpts.addTrkStrawHits); }
-      
-      if(drawOpts.useBTrk and drawOpts.addTrkHits and drawOpts.addComboHits ) {   // Note this is legacy, requires combo hits in .art
-        std::vector<const ComboHitCollection*> combohit_list = std::get<1>(data.combohit_tuple);
-        pass_data->AddTrkHits(eveMng, firstLoop, data.combohit_tuple,data.track_tuple, eventScene);
-        }
-    }
+
     if(drawOpts.addCosmicTracks){
       pass_data->AddCosmicTrackFit(eveMng, firstLoop, data.CosmicTrackSeedcol, eventScene);
     }
@@ -414,7 +420,8 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     std::vector<const MCTrajectoryCollection*> mctrack_list = std::get<1>(data.mctrack_tuple);
     if(drawOpts.addMCTrajectories and mctrack_list.size() !=0){
       pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  data.mctrack_tuple, eventScene, particleIds, geomOpts.extracted);
-    } 
+    }
+    std::cout<<"going to project events "<<std::endl;
     
     // ... project these events onto 2D geometry:
     projectEvents(eveMng);
