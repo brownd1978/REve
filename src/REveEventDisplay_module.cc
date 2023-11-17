@@ -56,6 +56,7 @@
 #include "REve/inc/CollectionFiller.hh"
 #include "REve/inc/DataCollections.hh"
 #include "REve/inc/REveMu2eGUI.hh"
+#include "REve/inc/REveMu2eTextSelect.hh"
 #include "REve/inc/REveDataProduct.hh"
 
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
@@ -190,7 +191,8 @@ namespace mu2e
         
         // Setup Custom GUI
         REveMu2eGUI *fGui{nullptr};
-        double eventid_;   
+        REveMu2eTextSelect *fText{nullptr};
+        double eventid_;
         double runid_;   
         double subrunid_;
         bool seqMode_;
@@ -277,6 +279,7 @@ namespace mu2e
 
 
   void REveEventDisplay::beginRun(const art::Run&){
+  
   }
 
   void REveEventDisplay::printOpts(){
@@ -437,27 +440,30 @@ namespace mu2e
       fGui = new REveMu2eGUI();
       fGui->SetName("Mu2eGUI");
       
+      fText = new REveMu2eTextSelect();
+      
       // call manager
-      eventMgr_ = new EventDisplayManager{eveMng_, cv_, m_, fGui};
+      eventMgr_ = new EventDisplayManager{eveMng_, cv_, m_, fGui, fText};
       
       // access the world
       auto world = eveMng_->GetWorld();
       
       assert(world);
-      world->AddElement(eventMgr_);
+      
       frame_ = new REveMainWindow();     
       frame_->makeGeometryScene(eveMng_, geomOpts, gdmlname_);
       
       //add path to the custom GUI code here, this overrides ROOT GUI
-      eveMng_->AddLocation("mydir/", "REve/CustomGUI");
+      eveMng_->AddLocation("mydir/", "REve/CustomGUIv2");
       eveMng_->SetDefaultHtmlPage("file:mydir/eventDisplay.html");
    
       // InitGuiInfo() cont'd
       world->AddElement(fGui);
+      world->AddElement(fText);
+      world->AddElement(eventMgr_);   
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
       
-      //world->AddCommand("PrintEventInfo", "sap-icon://step", fGui, "PrintEventInfo()");
       std::unique_lock lock{m_};
       cv_.notify_all();
  
@@ -474,8 +480,10 @@ namespace mu2e
       fGui->feventid = eventid_;
       fGui->fsubrunid = subrunid_;
       fGui->frunid = runid_;
+      
+      std::cout<<" number in module "<<fText->get()<<std::endl;
       fGui->StampObjProps();
-
+      
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;
       REX::REveElement* scene = eveMng_->GetEventScene();
 

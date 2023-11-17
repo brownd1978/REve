@@ -8,3 +8,4 @@
 //#include "REve/inc/REveCaloCluster.hh"
 //#include "REve/inc/REveComboHit.hh"
 #include "REve/inc/REveDataProduct.hh"
+#include "REve/inc/REveMu2eTextSelect.hh"

@@ -147,7 +147,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
   
   
   /* function to hide all elements which are not PS,TS, DS */
- void REveMainWindow::GeomDrawer(TGeoNode* node, REX::REveTrans& trans, REX::REveElement* beamlineholder, REX::REveElement* trackerholder, REX::REveElement* caloholder, REX::REveElement* crystalsholder, REX::REveElement* crvholder, int maxlevel, int level, GeomOptions geomOpt){
+ void REveMainWindow::GeomDrawer(TGeoNode* node, REX::REveTrans& trans, REX::REveElement* beamlineholder, REX::REveElement* trackerholder, REX::REveElement* caloholder, REX::REveElement* crystalsholder, REX::REveElement* crvholder, REX::REveElement* targetholder,int maxlevel, int level, GeomOptions geomOpt){
 
     std::vector<double> shift;
     
@@ -278,7 +278,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = 0;
       shift.at(2) = -1*STz/10; 
       for(auto& i: substrings_stoppingtarget){
-        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("TrackerColor"));
+        showNodesByName(node,i,kFALSE, 0, trans, targetholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("TrackerColor"));
       }
     }
     
@@ -450,15 +450,17 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         auto caloholder = new REX::REveElement("Calorimeter");
         auto crystalsholder = new REX::REveElement("CalorimeterCrystals");
         auto crvholder = new REX::REveElement("CRV");
+        auto targetholder = new REX::REveElement("TargetElements");
         auto beamlineholder = new REX::REveElement("BeamlineElements");
         eveMng->GetGlobalScene()->AddElement(trackerholder);
         eveMng->GetGlobalScene()->AddElement(caloholder);
         eveMng->GetGlobalScene()->AddElement(crvholder);
+        eveMng->GetGlobalScene()->AddElement(targetholder);
         eveMng->GetGlobalScene()->AddElement(beamlineholder);
         eveMng->GetGlobalScene()->AddElement(crystalsholder);
         
         REX::REveTrans trans;
-        GeomDrawer(topnode, trans, beamlineholder, trackerholder, caloholder, crystalsholder, crvholder, drawconfigf.getInt("maxlevel"),drawconfigf.getInt("level"), geomOpt);
+        GeomDrawer(topnode, trans, beamlineholder, trackerholder, caloholder, crystalsholder, crvholder, targetholder, drawconfigf.getInt("maxlevel"),drawconfigf.getInt("level"), geomOpt);
     }
 
     try {

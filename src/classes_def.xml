@@ -7,4 +7,5 @@
   <class name="mu2e::REveGeomUtil"/>
   <class name="mu2e::REveMu2eGUI"/>
   <class name="mu2e::REveDataProduct"/>
+  <class name="mu2e::REveMu2eTextSelect"/>
 </lcgdict>
