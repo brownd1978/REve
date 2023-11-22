@@ -869,7 +869,7 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
   for(unsigned int j=0; j< track_list.size(); j++){
     const KalSeedCollection* seedcol = track_list[j];
     if(seedcol!=0){
-      for(unsigned int k = 0; k < seedcol->size(); k = k++){
+      for(unsigned int k = 0; k < seedcol->size(); k++){
         mu2e::KalSeed kseed = (*seedcol)[k];
         const std::vector<mu2e::KalSegment> &segments = kseed.segments();
         if(plotKalIntersection) AddKalIntersection(kseed, scene);
