@@ -1,6 +1,6 @@
 // draw options
 
-int trans  = 1;
+int trans  = 90;
 int maxlevel = 8; //8=calocrystals
 int level = 0;
 int maxSID = 20000;
