@@ -102,17 +102,17 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
       // sort in energy
       cluList.sort([] (CaloCluster lhs, CaloCluster rhs) {return lhs.energyDep() > rhs.energyDep();} );
       }
-     
+
       /*if(cluList.size() <= 2){
           Color_t color;
           for(auto const& cluster : cluList){
             if(cluster.energyDep() == minE){
               color = kViolet;
-              colors.push_back(color); 
+              colors.push_back(color);
             }
             if(cluster.energyDep() == maxE){
-              color = kRed; 
-              colors.push_back(color); 
+              color = kRed;
+              colors.push_back(color);
             }
         }
       }
@@ -123,28 +123,28 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
           Color_t color;
           if(cluster.energyDep() == minE){
             color = kViolet;
-            colors.push_back(color); 
+            colors.push_back(color);
           }
-          if(cluster.energyDep() == maxE){ 
-            color = kRed; 
-            colors.push_back(color); 
+          if(cluster.energyDep() == maxE){
+            color = kRed;
+            colors.push_back(color);
           }
           if (c > 1 and c < colorList.size()-1){
             color = colorList.at(c);
-            colors.push_back(color); 
+            colors.push_back(color);
           }
           if (c > 1 and c >= colorList.size()-1){
             color = kRed;
             colors.push_back(color);
-          } 
+          }
         }
       } */
-      
+
       //unsigned int i = -1;
       for(auto const& cluster : cluList){
-        //mu2e::CaloCluster const  &cluster= cluList.at(i); 
+        //mu2e::CaloCluster const  &cluster= cluList.at(i);
         //i += 1;
-        
+
         // Info for label:
         std::string cluster_energy = std::to_string(cluster.energyDep());
         std::string cluster_time = std::to_string(cluster.time());
@@ -174,14 +174,14 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
         /*TColor color1;
         color1.SetPalette(1,0);
         Color_t color = color1.GetNumber();// colors[i];*/
-        
+
         if(abs(cluster.time() - t2) < 20) color = kRed;
         if(abs(cluster.time() - t2) >=  20 and abs(cluster.time() - t2) < 100) color = kOrange;
         if(abs(cluster.time() - t2) >= 100 and abs(cluster.time() - t2) < 200) color = kYellow;
         if(abs(cluster.time() - t2) >= 200 and abs(cluster.time() - t2) < 400) color = kGreen;
         if(abs(cluster.time() - t2) >= 400 and abs(cluster.time() - t2) < 600) color = kBlue;
         if(abs(cluster.time() - t2) >= 600 ) color = kViolet;
-      
+
         ps1->SetMarkerColor(color);
         ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
         ps1->SetMarkerSize(REveMu2eDataInterface::mstyle);
@@ -216,11 +216,11 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
               + " Time = "+std::to_string(crystalhit->time())+" ns ";
             char const *crytitle_c = crytitle.c_str();
             auto b = new REX::REveBox(crytitle_c,crytitle_c);
-            
+
             // plot the crystals which are present in this event in lego:
             b->SetMainColor(color);//s[i]);
-            
-            
+
+
             double width = crystalXLen/2;
             double height = crystalYLen/2;
             double thickness = crystalhit->energyDep()/maxE * crystalZLen/2; //length proportional to energy
@@ -301,7 +301,7 @@ void REveMu2eDataInterface::AddComboHits(REX::REveManager *&eveMng, bool firstLo
         if(AddErrorBar_){
           //XY
           auto const& p = hit.pos();
-          auto const& w = hit.wdir();
+          auto w = hit.uDir();
           auto const& s = hit.wireRes();
           double x1 = (p.x()+s*w.x());
           double x2 = (p.x()-s*w.x());
@@ -720,8 +720,8 @@ template<class KTRAJc> void REveMu2eDataInterface::AddTrkStrawHit(KalSeed kalsee
   const std::vector<mu2e::TrkStrawHitSeed> &hits = kalseed.hits();
 
   for(unsigned int i = 0; i < hits.size(); i++){
-  
-    
+
+
     const mu2e::TrkStrawHitSeed &tshs = hits.at(i);
     auto const& straw = tracker->straw(tshs.strawId());
     mu2e::WireHitState whs(mu2e::WireHitState::State(tshs._ambig),
