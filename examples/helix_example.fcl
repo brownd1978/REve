@@ -17,7 +17,7 @@ physics :
 }
 
 //geometry options
-physics.analyzers.REveEventDisplay.showCRV : false
+physics.analyzers.REveEventDisplay.showCRV : true
 physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
 physics.analyzers.REveEventDisplay.showDS : false

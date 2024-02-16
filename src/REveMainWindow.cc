@@ -116,14 +116,14 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
                 //std::cout<<name<<"  "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
-                if(name == "TrackerPlaneEnvelope_000x3acaae0" or name== "TrackerPlaneEnvelope_000x4ce11c0") { // latter for extracted.
+                if(name == "TrackerPlaneEnvelope_000x362fdc0" or name== "TrackerPlaneEnvelope_000x4ce11c0") { // latter for extracted.
                   FrontTracker_gdmltag = j;
                   
                  }
-                if(name == "caloDisk_00x3d71700" or name == "caloDisk_00x4f89e50") { // latter for extracted.
+                if(name == "caloDisk_00x37aa0a0" or name == "caloDisk_00x4f89e50") { // latter for extracted.
                   disk1_center = tv[2] ;
                  }
-                if(name == "caloDisk_10x3e1ec70" or name == "caloDisk_10x4fef6e0") {// latter for extracted.
+                if(name == "caloDisk_10x3881840" or name == "caloDisk_10x4fef6e0") {// latter for extracted.
                   disk2_center = tv[2] ;
                  }
                 if(caloshift){
@@ -192,7 +192,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
      }
     if(geomOpt.showCRV and !geomOpt.extracted){
-      static std::vector <std::string> substrings_crv  {"CRS"}; 
+      static std::vector <std::string> substrings_crv {"CRSmother_CRV"};
       shift.at(0) = 481.75;//from GDML, look at CRS layer 18, center is where 0 should be. 
       //6.45 to shift by comparing to Offline, need to understand.
       shift.at(1) = 585.31  + 6.45;//from GDML, look at layer 16, 17 these should be centered at 0

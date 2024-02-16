@@ -68,7 +68,7 @@
 #include "Offline/CalorimeterGeom/inc/Calorimeter.hh"
 #include "Offline/GeometryService/inc/DetectorSystem.hh"
 #include "Offline/Mu2eInterfaces/inc/Detector.hh"
-
+#include "Offline/ConfigTools/inc/ConfigFileLookupPolicy.hh"
 
 using namespace std;
 using namespace mu2e;
@@ -202,6 +202,7 @@ namespace mu2e
         
         std::vector<std::shared_ptr<REveDataProduct>> listoflists;
         GeomOptions geomOpts;
+        ConfigFileLookupPolicy configFile;
     };
 
 
@@ -229,11 +230,12 @@ namespace mu2e
     specifyTag_(conf().specifyTag()),
     filler_(conf().filler()),
     particles_(conf().particles()),
-    gdmlname_(conf().gdmlname()),
+    gdmlname_(configFile(conf().gdmlname())),
     strawdisplay_(conf().strawdisplay()),
     extracted_(conf().extracted()),
     seqMode_(conf().seqMode())
     {
+      std::cout<<"GDML file "<<gdmlname_<<std::endl;
        if(!seqMode_){  
         // Take in Run, Event number
           std::cout<<" Event Number : "<<std::endl;

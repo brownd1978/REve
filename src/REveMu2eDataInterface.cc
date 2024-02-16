@@ -369,6 +369,7 @@ void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop
             if(!extracted){
               auto b = new REX::REveBox("box","label");
               b->SetMainColor(632);
+              b->	SetMainTransparency(95);
 
               double  length = pointmmTocm(crvCounter.getHalfLength());
               double  width = pointmmTocm(crvCounter.getHalfWidth());
