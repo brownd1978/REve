@@ -1,16 +1,27 @@
 // draw options
 
-int trans  = 95;
+int TRKtrans  = 90;
+int CALtrans  = 90;
+int CRVtrans  = 98;
+int BLtrans  = 90;//BL = beamline elements
+
 int maxlevel = 8; //8=calocrystals
 int level = 0;
 int maxSID = 20000;
 int maxStrawID = 70;
 int TrackLineWidth = 5;
 
-int ThreeDimColor = 432; //kCyan = 432
-int TrackerColor = 432; //kWhite = 0
-int RecoTrackColor = 416; //kGreen
+int TRKColor = 432; //kCyan = 432
+int CALColor = 432; //kCyan = 432
+int BLColor = 432; //kCyan = 432
+int CRVColor = 432; //kCyan = 432
 
+int RecoTrackColor = 416; //kGreen
 int CRVHitColor = 600; //kBlue
 string TrkHitColor = 600; //kBlue
 string TrkNoHitColor = "kRed-4";
+
+//WebEve.DisableShow:   1
+//WebGui.HttpPort:   1234
+//WebEve.GLViewer:  Three
+//Browser.Name: TRootBrowser

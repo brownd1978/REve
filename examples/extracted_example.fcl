@@ -7,53 +7,59 @@
 
 services : @local::Services.Reco
 
-process_name : HelixED
+process_name : ExtractedTracks
 
 source : { module_type : RootInput }
 
 physics :
 {
+ filters : {
+   evtfilter : {
+     module_type : EventIDFilter
+     #     idsToMatch: [ "1205:0:2603" ]  # override this with you selection of event IDs, "run:subrun:event"
+     idsToMatch: [ "*:*:*" ]  # override this with you selection of event IDs, "run:subrun:event"
+   }
+ }
  analyzers : { @table::REveDis.analyzers}
 }
 
-//geometry options
+# general
+physics.analyzers.REveEventDisplay.diagLevel : 1
+physics.EventSelectPath  : [ evtfilter]
+physics.trigger_paths : [EventSelectPath]
+physics.analyzers.REveEventDisplay.SelectEvents : [ "EventSelectPath" ]
+physics.EndPath  : [ @sequence::REveDis.seqBase]
+physics.end_paths : [EndPath]
+services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
+services.GeometryService.inputFile: "Offline/Mu2eG4/geom/geom_common_extracted.txt"
+
+# geometry options
 physics.analyzers.REveEventDisplay.showCRV : true
 physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
 physics.analyzers.REveEventDisplay.showST : false
-
-//highlight CRV bars which are "hit"
-physics.analyzers.REveEventDisplay.addCRVBars : true
-physics.analyzers.REveEventDisplay.filler.addCrvHits : true
-physics.analyzers.REveEventDisplay.filler.addCrvClusters : true
-
-//for KinKal development
-physics.analyzers.REveEventDisplay.addKalInter : true
-physics.analyzers.REveEventDisplay.addTrkStrawHits : false
-physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
-physics.analyzers.REveEventDisplay.filler.addTrkHits : false 
-
-//turn these off for now
-physics.analyzers.REveEventDisplay.filler.addClusters : false //CaloClusters
-physics.analyzers.REveEventDisplay.filler.addHits : false //ComboHits
-physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
-
-//pat rec CosmicTrackSeed
-physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
-
-// MC Trajectory:
-physics.analyzers.REveEventDisplay.filler.addMCTraj : true
-
-//setup extracted geometry
 physics.analyzers.REveEventDisplay.extracted : true
 physics.analyzers.REveEventDisplay.gdmlname :"REve/mu2e_extracted.gdml"
 physics.analyzers.REveEventDisplay.seqMode : true
 
-//for print statements
-physics.analyzers.REveEventDisplay.diagLevel : 1
+# CRV
+physics.analyzers.REveEventDisplay.addCRVBars : true
+physics.analyzers.REveEventDisplay.filler.addCrvHits : true
+physics.analyzers.REveEventDisplay.filler.addCrvClusters : true
 
-//the path
-physics.EndPath  : [ @sequence::REveDis.seqBase]
+# tracking
+physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
+physics.analyzers.REveEventDisplay.addKalInter : true
+physics.analyzers.REveEventDisplay.filler.KalSeedCollection : ["KKLine"]
+physics.analyzers.REveEventDisplay.filler.addHits : false
+physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
+physics.analyzers.REveEventDisplay.filler.addTrkHits : false
+physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
 
-services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
-services.GeometryService.inputFile: "Offline/Mu2eG4/geom/geom_common_extracted.txt"
+# calorimeter
+physics.analyzers.REveEventDisplay.filler.addClusters : true
+physics.analyzers.REveEventDisplay.filler.CaloClusterCollection: ["CaloClusterMaker"]
+
+# MC truth
+physics.analyzers.REveEventDisplay.filler.addMCTraj : true
+

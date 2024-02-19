@@ -34,7 +34,8 @@ mu2egpvm01.fnal.gov:1234/win1/
 
 Or create a ssh tunnel:
 ```
-ssh -KXY -L 1234:mu2egpvm01.fnal.gov:1234 user@mu2egpvm01.fnal.gov
+ssh  -Y  -A -L 01234:localhost:01234 sophie@mu2egpvm01.fnal.gov
+
 
 ```
 
