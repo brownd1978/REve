@@ -16,12 +16,8 @@ int CALColor = 432; //kCyan = 432
 int BLColor = 432; //kCyan = 432
 int CRVColor = 432; //kCyan = 432
 
-int RecoTrackColor = 416; //kGreen
+int CRVBarColor = 632
+int RecoTrackColor = 600; //kGreen
 int CRVHitColor = 600; //kBlue
-string TrkHitColor = 600; //kBlue
-string TrkNoHitColor = "kRed-4";
-
-//WebEve.DisableShow:   1
-//WebGui.HttpPort:   1234
-//WebEve.GLViewer:  Three
-//Browser.Name: TRootBrowser
+int TrkHitColor = 632; //kBlue
+int  TrkNoHitColor = 600; //kBlue
