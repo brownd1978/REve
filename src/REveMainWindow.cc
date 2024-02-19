@@ -34,7 +34,7 @@ SimpleConfig PSConfig("Offline/Mu2eG4/geom/ProductionSolenoid_v02.txt");
 SimpleConfig PTHConfig("Offline/Mu2eG4/geom/ProductionTarget_Hayman_v2_0.txt");
 double PScoilRefZ  = PSConfig.getDouble("PS.coilRefZ"); // from PS 
 double PTz0 = PTConfig.getDouble("productionTarget.zNominal");
-double PTHL = 120;//PTHConfig.getDouble("targetPS_halfHaymanLength ");
+double PTHL = 120;//PTHConfig.getDouble("targetPS_halfHaymanLength ");//120;
 double PTz = PTz0;// - PTHL;
 double FrontTracker_gdmltag; 
 
@@ -47,7 +47,13 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     b1s->InitMainTrans();
     b1s->RefMainTrans().SetFrom(trans.Array());
     b1s->SetShape(gss);
-    b1s->SetMainTransparency(drawconfigf.getInt("trans")); 
+    
+    int transpar = drawconfigf.getInt("BLtrans");
+    if(name.find("CRS") != string::npos) transpar = drawconfigf.getInt("CRVtrans");
+    if(name.find("Tracker") != string::npos) transpar = drawconfigf.getInt("TRKtrans") ;
+    if(name.find("calo") != string::npos) transpar = drawconfigf.getInt("CALtrans") ;
+
+    b1s->SetMainTransparency(transpar); 
     b1s->SetMainColor(color);
     b1s->SetEditMainColor(true);
     b1s-> SetEditMainTransparency(true);
@@ -161,7 +167,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
       shift.at(2) = geomconfig.getDouble("psts_z")/10;
       for(auto& i: substrings_ts){
-        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level,  false, false, shift, false, false, drawconfigf.getInt("ThreeDimColor"));
+        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level,  false, false, shift, false, false, drawconfigf.getInt("CRVColor"));
       }
     }
     if(geomOpt.showPS){
@@ -170,7 +176,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
       shift.at(2) = geomconfig.getDouble("psts_z")/10;
       for(auto& i: substrings_ps){
-        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level,  false, false, shift, false, false, drawconfigf.getInt("ThreeDimColor"));
+        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level,  false, false, shift, false, false, drawconfigf.getInt("CRVColor"));
       }
     }
     if(geomOpt.showPS){
@@ -179,7 +185,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = -0.06; //GDML
       shift.at(2) = 1*PTz/10 -1*trackerz0/10 + PTHL/10;
       for(auto& i: substrings_ps){
-        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level,  false, false, shift, false, true, drawconfigf.getInt("ThreeDimColor"));
+        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level,  false, false, shift, false, true, drawconfigf.getInt("CRVColor"));
       }
     }
     if(geomOpt.showDS){
@@ -188,7 +194,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         shift.at(0) = geomconfig.getDouble("psts_x")/10;
         shift.at(1) = geomconfig.getDouble("psts_y")/10;
         shift.at(2) = geomconfig.getDouble("psts_z")/10;
-        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, false, drawconfigf.getInt("ThreeDimColor"));
+        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, false, drawconfigf.getInt("CRVColor"));
       }
      }
     if(geomOpt.showCRV and !geomOpt.extracted){
@@ -198,7 +204,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = 585.31  + 6.45;//from GDML, look at layer 16, 17 these should be centered at 0
       shift.at(2) = -431   + 6.45 ;//1280.07-849 first is from GDML latter is from Offline
       for(auto& i: substrings_crv){
-        showNodesByName(node,i,kFALSE, 0, trans, crvholder, maxlevel, level,  false, false, shift, false, false, drawconfigf.getInt("ThreeDimColor"));
+        showNodesByName(node,i,kFALSE, 0, trans, crvholder, maxlevel, level,  false, false, shift, false, false, drawconfigf.getInt("CRVColor"));
       }
     }
     if(geomOpt.showCRV and geomOpt.extracted){
@@ -214,9 +220,9 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(0) = 0;
       shift.at(1) = firstCounterEX[1]/10; 
       shift.at(2) =  82.8/2 + 124.2 + firstCounterEX[2]/10 - trackerz0_extracted/10; //tracker - first counter pos plus GDML position of first + wisth of module
-      std::cout<<"Position of CRV "<<firstCounterEX[2] - trackerz0_extracted<<std::endl;
+      //std::cout<<"Position of CRV "<<firstCounterEX[2] - trackerz0_extracted<<std::endl;
       for(auto& i: substrings_ex){
-      showNodesByName(node,i,kFALSE, 0, trans, crvholder, maxlevel, level,  false, false, shift, false, true, drawconfigf.getInt("ThreeDimColor"));
+      showNodesByName(node,i,kFALSE, 0, trans, crvholder, maxlevel, level,  false, false, shift, false, true, drawconfigf.getInt("CRVColor"));
       }
 
       static std::vector <std::string> substrings_t1  {"CRSscintLayer_1","CRSmotherLayer_CRV_T1"};//"CRSScintillatorBar_1_1",
@@ -224,7 +230,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = firstCounterT1[1]/10;
       shift.at(2) = firstCounterT1[2]/10 - trackerz0_extracted/10; //tracker - first counter pos
       for(auto& i: substrings_t1){
-      showNodesByName(node,i,kFALSE, 0, trans, crvholder, maxlevel, level,  false, false, shift, false, true, drawconfigf.getInt("ThreeDimColor"));
+      showNodesByName(node,i,kFALSE, 0, trans, crvholder, maxlevel, level,  false, false, shift, false, true, drawconfigf.getInt("CRVColor"));
       }
 
       static std::vector <std::string> substrings_t2  {"CRSscintLayer_2","CRSmotherLayer_CRV_T2"};//"CRSScintillatorBar_1_2",note for the bar, maybe first number changes?
@@ -232,7 +238,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = firstCounterT2[1]/10;
       shift.at(2) = 82.8/2 +41.4 + firstCounterT2[2]/10 - trackerz0_extracted/10; //tracker - first counter pos
       for(auto& i: substrings_t2){
-      showNodesByName(node,i,kFALSE, 0, trans, crvholder, maxlevel, level,  false, false, shift, false, true, drawconfigf.getInt("ThreeDimColor"));
+      showNodesByName(node,i,kFALSE, 0, trans, crvholder, maxlevel, level,  false, false, shift, false, true, drawconfigf.getInt("CRVColor"));
 
       }
     }
@@ -242,7 +248,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         shift.at(0) = 0;  
         shift.at(1) = 0;
         shift.at(2) = 0;
-        showNodesByName(node,i,kFALSE, 0, trans, caloholder, maxlevel, level, true, false, shift, false, false, drawconfigf.getInt("TrackerColor") );
+        showNodesByName(node,i,kFALSE, 0, trans, caloholder, maxlevel, level, true, false, shift, false, false, drawconfigf.getInt("CALColor") );
       }
       
       if(geomOpt.showCaloCrystals){
@@ -251,7 +257,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
           shift.at(0) = 0;  
           shift.at(1) = 0;
           shift.at(2) = 0;
-          showNodesByName(node,i,kFALSE, 0, trans, crystalsholder, maxlevel, level, true, true, shift, false, false, drawconfigf.getInt("ThreeDimColor"));
+          showNodesByName(node,i,kFALSE, 0, trans, crystalsholder, maxlevel, level, true, true, shift, false, false, drawconfigf.getInt("CALColor"));
         }
       }
     }
@@ -261,7 +267,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         shift.at(0) = 0;  
         shift.at(1) = 0;
         shift.at(2) = 0 ; 
-        showNodesByName(node,i,kFALSE, 0, trans, trackerholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("TrackerColor"));
+        showNodesByName(node,i,kFALSE, 0, trans, trackerholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("TRKColor"));
       }
     }if(geomOpt.showST and !geomOpt.extracted){
       static std::vector <std::string> substrings_stoppingtarget  {"TargetFoil"};
@@ -269,7 +275,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = 0;
       shift.at(2) = -1*STz/10; 
       for(auto& i: substrings_stoppingtarget){
-        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("ThreeDimColor"));
+        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("BLColor"));
       }
     }
     if(geomOpt.showST and !geomOpt.extracted){
@@ -278,7 +284,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       shift.at(1) = 0;
       shift.at(2) = -1*STz/10; 
       for(auto& i: substrings_stoppingtarget){
-        showNodesByName(node,i,kFALSE, 0, trans, targetholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("TrackerColor"));
+        showNodesByName(node,i,kFALSE, 0, trans, targetholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("BLColor"));
       }
     }
     
@@ -288,7 +294,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
         shift.at(0) = 0;  
         shift.at(1) = 0;
         shift.at(2) = 0;
-        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, false, drawconfigf.getInt("ThreeDimColor"));
+        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, false, drawconfigf.getInt("BLColor"));
       }
     }
 }

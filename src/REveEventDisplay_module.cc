@@ -483,7 +483,7 @@ namespace mu2e
       fGui->fsubrunid = subrunid_;
       fGui->frunid = runid_;
       
-      std::cout<<" number in module "<<fText->get()<<std::endl;
+      //std::cout<<" number in module "<<fText->get()<<std::endl;
       fGui->StampObjProps();
       
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;

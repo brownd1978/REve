@@ -39,7 +39,7 @@ physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
 physics.analyzers.REveEventDisplay.showST : false
 physics.analyzers.REveEventDisplay.extracted : true
-physics.analyzers.REveEventDisplay.gdmlname :"REve/mu2e_extracted.gdml"
+physics.analyzers.REveEventDisplay.gdmlname :"Offline/gen/gdml/mu2e_extracted.gdml"
 physics.analyzers.REveEventDisplay.seqMode : true
 
 # CRV
