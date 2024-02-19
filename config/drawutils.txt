@@ -16,7 +16,7 @@ int CALColor = 432; //kCyan = 432
 int BLColor = 432; //kCyan = 432
 int CRVColor = 432; //kCyan = 432
 
-int CRVBarColor = 632
+int CRVBarColor = 632;
 int RecoTrackColor = 600; //kGreen
 int CRVHitColor = 600; //kBlue
 int TrkHitColor = 632; //kBlue

@@ -171,7 +171,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
     }
     if(geomOpt.showPS){
-      static std::vector <std::string> substrings_ps  {"PSVacuum"};//,"PS"};  
+      static std::vector <std::string> substrings_ps  {"ExtMon","PSVacuum"};//,"PS"};  
       shift.at(0) = geomconfig.getDouble("psts_x")/10;
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
       shift.at(2) = geomconfig.getDouble("psts_z")/10;
