@@ -121,6 +121,7 @@ namespace mu2e
           fhicl::Atom<std::string>gdmlname{Name("gdmlname"),Comment("gdmlname")};
           fhicl::Atom<bool> strawdisplay{Name("strawdisplay"), Comment(""),true};
           fhicl::Atom<bool> extracted{Name("extracted"), Comment(""),false};
+          fhicl::Atom<bool> showEM{Name("showEM"), Comment(""),false};
           fhicl::Atom<bool> seqMode{Name("seqMode"), Comment("turn off for go to any event functionality"),true};
         };
 
@@ -177,6 +178,7 @@ namespace mu2e
         bool addTrkCaloHits_;
         bool useBTrk_;
         
+        
         bool specifyTag_ = false;
         TDirectory*   directory_ = nullptr;   
         CollectionFiller filler_;
@@ -188,6 +190,7 @@ namespace mu2e
         std::string gdmlname_;
         bool strawdisplay_; 
         bool extracted_;
+        bool showEM_;
         
         // Setup Custom GUI
         REveMu2eGUI *fGui{nullptr};
@@ -233,6 +236,7 @@ namespace mu2e
     gdmlname_(configFile(conf().gdmlname())),
     strawdisplay_(conf().strawdisplay()),
     extracted_(conf().extracted()),
+    showEM_(conf().showEM()),
     seqMode_(conf().seqMode())
     {
       std::cout<<"GDML file "<<gdmlname_<<std::endl;
@@ -245,7 +249,7 @@ namespace mu2e
           std::cout<<" Run Number : "<<std::endl;
           cin>>runn;
       }
-      geomOpts.fill(showCRV_,showPS_, showTS_, showDS_, show2D_, caloVST_, showST_, extracted_, showSTM_, showCalo_, showTracker_, showCaloCrystals_ );
+      geomOpts.fill(showCRV_,showPS_, showTS_, showDS_, show2D_, caloVST_, showST_, extracted_, showSTM_, showCalo_, showTracker_, showCaloCrystals_, showEM_ );
     }
 
   REveEventDisplay::~REveEventDisplay() {}
@@ -347,9 +351,7 @@ namespace mu2e
         if(filler_.addClusters_) {
           if(specifyTag_) filler_.FillRecoCollections(event, data, CaloClusters);
           else { FillAnyCollection<CaloClusterCollection, const CaloClusterCollection*>(event, _chits, data.calocluster_tuple);}
-          
         }
-        
         if(filler_.addCaloDigis_) {
           if(specifyTag_) filler_.FillRecoCollections(event, data, CaloDigis);
           else { FillAnyCollection<CaloDigiCollection, const CaloDigiCollection*>(event, _chits, data.calodigi_tuple);}

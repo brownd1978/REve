@@ -16,16 +16,24 @@ Things can be added and removed on the GUI once set to "true" in the FCL.
 
 NOTE: you should run this from your working directory, not inside of REve.
 
+# The GDML
+
+Recently we upgraded the code to use the newest GDML. To get this built you need to run 
+
+```
+muse build GDML
+
+``
 # The Browser
 
 The user is advised to add the following to their .rootrc:
 
 ```
-WebEve.DisableShow:   1
+WebEve.DisableShow:   0
 WebGui.HttpPort:   1234
 WebEve.GLViewer:  Three
 ```
-The first line disables the forefox window pop up on the Mu2e machines. The second line sets port number to 1234, this can then be used in your local machine. Assuming you have access to the Fermilab network (either on site or using VPN):
+The first line enables the forefox window pop up on the Mu2e machines IGNORE THAT DISPLAY AND USE YOUR LOCAL BROWSER. The second line sets port number to 1234, this can then be used in your local machine. Assuming you have access to the Fermilab network (either on site or using VPN):
 
 ```
 mu2egpvm01.fnal.gov:1234/win1/

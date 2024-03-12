@@ -1,7 +1,8 @@
 // draw options
 
 int TRKtrans  = 90;
-int CALtrans  = 90;
+int CALtrans  = 100;
+int CRYtrans  = 90;
 int CRVtrans  = 98;
 int BLtrans  = 90;//BL = beamline elements
 

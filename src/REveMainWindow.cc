@@ -51,7 +51,8 @@ void REveMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::RE
     int transpar = drawconfigf.getInt("BLtrans");
     if(name.find("CRS") != string::npos) transpar = drawconfigf.getInt("CRVtrans");
     if(name.find("Tracker") != string::npos) transpar = drawconfigf.getInt("TRKtrans") ;
-    if(name.find("calo") != string::npos) transpar = drawconfigf.getInt("CALtrans") ;
+    if(name.find("caloDisk") != string::npos) transpar = drawconfigf.getInt("CALtrans") ;
+    if(name.find("caloCrystal") != string::npos) transpar = drawconfigf.getInt("CRYtrans") ;
 
     b1s->SetMainTransparency(transpar); 
     b1s->SetMainColor(color);
@@ -122,14 +123,14 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
                 //std::cout<<name<<"  "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
-                if(name == "TrackerPlaneEnvelope_000x362fdc0" or name== "TrackerPlaneEnvelope_000x4ce11c0") { // latter for extracted.
+                if(name == "TrackerPlaneEnvelope_000x4141f00" or name== "TrackerPlaneEnvelope_000x4ce10b0") { // latter for extracted.
                   FrontTracker_gdmltag = j;
                   
                  }
-                if(name == "caloDisk_00x37aa0a0" or name == "caloDisk_00x4f89e50") { // latter for extracted.
+                if(name == "caloDisk_00x42bc1e0" or name == "caloDisk_00x4f89d60") { // latter for extracted.
                   disk1_center = tv[2] ;
                  }
-                if(name == "caloDisk_10x3881840" or name == "caloDisk_10x4fef6e0") {// latter for extracted.
+                if(name == "caloDisk_10x4307a00" or name == "caloDisk_10x4fef5f0") {// latter for extracted.
                   disk2_center = tv[2] ;
                  }
                 if(caloshift){
@@ -161,6 +162,23 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
     shift.push_back(0);
     shift.push_back(0); 
     //geomOpt.print();
+    
+    if(geomOpt.showEM){
+      static std::vector <std::string> substrings_em  {"ExtMon"};  
+      shift.at(0) = geomconfig.getDouble("psts_x")/10;
+      shift.at(1) = geomconfig.getDouble("psts_y")/10;
+      shift.at(2) = geomconfig.getDouble("psts_z")/10;
+      for(auto& i: substrings_em){
+        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level,  false, false, shift, false, true, drawconfigf.getInt("CRVColor"));
+      }
+      static std::vector <std::string> substrings_ps  {"ProductionTarget"};  
+      shift.at(0) = 780.85; //GDML
+      shift.at(1) = -0.06; //GDML
+      shift.at(2) = 1*PTz/10 -1*trackerz0/10 + PTHL/10;
+      for(auto& i: substrings_ps){
+        showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level,  false, false, shift, false, true, drawconfigf.getInt("CRVColor"));
+      }
+    }
     if(geomOpt.showTS){
       static std::vector <std::string> substrings_ts  {"TS"};  
       shift.at(0) = geomconfig.getDouble("psts_x")/10; //TODO these numbers need to be better defined
@@ -171,7 +189,7 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
       }
     }
     if(geomOpt.showPS){
-      static std::vector <std::string> substrings_ps  {"ExtMon","PSVacuum"};//,"PS"};  
+      static std::vector <std::string> substrings_ps  {"PSVacuum"};
       shift.at(0) = geomconfig.getDouble("psts_x")/10;
       shift.at(1) = geomconfig.getDouble("psts_y")/10;
       shift.at(2) = geomconfig.getDouble("psts_z")/10;

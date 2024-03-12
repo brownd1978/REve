@@ -64,10 +64,11 @@ namespace mu2e {
       bool showCalo = true;
       bool showTracker = true;
       bool showCaloCrystals = true;
+      bool showEM = false;
       GeomOptions(){};
-      GeomOptions(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool calo, bool trk, bool crys) 
-      : showCRV(crv), showPS(ps), showTS(ts), showDS(ds), show2D(twodim), caloVST(cVST), showST(st), extracted(ext), showSTM(stm), showCalo(calo), showTracker(trk), showCaloCrystals(crys) {};
-      void fill(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool cal, bool trk, bool crys) {
+      GeomOptions(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool calo, bool trk, bool crys, bool em) 
+      : showCRV(crv), showPS(ps), showTS(ts), showDS(ds), show2D(twodim), caloVST(cVST), showST(st), extracted(ext), showSTM(stm), showCalo(calo), showTracker(trk), showCaloCrystals(crys), showEM(em) {};
+      void fill(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool cal, bool trk, bool crys, bool em) {
         showCRV = (crv);
         showPS = (ps);
         showTS = (ts);
@@ -80,6 +81,7 @@ namespace mu2e {
         showCalo = (cal);
         showTracker = (trk);
         showCaloCrystals = (crys);
+        showEM = (em);
       }
       void print(){
         std::cout<<"***** Geom Options ****** "<<'\n'
@@ -94,6 +96,7 @@ namespace mu2e {
         <<" show Trk : "<<showTracker <<'\n'
         <<" show crystals : "<<showCaloCrystals <<'\n'
         <<" show Extracted : "<<extracted <<'\n'
+         <<" show Ext Mon : "<<showEM <<'\n'
         <<"************************ "<<std::endl;
       }
      };
