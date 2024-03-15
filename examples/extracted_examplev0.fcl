@@ -37,7 +37,9 @@ physics.analyzers.REveEventDisplay.filler.addMCTraj : true
 
 //setup extracted geometry
 physics.analyzers.REveEventDisplay.extracted : true
-physics.analyzers.REveEventDisplay.gdmlname :"Offline/gen/gdml/mu2e_extracted.gdml"
+//physics.analyzers.REveEventDisplay.gdmlname :"Offline/gen/gdml/mu2e_extracted.gdml"
+physics.analyzers.REveEventDisplay.gdmlname :"REve/gdml/mu2e_extracted.gdml"
+
 physics.analyzers.REveEventDisplay.seqMode : true
 //for print statements
 physics.analyzers.REveEventDisplay.diagLevel : 1

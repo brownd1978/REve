@@ -1,0 +1,78 @@
+# author : Sophie Middleton
+# purpose : example for helix tracks
+#include "Offline/fcl/minimalMessageService.fcl"
+#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/fcl/standardServices.fcl"
+#include "REve/fcl/prolog.fcl"
+
+services : @local::Services.Reco
+
+process_name : HelixED
+
+source : { module_type : RootInput }
+
+physics :
+{
+ analyzers : { @table::REveDis.analyzers}
+}
+
+//geometry options
+physics.analyzers.REveEventDisplay.showCRV : true
+physics.analyzers.REveEventDisplay.showPS : false
+physics.analyzers.REveEventDisplay.showTS : false
+physics.analyzers.REveEventDisplay.showDS : false
+physics.analyzers.REveEventDisplay.showCaloCrystals : true
+//highlight CRV bars which are "hit"
+physics.analyzers.REveEventDisplay.addCRVBars : true
+
+//for KinKal development
+physics.analyzers.REveEventDisplay.addKalInter : false
+
+//show crystal hits in cluster
+physics.analyzers.REveEventDisplay.addCrystalHits : true
+
+//show pat rec helix
+physics.analyzers.REveEventDisplay.filler.addHelixSeeds : false
+
+//show final KalSeed
+physics.analyzers.REveEventDisplay.filler.addKalSeeds : true
+
+//show CaloCluster
+physics.analyzers.REveEventDisplay.filler.addClusters : true
+
+//show ComboHits
+physics.analyzers.REveEventDisplay.filler.addHits : false // adds ComboHits
+
+//show CRV reco information
+physics.analyzers.REveEventDisplay.filler.addCrvClusters : true
+physics.analyzers.REveEventDisplay.filler.addCrvHits : false
+
+//show TimeClusters
+physics.analyzers.REveEventDisplay.filler.addTimeClusters : false
+
+//highlight ComboHits (needs development)
+physics.analyzers.REveEventDisplay.addTrkStrawHits : true
+
+//add straight pat reco CosmicTrackSeed
+physics.analyzers.REveEventDisplay.filler.addCosmicTrackSeeds : false
+
+//add MCTrajecotry
+physics.analyzers.REveEventDisplay.filler.addMCTraj : true
+
+//allows movement through events in sequential order
+physics.analyzers.REveEventDisplay.seqMode : true
+
+//highlights straws
+physics.analyzers.REveEventDisplay.strawdisplay : false
+
+//print statements
+physics.analyzers.REveEventDisplay.diagLevel : 10
+
+//the path
+physics.EndPath  : [ @sequence::REveDis.seqBase]
+
+//useless file name
+services.TFileService.fileName: "nts.owner.REve.version.sequencer.root"
+
+physics.analyzers.REveEventDisplay.gdmlname :"backing/REve/gdml/mu2e.gdml"
+

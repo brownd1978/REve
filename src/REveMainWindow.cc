@@ -123,14 +123,14 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
                 t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
                 //std::cout<<name<<"  "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
-                if(name == "TrackerPlaneEnvelope_000x4141f00" or name== "TrackerPlaneEnvelope_000x4ce10b0") { // latter for extracted.
+                if(name == "TrackerPlaneEnvelope_000x3acaae0" or name== "TrackerPlaneEnvelope_000x4ce11c0") { // latter for extracted.
                   FrontTracker_gdmltag = j;
                   
                  }
-                if(name == "caloDisk_00x42bc1e0" or name == "caloDisk_00x4f89d60") { // latter for extracted.
+                if(name == "caloDisk_00x3d71700" or name == "caloDisk_00x4f89e50") { // latter for extracted.
                   disk1_center = tv[2] ;
                  }
-                if(name == "caloDisk_10x4307a00" or name == "caloDisk_10x4fef5f0") {// latter for extracted.
+                if(name == "caloDisk_10x3e1ec70" or name == "caloDisk_10x4fef6e0") {// latter for extracted.
                   disk2_center = tv[2] ;
                  }
                 if(caloshift){
