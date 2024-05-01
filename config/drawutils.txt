@@ -1,16 +1,24 @@
 // draw options
 
-int trans  = 98;
+int TRKtrans  = 90;
+int CALtrans  = 100;
+int CRYtrans  = 90;
+int CRVtrans  = 98;
+int BLtrans  = 90;//BL = beamline elements
+
 int maxlevel = 8; //8=calocrystals
 int level = 0;
 int maxSID = 20000;
 int maxStrawID = 70;
 int TrackLineWidth = 5;
 
-int ThreeDimColor = 432; //kCyan = 432
-int TrackerColor = 432; //kWhite = 0
-int RecoTrackColor = 416; //kGreen
+int TRKColor = 432; //kCyan = 432
+int CALColor = 432; //kCyan = 432
+int BLColor = 432; //kCyan = 432
+int CRVColor = 432; //kCyan = 432
 
+int CRVBarColor = 632;
+int RecoTrackColor = 600; //kGreen
 int CRVHitColor = 600; //kBlue
-string TrkHitColor = 600; //kBlue
-string TrkNoHitColor = "kRed-4";
+int TrkHitColor = 632; //kBlue
+int  TrkNoHitColor = 600; //kBlue

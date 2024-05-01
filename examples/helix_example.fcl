@@ -25,6 +25,7 @@ module_type : EventIDFilter
 #                "1202:27:2753"
                 ]
 }
+
 physics.eidselpath : ["eidsel"]
 physics.trigger_paths :  ["eidselpath" ]
 physics.analyzers : { @table::REveDis.analyzers}

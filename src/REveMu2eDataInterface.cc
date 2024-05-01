@@ -368,7 +368,8 @@ void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop
           if(addCRVBars){
             if(!extracted){
               auto b = new REX::REveBox("box","label");
-              b->SetMainColor(632);
+              b->SetMainColor(drawconfig.getInt("CRVBarColor"));
+              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));//TODO - doesnt set
 
               double  length = pointmmTocm(crvCounter.getHalfLength());
               double  width = pointmmTocm(crvCounter.getHalfWidth());
@@ -433,7 +434,8 @@ void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop
 
               // Draw "bars hit" in red:
               auto b = new REX::REveBox("box");
-              b->SetMainColor(632);
+              b->SetMainColor(drawconfig.getInt("CRVBarColor"));
+              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));//TODO - doesnt set
 
               double  length = pointmmTocm(crvCounter.getHalfLength());
               double  width = pointmmTocm(crvCounter.getHalfWidth());
@@ -511,7 +513,8 @@ void REveMu2eDataInterface::AddCRVClusters(REX::REveManager *&eveMng, bool first
             if(addCRVBars){
             if(!extracted){
               auto b = new REX::REveBox("box","label");
-              b->SetMainColor(632);
+              b->SetMainColor(drawconfig.getInt("CRVBarColor"));
+              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));//TODO - doesnt set
 
               double  length = pointmmTocm(crvCounter.getHalfLength());
               double  width = pointmmTocm(crvCounter.getHalfWidth());
@@ -576,7 +579,8 @@ void REveMu2eDataInterface::AddCRVClusters(REX::REveManager *&eveMng, bool first
 
               // Draw "bars hit" in red:
               auto b = new REX::REveBox("box");
-              b->SetMainColor(632);
+              b->SetMainColor(drawconfig.getInt("CRVBarColor"));
+              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));//TODO - doesnt set
 
               double  length = pointmmTocm(crvCounter.getHalfLength());
               double  width = pointmmTocm(crvCounter.getHalfWidth());
@@ -609,7 +613,7 @@ void REveMu2eDataInterface::AddCRVClusters(REX::REveManager *&eveMng, bool first
          }
         }
 
-        ps1->SetMarkerColor(kBlack);
+        ps1->SetMarkerColor(drawconfig.getInt("CRVHitColor"));
         ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
         ps1->SetMarkerSize(REveMu2eDataInterface::msize);
         if(ps1->GetSize() !=0 ) scene->AddElement(ps1);
@@ -680,7 +684,7 @@ void REveMu2eDataInterface::AddHelixSeedCollection(REX::REveManager *&eveMng,boo
             if(circphi !=0.0)line->SetNextPoint(pointmmTocm(HelPos.x()),pointmmTocm(HelPos.y()) ,pointmmTocm(HelPos.z()));
           }
         }
-        line->SetLineColor(kBlue);
+        line->SetLineColor(drawconfig.getInt("RecoTrackColor"));
         line->SetLineWidth(drawconfig.getInt("TrackLineWidth"));
         scene->AddElement(line);
       }
@@ -760,8 +764,8 @@ template<class KTRAJc> void REveMu2eDataInterface::AddTrkStrawHit(KalSeed kalsee
       auto trkstrawpoint = new REX::REvePointSet("TrkStrawHit", title,1);
       trkstrawpoint->SetMarkerStyle(REveMu2eDataInterface::mstyle);
       trkstrawpoint->SetMarkerSize(REveMu2eDataInterface::msize);
-      trkstrawpoint->SetMarkerColor(kRed);
-      if(!usedrift)trkstrawpoint->SetMarkerColor(kBlue);
+      trkstrawpoint->SetMarkerColor(drawconfig.getInt("TrkHitColor"));
+      if(!usedrift)trkstrawpoint->SetMarkerColor(drawconfig.getInt("TrkNoHitColor"));
       trkstrawpoint->SetNextPoint(pointmmTocm(tshspos.x()),pointmmTocm(tshspos.y()) ,pointmmTocm(tshspos.z()));
       scene->AddElement(trkstrawpoint);
       scene->AddElement(line);
@@ -820,8 +824,8 @@ void REveMu2eDataInterface::AddTrkHits(REX::REveManager *&eveMng, bool firstLoop
                   auto trkhit = new REX::REvePointSet("TrkHits", chtitle,0);
                   trkhit ->SetMarkerStyle(REveMu2eDataInterface::mstyle);
                   trkhit ->SetMarkerSize(REveMu2eDataInterface::msize);
-                  // trkhit ->SetMarkerColor(drawconfig.getInt("RecoTrackColor")-4); //TODO
-                  trkhit ->SetMarkerColor(kRed); //TODO
+                  // trkhit ->SetMarkerColor(drawconfig.getInt("RecoTrackColor")-4);
+                  trkhit ->SetMarkerColor(drawconfig.getInt("TrkHitColor"));
                   trkhit ->SetNextPoint(pointmmTocm(HitPos.x()),pointmmTocm(HitPos.y()) ,pointmmTocm(HitPos.z()));
                   if(trkhit->GetSize() !=0 ) scene->AddElement(trkhit);
                   // std::cout<<"TrkHit = "<<HitPos.x()<<"  "<<HitPos.y()<<" "<<HitPos.z()<<std::endl;
