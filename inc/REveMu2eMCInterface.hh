@@ -5,7 +5,6 @@
 #include <ROOT/REveManager.hxx>
 #include <ROOT/REveLine.hxx>
 #include <ROOT/REveScene.hxx>
-#include "Offline/GeometryService/inc/GeomHandle.hh"
 #include "Offline/GeometryService/inc/DetectorSystem.hh"
 #include "Offline/Mu2eInterfaces/inc/Detector.hh"
 #include "Offline/DataProducts/inc/GenVector.hh"

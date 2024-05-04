@@ -1,5 +1,7 @@
 #include "REve/inc/REveMu2eDataInterface.hh"
 #include "Offline/DataProducts/inc/GenVector.hh"
+#include "Offline/ConfigTools/inc/SimpleConfig.hh"
+#include "Offline/GeometryService/inc/GeomHandle.hh"
 #include "Offline/Mu2eKinKal/inc/WireHitState.hh"
 #include "Offline/RecoDataProducts/inc/TrkStrawHitSeed.hh"
 using namespace mu2e;
