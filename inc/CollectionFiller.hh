@@ -4,9 +4,12 @@
 //Art:
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Principal/Run.h"
+
+#ifndef __ROOTCLING__
 #include "fhiclcpp/types/Atom.h"
 #include "fhiclcpp/types/Sequence.h"
 #include "fhiclcpp/types/Table.h"
+#endif
 
 #include <TObject.h>
 #include <TROOT.h>
@@ -23,6 +26,7 @@ namespace mu2e{
 	{
       public:
         struct Config{
+#ifndef __ROOTCLING__
           using Name=fhicl::Name;
           using Comment=fhicl::Comment;
           fhicl::Atom<int> diagLevel{Name("diagLevel"), Comment("for info"),0};
@@ -48,6 +52,7 @@ namespace mu2e{
           fhicl::Atom<bool> addCosmicTrackSeeds{Name("addCosmicTrackSeeds"), Comment("set to add cosmic track seeds"),false};
           fhicl::Atom<bool> addMCTraj{Name("addMCTraj"), Comment("set to add add MC information"),false};
           fhicl::Atom<bool> FillAll{Name("FillAll"), Comment("to see all available products"), false};
+#endif
         };
 
         explicit CollectionFiller(const Config& conf);
