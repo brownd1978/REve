@@ -126,7 +126,6 @@ void REveMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bool o
                 
                 if(name.find("TrackerPlaneEnvelope_00") != string::npos) {
                   FrontTracker_gdmltag = j;
-                  
                  }
                 if(name.find("caloDisk_00") != string::npos) {
                   disk1_center = tv[2] ;
