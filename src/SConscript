@@ -107,7 +107,7 @@ helper.classDef(True)
 
 helper.make_dict_and_map()
 
-mainlib = helper.make_mainlib([userlibs])
+mainlib = helper.make_mainlib([userlibs], [ numeric_root_version ],)
 
 # helper.make_plugins( [ 'mu2e_REveEventDisplay',userlibs ] )
 # Fixme: split into link lists for each module.
