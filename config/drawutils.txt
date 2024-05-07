@@ -11,7 +11,7 @@ int level = 0;
 int maxSID = 20000;
 int maxStrawID = 70;
 int TrackLineWidth = 3;
-int GeomLineWidth = 0.5;
+int GeomLineWidth = 1;
 int TRKColor = 432; //kCyan = 432
 int CALColor = 432; //kCyan = 432
 int BLColor = 432; //kCyan = 432
