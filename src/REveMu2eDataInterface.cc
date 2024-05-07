@@ -369,8 +369,8 @@ void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop
             if(!extracted){
               auto b = new REX::REveBox("box","label");
               b->SetMainColor(drawconfig.getInt("CRVBarColor"));
-              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));//TODO - doesnt set
-
+              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));
+              b->SetLineWidth(drawconfig.getInt("GeomLineWidth"));
               double  length = pointmmTocm(crvCounter.getHalfLength());
               double  width = pointmmTocm(crvCounter.getHalfWidth());
               double  height = pointmmTocm(crvCounter.getHalfThickness());
@@ -435,8 +435,8 @@ void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop
               // Draw "bars hit" in red:
               auto b = new REX::REveBox("box");
               b->SetMainColor(drawconfig.getInt("CRVBarColor"));
-              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));//TODO - doesnt set
-
+              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));
+              b->SetLineWidth(drawconfig.getInt("GeomLineWidth"));
               double  length = pointmmTocm(crvCounter.getHalfLength());
               double  width = pointmmTocm(crvCounter.getHalfWidth());
               double  height = pointmmTocm(crvCounter.getHalfThickness());
@@ -514,8 +514,8 @@ void REveMu2eDataInterface::AddCRVClusters(REX::REveManager *&eveMng, bool first
             if(!extracted){
               auto b = new REX::REveBox("box","label");
               b->SetMainColor(drawconfig.getInt("CRVBarColor"));
-              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));//TODO - doesnt set
-
+              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));
+              b->SetLineWidth(drawconfig.getInt("GeomLineWidth"));
               double  length = pointmmTocm(crvCounter.getHalfLength());
               double  width = pointmmTocm(crvCounter.getHalfWidth());
               double  height = pointmmTocm(crvCounter.getHalfThickness());
@@ -580,8 +580,8 @@ void REveMu2eDataInterface::AddCRVClusters(REX::REveManager *&eveMng, bool first
               // Draw "bars hit" in red:
               auto b = new REX::REveBox("box");
               b->SetMainColor(drawconfig.getInt("CRVBarColor"));
-              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));//TODO - doesnt set
-
+              b->	SetMainTransparency(drawconfig.getInt("CRVtrans"));
+              b->SetLineWidth(drawconfig.getInt("GeomLineWidth"));
               double  length = pointmmTocm(crvCounter.getHalfLength());
               double  width = pointmmTocm(crvCounter.getHalfWidth());
               double  height = pointmmTocm(crvCounter.getHalfThickness());

@@ -349,8 +349,9 @@ namespace mu2e
         //auto start1 = std::chrono::high_resolution_clock::now();
         // fill the collection lists
         if(filler_.addClusters_) {
+          std::cout<<" adding clusters "<<std::endl;
           if(specifyTag_) filler_.FillRecoCollections(event, data, CaloClusters);
-          else { FillAnyCollection<CaloClusterCollection, const CaloClusterCollection*>(event, _chits, data.calocluster_tuple);}
+          else { FillAnyCollection<CaloClusterCollection, const CaloClusterCollection*>(event, _chits, data.calocluster_tuple); std::cout<<" size of cluster list "<<_chits.size()<<std::endl;}
         }
         if(filler_.addCaloDigis_) {
           if(specifyTag_) filler_.FillRecoCollections(event, data, CaloDigis);

@@ -10,8 +10,8 @@ int maxlevel = 8; //8=calocrystals
 int level = 0;
 int maxSID = 20000;
 int maxStrawID = 70;
-int TrackLineWidth = 5;
-
+int TrackLineWidth = 3;
+int GeomLineWidth = 0.5;
 int TRKColor = 432; //kCyan = 432
 int CALColor = 432; //kCyan = 432
 int BLColor = 432; //kCyan = 432
