@@ -85,7 +85,6 @@ namespace mu2e{
           data.timecluster_tuple = std::make_tuple(data.timecluster_labels,data.timecluster_list);
         }
         if(FillAll_ or (addTrkHits_ and CollectionName == TrkHits)){ 
-
            for(const auto &tag : chTag_){
                 auto chH = evt.getValidHandle<mu2e::ComboHitCollection>(tag);
                 data.chcol = chH.product();

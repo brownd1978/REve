@@ -10,6 +10,7 @@ namespace mu2e {
 class REveMu2eTextSelect : public ROOT::Experimental::REveElement
 {
   public:
+    //REveMu2eTextSelect(int &test_) : test(test_){};
     /*REveMu2eTextSelect() = default; // ROOT needs a dictionary
     REveMu2eTextSelect(){};
 
@@ -18,12 +19,16 @@ class REveMu2eTextSelect : public ROOT::Experimental::REveElement
         int eventn)
         : REveElement{"REveMu2eTextSelect"}, runN(runn), eventN(eventn)
       {}*/
+      
        void set(int run, int event);
        int get();
        int setRun(int run);
+       //int test{0};
    private:
      int runN = 0;
      int eventN = 0;
+     
+     
      
 };
 }
