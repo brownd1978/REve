@@ -396,7 +396,6 @@ void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop
                 b->SetVertex(5, pointmmTocm(pointInMu2e.x()) - width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + length);//-++
                 b->SetVertex(6, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + length);//+++
                 b->SetVertex(7, pointmmTocm(pointInMu2e.x()) + width, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + length);//+-+
-
               }
 
               if(barDetail.getWidthDirection() == 2 and barDetail.getThicknessDirection() == 1 and barDetail.getLengthDirection() == 0){ //CRV T -- orientation DONE
@@ -408,11 +407,10 @@ void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop
                 b->SetVertex(5, length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + pointmmTocm(pointInMu2e.x()) - width );//-++
                 b->SetVertex(6, length, pointmmTocm(pointInMu2e.y()) + height, pointmmTocm(pointInMu2e.z()) + pointmmTocm(pointInMu2e.x()) + width );//+++
                 b->SetVertex(7, length, pointmmTocm(pointInMu2e.y()) - height, pointmmTocm(pointInMu2e.z()) + pointmmTocm(pointInMu2e.x()) + width );//+-+
-
               }
 
                if(barDetail.getWidthDirection() == 1 and barDetail.getThicknessDirection() == 0 and barDetail.getLengthDirection() == 2){ //CRV R, CRV L -- orientation DONE
-                b->SetVertex(0, pointmmTocm(pointInMu2e.y()) - height, -1*length, pointmmTocm(pointInMu2e.x()) - width ); //---
+                b->SetVertex(0, pointmmTocm(pointInMu2e.y()) - height, -1*length, pointmmTocm(pointInMu2e.x()) - width );//---
                 b->SetVertex(1, pointmmTocm(pointInMu2e.y()) + height, -1*length,pointmmTocm(pointInMu2e.x()) - width);//-+-
                 b->SetVertex(2, pointmmTocm(pointInMu2e.y()) + height, -1*length,pointmmTocm(pointInMu2e.x()) + width);//++-
                 b->SetVertex(3, pointmmTocm(pointInMu2e.y()) - height, -1*length,pointmmTocm(pointInMu2e.x()) + width);//+--
@@ -420,7 +418,6 @@ void REveMu2eDataInterface::AddCRVInfo(REX::REveManager *&eveMng, bool firstLoop
                 b->SetVertex(5, pointmmTocm(pointInMu2e.y()) + height, length, pointmmTocm(pointInMu2e.x()) - width );//-++
                 b->SetVertex(6, pointmmTocm(pointInMu2e.y()) + height, length,pointmmTocm(pointInMu2e.x()) + width );//+++
                 b->SetVertex(7, pointmmTocm(pointInMu2e.y()) - height, length,pointmmTocm(pointInMu2e.x()) + width );//+-+
-
               }
               scene->AddElement(b);
 
@@ -724,8 +721,6 @@ template<class KTRAJc> void REveMu2eDataInterface::AddTrkStrawHit(KalSeed kalsee
   const std::vector<mu2e::TrkStrawHitSeed> &hits = kalseed.hits();
 
   for(unsigned int i = 0; i < hits.size(); i++){
-
-
     const mu2e::TrkStrawHitSeed &tshs = hits.at(i);
     auto const& straw = tracker->straw(tshs.strawId());
     mu2e::WireHitState whs(mu2e::WireHitState::State(tshs._ambig),
@@ -749,10 +744,11 @@ template<class KTRAJc> void REveMu2eDataInterface::AddTrkStrawHit(KalSeed kalsee
         herr = tshs._uderr;
       }
       // set the line length to be N sigma.  1 may be too short to see, TODO
-      double nsigma(1.0);
+      double nsigma(2.0);
       auto end1 = tshspos + nsigma*herr*ddir;
       auto end2 = tshspos - nsigma*herr*ddir;
-      auto line = new REX::REveLine("TrkStrawHit Error","TrkStrawHit Error" , 1);
+      std::string err_title = "+/-"+std::to_string(nsigma) +"sigma";
+      auto line = new REX::REveLine("TrkStrawHit Error",err_title, 1);
       line->SetNextPoint(pointmmTocm(end1.x()),pointmmTocm(end1.y()) ,pointmmTocm(end1.z()));
       line->SetNextPoint(pointmmTocm(end2.x()),pointmmTocm(end2.y()) ,pointmmTocm(end2.z()));
       //goes along that same line (ddir)
@@ -761,7 +757,7 @@ template<class KTRAJc> void REveMu2eDataInterface::AddTrkStrawHit(KalSeed kalsee
                   + " z " + std::to_string(pointmmTocm(tshspos.z()))  +  '\n'
                   + " time :" + std::to_string(tshs.hitTime())+  '\n'
                   + " energyDep :" + std::to_string(tshs.energyDep())+ "MeV";
-      auto trkstrawpoint = new REX::REvePointSet("TrkStrawHit", title,1);
+      auto trkstrawpoint = new REX::REvePointSet("TrkStrawHitSeed", title,1);
       trkstrawpoint->SetMarkerStyle(REveMu2eDataInterface::mstyle);
       trkstrawpoint->SetMarkerSize(REveMu2eDataInterface::msize);
       trkstrawpoint->SetMarkerColor(drawconfig.getInt("TrkHitColor"));

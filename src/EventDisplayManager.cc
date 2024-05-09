@@ -29,13 +29,21 @@ namespace mu2e {
    {
       std::cout << "EventManger autoplay() ....... " << x << std::endl;
    }
+   int EventDisplayManager::getR(){
+    return this->run;
+  }
+   void EventDisplayManager::setR(int runId){
+    std::cout<<"[EventDisplayManager::setR] taking run number"<<this->run<<" and passing in "<<runId<<std::endl;
+    this->run = runId;
+    std::cout<<"[EventDisplayManager::setR] run number now "<<this->run<<std::endl;
+  }
+  
    void EventDisplayManager::goToRunEvent(int runId, int eventId)
    {
-      std::cout<<" FEATURE STILL UNDER DEVELOPMENT "<<std::endl;
-      //std::cout << "EventManger gotoEvent() ....... " << runId<<" "<<eventId << std::endl;
-      //std::cout<<"setting"<<std::endl;
-      //fText_->set(runId,eventId);
-      //std::cout<<"finished setting"<<std::endl;
+      std::cout << "[EventDisplayManager::goToRunEvent] received: " << runId<<" "<<eventId << std::endl;
+      setR(runId);
+      std::cout<<"[EventDisplayManager::goToRunEvent] value is now"<<this->run<<std::endl;
+      fText_->set(runId,eventId);
    }
 
 }

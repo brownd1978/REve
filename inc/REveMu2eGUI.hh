@@ -18,7 +18,6 @@ class REveMu2eGUI : public ROOT::Experimental::REveElement
      void setEvent(int event);
      void getRunEvent();
      void PrintEventInfo();
-     
      int runNumber{0};
      int eventNumber{0};
 

@@ -33,8 +33,10 @@ namespace mu2e {
     void NextEvent();
     void QuitRoot();
     void autoplay(int x);
+    int getR();
+    void setR(int runId);
     void goToRunEvent(int runId, int eventId);
-
+    int run{0};
     private:
       ROOT::Experimental::REveManager* eveMng_{nullptr};
       std::condition_variable* cv_{nullptr};
@@ -42,7 +44,6 @@ namespace mu2e {
       bool doneProcessingEvents_{false};
       REveMu2eGUI *fGui_{nullptr};
       REveMu2eTextSelect *fText_{nullptr};
-
     };
 }
 

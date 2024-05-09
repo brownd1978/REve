@@ -50,15 +50,17 @@
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic pop
 
-//EveMu2e
-#include "REve/inc/REveMainWindow.hh"
+//REveMu2e
+#include "REve/inc/REveMu2eMainWindow.hh"
 #include "REve/inc/EventDisplayManager.hh"
 #include "REve/inc/CollectionFiller.hh"
 #include "REve/inc/DataCollections.hh"
 #include "REve/inc/REveMu2eGUI.hh"
 #include "REve/inc/REveMu2eTextSelect.hh"
-#include "REve/inc/REveDataProduct.hh"
+#include "REve/inc/REveMu2eDataProduct.hh"
+#include "REve/inc/REveMu2ePrintInfo.hh"
 
+//Ofline
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
 #include "Offline/RecoDataProducts/inc/ComboHit.hh"
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
@@ -72,8 +74,11 @@
 
 using namespace std;
 using namespace mu2e;
+
+
 namespace mu2e
 {
+    
     class XThreadTimer : public TTimer {
         std::function<void()> foo_;
         public:
@@ -143,7 +148,7 @@ namespace mu2e
         void run_application();
         void process_single_event();
         void printOpts();
-        template <class T, class S> void FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list, std::tuple<std::vector<std::string>, std::vector<S>>& tuple);
+        template <class T, class S> void FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveMu2eDataProduct>>& list, std::tuple<std::vector<std::string>, std::vector<S>>& tuple);
 
         // Application control
         TApplication application_{"none", nullptr, nullptr};
@@ -177,12 +182,11 @@ namespace mu2e
         bool addTrkStrawHits_;
         bool addTrkCaloHits_;
         bool useBTrk_;
-        
-        
+               
         bool specifyTag_ = false;
         TDirectory*   directory_ = nullptr;   
         CollectionFiller filler_;
-        REveMainWindow *frame_;
+        REveMu2eMainWindow *frame_;
         DataCollections data;
         bool firstLoop_ = true;
         bool firstLoopCalo_ = true; 
@@ -194,6 +198,7 @@ namespace mu2e
         
         // Setup Custom GUI
         REveMu2eGUI *fGui{nullptr};
+        REveMu2ePrintInfo *fPrint{nullptr};
         REveMu2eTextSelect *fText{nullptr};
         double eventid_;
         double runid_;   
@@ -203,7 +208,7 @@ namespace mu2e
         int runn;
         int subrunn;
         
-        std::vector<std::shared_ptr<REveDataProduct>> listoflists;
+        std::vector<std::shared_ptr<REveMu2eDataProduct>> listoflists;
         GeomOptions geomOpts;
         ConfigFileLookupPolicy configFile;
     };
@@ -272,11 +277,11 @@ namespace mu2e
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on app start"<<std::endl;
       cv_.wait(lock);
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- app start signal received, starting eve init"<<std::endl;
-      auto start1 = std::chrono::high_resolution_clock::now();
+      //auto start1 = std::chrono::high_resolution_clock::now();
   
       XThreadTimer suet([this]{ setup_eve(); });
-      auto end1 = std::chrono::high_resolution_clock::now();
-      std::cout<<" time through process setup evene"<<std::chrono::duration<double, std::milli>(end1 - start1).count()<<" ms "<<std::endl;
+      //auto end1 = std::chrono::high_resolution_clock::now();
+      //std::cout<<" time through process setup evene"<<std::chrono::duration<double, std::milli>(end1 - start1).count()<<" ms "<<std::endl;
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on eve setup"<<std::endl;
       cv_.wait(lock);
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- eve setup apparently complete"<<std::endl;
@@ -303,7 +308,7 @@ namespace mu2e
   }
   
   
-  template <class T, class S> void REveEventDisplay::FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveDataProduct>>& list, std::tuple<std::vector<std::string>, std::vector<S>>& tuple){
+  template <class T, class S> void REveEventDisplay::FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveMu2eDataProduct>>& list, std::tuple<std::vector<std::string>, std::vector<S>>& tuple){
       // get all instances of products of type T
       std::vector<art::Handle<T>> vah = evt.getMany<T>();
       std::string name;
@@ -339,8 +344,8 @@ namespace mu2e
       eventid_ = event.id().event(); 
       runid_ = event.run();
       subrunid_ = event.subRun();
-
-      std::vector<std::shared_ptr<REveDataProduct>> _chits;
+      
+      std::vector<std::shared_ptr<REveMu2eDataProduct>> _chits;
 
       if((seqMode_) or ( runid_ == runn and subrunid_ == subrunn and eventid_ == eventn)){
         // Hand off control to display thread
@@ -349,9 +354,8 @@ namespace mu2e
         //auto start1 = std::chrono::high_resolution_clock::now();
         // fill the collection lists
         if(filler_.addClusters_) {
-          std::cout<<" adding clusters "<<std::endl;
           if(specifyTag_) filler_.FillRecoCollections(event, data, CaloClusters);
-          else { FillAnyCollection<CaloClusterCollection, const CaloClusterCollection*>(event, _chits, data.calocluster_tuple); std::cout<<" size of cluster list "<<_chits.size()<<std::endl;}
+          else { FillAnyCollection<CaloClusterCollection, const CaloClusterCollection*>(event, _chits, data.calocluster_tuple);}
         }
         if(filler_.addCaloDigis_) {
           if(specifyTag_) filler_.FillRecoCollections(event, data, CaloDigis);
@@ -395,24 +399,17 @@ namespace mu2e
         
         if(filler_.addTrkHits_) filler_.FillRecoCollections(event, data, TrkHits); 
         if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
-        //auto end1 = std::chrono::high_resolution_clock::now();
-  
-          //std::cout<<" time through fill functions "<<std::chrono::duration<double, std::milli>(end1 - start1).count()<<" ms "<<std::endl;
         if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
         XThreadTimer proc_timer([this]{ process_single_event(); });
-        //auto end2 = std::chrono::high_resolution_clock::now();
-  
-        //std::cout<<" time through process single event "<<std::chrono::duration<double, std::milli>(end2 - start1).count()<<" ms "<<std::endl;
+
         if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
         cv_.wait(lock);
         if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- TApplication thread returning control "<<std::endl;
         if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] Ended Event "<<std::endl; 
         seqMode_ = true;
         
+        std::cout<<"test VALUE "<<eventMgr_->run<<std::endl;
       }
-      //auto end = std::chrono::high_resolution_clock::now();
-  
-      //std::cout<<" time through analyze "<<std::chrono::duration<double, std::milli>(end - start).count()<<" ms "<<std::endl;
   }
 
     void REveEventDisplay::endJob()
@@ -445,6 +442,7 @@ namespace mu2e
       fGui = new REveMu2eGUI();
       fGui->SetName("Mu2eGUI");
       
+      fPrint = new REveMu2ePrintInfo();
       fText = new REveMu2eTextSelect();
       
       // call manager
@@ -455,7 +453,7 @@ namespace mu2e
       
       assert(world);
       
-      frame_ = new REveMainWindow();     
+      frame_ = new REveMu2eMainWindow();     
       frame_->makeGeometryScene(eveMng_, geomOpts, gdmlname_);
       
       //add path to the custom GUI code here, this overrides ROOT GUI
@@ -465,10 +463,14 @@ namespace mu2e
       // InitGuiInfo() cont'd
       world->AddElement(fGui);
       world->AddElement(fText);
-      world->AddElement(eventMgr_);   
+      world->AddElement(eventMgr_);
+      world->AddElement(fPrint);
+      std::cout<<"[REveEventDisplay::setup_eve] run in display is set to "<<eventMgr_->run<<std::endl;
+   
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
-      
+      world->AddCommand("PrintMCInfo", "sap-icon://step", fPrint, "PrintMCInfo()");
+      world->AddCommand("PrintRecoInfo", "sap-icon://step", fPrint, "PrintRecoInfo()");
       std::unique_lock lock{m_};
       cv_.notify_all();
  
@@ -486,13 +488,20 @@ namespace mu2e
       fGui->fsubrunid = subrunid_;
       fGui->frunid = runid_;
       
-      //std::cout<<" number in module "<<fText->get()<<std::endl;
+      fPrint->fcalocluster_tuple = data.calocluster_tuple;
+      fPrint->fmctrack_tuple = data.mctrack_tuple;
+      fPrint->ftrack_tuple = data.track_tuple;
+      
+      std::cout<<"[REveEventDisplay::process_single_event] display has run number set to "<<eventMgr_->run<<std::endl;
+      std::cout<<"[REveEventDisplay::process_single_event] value in the text class "<<fText->get()<<std::endl;
+
       fGui->StampObjProps();
       
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;
       REX::REveElement* scene = eveMng_->GetEventScene();
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
+      
       // fill draw options 
       DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addCaloDigis_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addCrvClusters_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_, addErrBar_, addCrystalHits_, addCRVBars_, useBTrk_);
       
@@ -504,16 +513,6 @@ namespace mu2e
 
       if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
       
-      /*if(filler_.addClusters_){
-        bool isEmpty = false;
-        if(std::get<1>(data.calocluster_tuple)[0]->size() == 0) isEmpty = true;//if calocluster list is empty you dont need to reset the next event.
-      
-        if(!isEmpty) {
-          firstLoopCalo_ = false; //if true then seg fault is removed when previous event was empty
-        } else {
-         firstLoopCalo_ = true; 
-        }
-      }*/
       firstLoop_ = false;
       eveMng_->GetScenes()->AcceptChanges(false);
       eveMng_->GetWorld()->EndAcceptingChanges();

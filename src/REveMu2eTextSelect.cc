@@ -24,8 +24,9 @@ int REveMu2eTextSelect::setRun(int run){
 void REveMu2eTextSelect::set(int run, int event){
   int N = setRun(run);
   runN = N;
-  std::cout<<" final N "<<N<<std::endl;
-  std::cout<<" final N "<<runN<<std::endl;
+  
+  std::cout<<" [REveMu2eTextSelect::set] set to "<<N<<std::endl;
+  std::cout<<" [REveMu2eTextSelect::set] run number in this class "<<runN<<std::endl;
 }
    
 
