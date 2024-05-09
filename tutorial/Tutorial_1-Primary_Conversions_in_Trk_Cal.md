@@ -34,6 +34,10 @@ To look more closely at parts of the event drag your mouse on the 3D view, scrol
 
 Specific information about the features of a data product can be displayed by rolling your mouse over the visualized products. Try to see what's displayd for 1) the clusters, 2) the MC trajectory.
 
+## Printing information to terminal
+
+Select the PrintRecoInfo() button. You will see that in the terminal reco product information is printed. Do the same for PrintMCInfo().
+
 ## Going to the next event
 
 To go to the next event simply press the "NextEvent()" button.

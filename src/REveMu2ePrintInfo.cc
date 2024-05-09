@@ -9,7 +9,7 @@ void REveMu2ePrintInfo::PrintMCInfo(){
 void REveMu2ePrintInfo::PrintRecoInfo(){
   PrintKalInfo();
   PrintCaloInfo();
-  //PrintCRVInfo(); TODO
+  PrintCRVInfo();
 }
 
 
@@ -54,31 +54,63 @@ void REveMu2ePrintInfo::PrintSimInfo(){
 }
 
 void  REveMu2ePrintInfo::PrintKalInfo(){
-  
-  std::vector<const KalSeedCollection*> ktrack_list = std::get<1>(ftrack_tuple);
-  if(ktrack_list.size() > 0){
-    for(unsigned int j=0; j< ktrack_list.size(); j++){
-      const KalSeedCollection* seedcol = ktrack_list[j];
-      std::cout<<" "<<std::endl;
-      std::cout<<"KALSEED INFORMATION"<<std::endl;  //FIXME - need to add track parameters here
-      if(seedcol->size() !=0){
-         for(unsigned int i = 0; i < seedcol->size(); i++){
-          mu2e::KalSeed const  &kseed= (*seedcol)[i];
-          const std::vector<mu2e::TrkStrawHitSeed>* hots = &kseed.hits();
-          int n_krep_hits = hots->size();
-          std::string kt0 = std::to_string(kseed.t0().t0());
-          const std::vector<mu2e::KalSegment> &segments = kseed.segments();
-          unsigned int nSegments=segments.size();
-          std::cout<<" t0 = "<<kt0<<" hits = "<<n_krep_hits<<" segments = "<<nSegments<<std::endl;                
-         }
+    std::vector<const KalSeedCollection*> ktrack_list = std::get<1>(ftrack_tuple);
+    std::vector<std::string> names = std::get<0>(ftrack_tuple);
+    if(ktrack_list.size() > 0){
+      for(unsigned int j=0; j< ktrack_list.size(); j++){
+        const KalSeedCollection* seedcol = ktrack_list[j];
+        std::cout<<" "<<std::endl;
+        if(seedcol->size() !=0){
+          std::cout<<"KALSEED INFORMATION"<<std::endl;
+          for(unsigned int k = 0; k < seedcol->size(); k++){
+            mu2e::KalSeed kseed = (*seedcol)[k];
+            const std::vector<mu2e::KalSegment> &segments = kseed.segments();
+            if(kseed.loopHelixFit())
+            {
+              auto trajectory=kseed.loopHelixFitTrajectory();
+              auto lh = segments[0].loopHelix();
+              std::string kaltitle = "Loop Helix KalSeed tag : " + names[j] +  '\n'
+                  + " mom " + std::to_string(segments[0].mom()) + "MeV/c"+ '\n'
+                  + " t0 " + std::to_string(lh.t0()) + "ns " +  '\n'
+                  + " lam "  + std::to_string(lh.lam() ) +  '\n'
+                  + " rad "  + std::to_string(lh.rad() ) +  '\n'
+                  + " cx "  + std::to_string(lh.cx() ) +  '\n'
+                  + " cy "  + std::to_string(lh.cy() ) +  '\n'
+                  + " phi0 "  + std::to_string(lh.phi0() );
+                  std::cout<<kaltitle<<std::endl;
+            }
+            else if(kseed.centralHelixFit())
+            {
+              auto ch = segments[0].centralHelix();
+              std::string kaltitle = "Central Helix KalSeed tag : " + names[j] +  '\n'
+                + " mom " + std::to_string(segments[0].mom()) + "MeV/c"+ '\n'
+                + " t0 " + std::to_string(ch.t0()) + "ns " +  '\n'
+                + " tandip " + std::to_string(ch.tanDip() ) +  '\n'
+                + " d0 " + std::to_string(ch.d0() ) +  '\n'
+                + " z0 " + std::to_string(ch.z0() ) +  '\n'
+                + " phi0 " + std::to_string(ch.phi0() ) +  '\n'
+                + " omega " + std::to_string(ch.omega() );;
+                std::cout<<kaltitle<<std::endl;
+            }
+            else if(kseed.kinematicLineFit())
+            {
+               auto kl = segments[0].kinematicLine();
+               std::string kaltitle = "KinematicLine KalSeed tag : " + names[j]
+                  + " mom " + std::to_string(segments[0].mom()) + "MeV/c"+ '\n'
+                  + " t0 " + std::to_string(kl.t0()) + "ns " +  '\n'
+                  + " d0 " + std::to_string(kl.d0() ) +  '\n'
+                  + " z0 " + std::to_string(kl.z0() ) +  '\n'
+                  + " phi0 " + std::to_string(kl.phi0() ) +  '\n'
+                  + " theta " + std::to_string(kl.theta() ) ;
+                  std::cout<<kaltitle<<std::endl;
+            }
+          }
       }
     }
   }
 }
 
 void REveMu2ePrintInfo::PrintCaloInfo(){
-
-  std::cout<<"CALO CLUSTER INFORMATION"<<std::endl;
   std::vector<const CaloClusterCollection*> calocluster_list = std::get<1>(fcalocluster_tuple);
   if(calocluster_list.size()!=0){
     for(unsigned int j = 0; j< calocluster_list.size(); j++){
@@ -99,4 +131,25 @@ void REveMu2ePrintInfo::PrintCaloInfo(){
       }
     }
   }
-}		
+}
+
+void REveMu2ePrintInfo::PrintCRVInfo(){
+  std::cout<<"CRV COINCIDENCE INFORMATION"<<std::endl;
+  std::vector<const CrvCoincidenceClusterCollection*> crvcoin_list = std::get<1>(fcrvcoin_tuple);
+  if(crvcoin_list.size()!=0){
+  for(unsigned int j = 0; j< crvcoin_list.size(); j++){
+      const CrvCoincidenceClusterCollection* crvcoincol = crvcoin_list[j];
+      std::cout<<"  avTime  "<<"        avX       "<<"      avY    "<<"      avZ       "<<std::endl;
+      if(crvcoincol->size() != 0){
+       for(unsigned int i = 0; i < crvcoincol->size(); i++){
+         mu2e::CrvCoincidenceCluster const  &cluster= (*crvcoincol)[i];
+         std::string coin_avtime = std::to_string(cluster.GetAvgHitTime());
+         std::string coin_avX = std::to_string(cluster.GetAvgHitPos().x());
+         std::string coin_avY = std::to_string(cluster.GetAvgHitPos().y());
+         std::string coin_avZ = std::to_string(cluster.GetAvgHitPos().z());
+         std::cout<<"    "<<coin_avtime<<"              "<<coin_avX<<"          "<<coin_avY<<"             "<<coin_avZ<<std::endl;
+         }
+       }
+     }
+  }
+}

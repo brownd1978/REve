@@ -62,6 +62,11 @@
                     "transition": "slide",
                     "clearAggregation": false,
                     "viewName": "GL"
+                },
+                "Table": {
+                    "transition": "slide",
+                    "clearAggregation": false,
+                    "viewName": "EveTable"
                 }
             }
         }

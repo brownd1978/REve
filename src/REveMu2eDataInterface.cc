@@ -879,8 +879,8 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
           //auto lh = trajectory.loopHelix();
           auto lh = segments[0].loopHelix();
           std::string kaltitle = "KalSeed tag : " + names[j] +  '\n'
-              + " mom " + std::to_string(segments[0].mom()) +  '\n'
-              + " MeV/c t0 " + std::to_string(lh.t0()) +  '\n'
+              + " mom " + std::to_string(segments[0].mom()) + "MeV/c"+ '\n'
+              + " t0 " + std::to_string(lh.t0()) + "ns " +  '\n'
               + " lam "  + std::to_string(lh.lam() ) +  '\n'
               + " rad "  + std::to_string(lh.rad() ) +  '\n'
               + " cx "  + std::to_string(lh.cx() ) +  '\n'
@@ -894,8 +894,8 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
         {
           auto ch = segments[0].centralHelix();
           std::string kaltitle = "KalSeed tag : " + names[j] +  '\n'
-            + " mom " + std::to_string(segments[0].mom()) +  '\n'
-            + " MeV/c t0 " + std::to_string(ch.t0()) +  '\n'
+            + " mom " + std::to_string(segments[0].mom()) + "MeV/c"+ '\n'
+                  + " t0 " + std::to_string(ch.t0()) + "ns " +  '\n'
             + " tandip " + std::to_string(ch.tanDip() ) +  '\n'
             + " d0 " + std::to_string(ch.d0() ) +  '\n'
             + " z0 " + std::to_string(ch.z0() ) +  '\n'
@@ -910,8 +910,8 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
         {
            auto kl = segments[0].kinematicLine();
            std::string kaltitle = "KalSeed tag : " + names[j]
-              + " mom " + std::to_string(segments[0].mom())
-              + " MeV/c t0 " + std::to_string(kl.t0()) +  '\n'
+              + " mom " + std::to_string(segments[0].mom()) + "MeV/c"+ '\n'
+                  + " t0 " + std::to_string(kl.t0()) + "ns " +  '\n'
               + " d0 " + std::to_string(kl.d0() ) +  '\n'
               + " z0 " + std::to_string(kl.z0() ) +  '\n'
               + " phi0 " + std::to_string(kl.phi0() ) +  '\n'

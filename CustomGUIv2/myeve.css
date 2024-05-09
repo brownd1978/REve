@@ -24,7 +24,13 @@
 	margin-right: 0;
 	width: 1.6rem;
 }
+.eveTableCellFiltered {
+   color: black;
+}
 
+.eveTableCellUnfiltered {
+   color: lightgray;
+}
 /* adjustment for button inside Summury view items */
 
 .eveSummaryItem .sapMBtn {

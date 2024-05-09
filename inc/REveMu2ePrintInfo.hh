@@ -6,6 +6,7 @@
 #include "Offline/MCDataProducts/inc/MCTrajectoryPoint.hh"
 #include "Offline/MCDataProducts/inc/MCTrajectoryCollection.hh"
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
+#include "Offline/RecoDataProducts/inc/CrvCoincidenceCluster.hh"
 
 #include <iostream>
 #include <vector>
@@ -34,6 +35,11 @@ class REveMu2ePrintInfo : public ROOT::Experimental::REveElement
      std::vector<const mu2e::KalSeedCollection*> track_list;
      std::vector<std::string> track_labels;
      std::tuple<std::vector<std::string>, std::vector<const mu2e::KalSeedCollection*>> ftrack_tuple;
+     
+     const mu2e::CrvCoincidenceClusterCollection* crvcoincol = 0;
+     std::vector<const mu2e::CrvCoincidenceClusterCollection*> crvcoin_list;
+     std::vector<std::string> crvcoin_labels;
+     std::tuple<std::vector<std::string>, std::vector<const mu2e::CrvCoincidenceClusterCollection*>> fcrvcoin_tuple;
 
      void PrintRecoInfo(); //prints everything which is there (tracks, clusters, CRV coin, not hits)
      void PrintMCInfo(); // print MCs and SimParticles
