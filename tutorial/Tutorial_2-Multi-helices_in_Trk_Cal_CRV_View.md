@@ -5,7 +5,7 @@
 A nice way to see the displays speed and usefulness is to look at events with multiple tracks. Try the following:
 
 ```
-mu2e -c nominal_example.fcl TODO
+mu2e -c nominal_example.fcl /exp/mu2e/data/projects/pbar2m/datasets/pbar1b0s51r0000/mcs.mu2e.pbar1b0s51r0000.pbar2m.001210_00000000.art
 ```
 
 Again zoom in and extract information.
