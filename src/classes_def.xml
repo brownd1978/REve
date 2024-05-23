@@ -2,7 +2,6 @@
   <class name="mu2e::REveMu2eMainWindow"/>
   <class name="mu2e::REveMu2eDataInterface"/>
   <class name="mu2e::EventDisplayManager"/>
-  <class name="mu2e::DataCollections"/>
   <class name="mu2e::REveMu2eGeomUtil"/>
   <class name="mu2e::REveMu2eGUI"/>
   <class name="mu2e::REveMu2eDataProduct"/>
