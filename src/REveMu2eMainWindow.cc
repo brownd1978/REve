@@ -1,3 +1,4 @@
+#include "Offline/ConfigTools/inc/SimpleConfig.hh"
 #include "REve/inc/REveMu2eMainWindow.hh"
 
 namespace REX = ROOT::Experimental;

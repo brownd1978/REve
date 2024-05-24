@@ -72,9 +72,15 @@
 #include "Offline/Mu2eInterfaces/inc/Detector.hh"
 #include "Offline/ConfigTools/inc/ConfigFileLookupPolicy.hh"
 
-using namespace std;
-using namespace mu2e;
 
+// Using declarations for code that might or might not be in ROOT::Experimental
+#if NUMERIC_ROOT_VERION>=6300600
+using ROOT::RWebWindowsManager;
+#else
+using ROOT::Experimental::RWebWindowsManager;
+#endif
+
+using namespace std;
 
 namespace mu2e
 {
@@ -436,7 +442,7 @@ namespace mu2e
 
   void REveEventDisplay::setup_eve()
   {
-      REX::RWebWindowsManager::AssignMainThrd();
+      RWebWindowsManager::AssignMainThrd();
       eveMng_ = REX::REveManager::Create();
       //InitGuiInfo()
       fGui = new REveMu2eGUI();

@@ -1,3 +1,5 @@
+#include "Offline/ConfigTools/inc/SimpleConfig.hh"
+#include "Offline/GeometryService/inc/GeomHandle.hh"
 #include "REve/inc/REveMu2eMCInterface.hh"
 using namespace mu2e;
 namespace REX = ROOT::Experimental;

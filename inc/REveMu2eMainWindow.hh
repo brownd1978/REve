@@ -44,7 +44,6 @@
 #include "REve/inc/REveMu2eDataInterface.hh"
 #include "REve/inc/REveMu2eMCInterface.hh"
 #include "REve/inc/REveMu2eGeomUtil.hh"
-#include "Offline/GeometryService/inc/GeomHandle.hh"
 #include "Offline/StoppingTargetGeom/inc/StoppingTarget.hh"
 namespace REX = ROOT::Experimental;
  
