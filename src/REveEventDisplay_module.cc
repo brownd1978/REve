@@ -74,7 +74,7 @@
 
 
 // Using declarations for code that might or might not be in ROOT::Experimental
-#if NUMERIC_ROOT_VERION>=6300600
+#if NUMERIC_ROOT_VERION>=6300400
 using ROOT::RWebWindowsManager;
 #else
 using ROOT::Experimental::RWebWindowsManager;
