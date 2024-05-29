@@ -48,7 +48,7 @@ else:
 
 root_v=int(major)*1000000+int(minor)*10000+int(patch)*100+int(iletter)
 
-numeric_root_version='-DNUMERIC_ROOT_VERION='+str(root_v)
+numeric_root_version='-DNUMERIC_ROOT_VERSION='+str(root_v)
 # end of transformation of ROOT_VERSION
 
 babarlibs = env['BABARLIBS']
