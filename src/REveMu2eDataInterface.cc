@@ -4,6 +4,11 @@
 #include "Offline/GeometryService/inc/GeomHandle.hh"
 #include "Offline/Mu2eKinKal/inc/WireHitState.hh"
 #include "Offline/RecoDataProducts/inc/TrkStrawHitSeed.hh"
+#include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
+#include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
+#include <sstream>
+#include <iomanip>
+
 using namespace mu2e;
 namespace REX = ROOT::Experimental;
 
@@ -866,6 +871,7 @@ template<class KTRAJ> void REveMu2eDataInterface::AddKinKalTrajectory( std::uniq
 }
 
 void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool firstloop, REX::REveElement* &scene, std::tuple<std::vector<std::string>, std::vector<const KalSeedPtrCollection*>> track_tuple, bool plotKalIntersection, bool addTrkHits, double& t1, double& t2){
+  auto const& ptable = GlobalConstantsHandle<ParticleDataList>();
 
   std::vector<const KalSeedPtrCollection*> track_list = std::get<1>(track_tuple);
   std::vector<std::string> names = std::get<0>(track_tuple);
@@ -875,55 +881,66 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
     if(seedcol!=0){
       for(auto const& kseedptr : *seedcol){
         auto const& kseed = *kseedptr;
-        if(plotKalIntersection) AddKalIntersection(kseed, scene);
-        auto const& segments = kseed.segments();
+        unsigned nactive =0;
+        for (auto const& hit : kseed.hits()){ if (hit.strawHitState() >= WireHitState::inactive) ++nactive; }
+        // use t0 to define the reference segment
+        double t0;
+        kseed.t0Segment(t0);
+        std::stringstream ksstream;
         if(kseed.loopHelixFit())
         {
           auto trajectory=kseed.loopHelixFitTrajectory();
-          //auto lh = trajectory.loopHelix();
-          auto lh = segments[0].loopHelix();
-          std::string kaltitle = "KalSeed tag : " + names[j] +  '\n'
-            + " mom " + std::to_string(segments[0].mom()) + "MeV/c"+ '\n'
-            + " t0 " + std::to_string(lh.t0()) + "ns " +  '\n'
-            + " lam "  + std::to_string(lh.lam() ) +  '\n'
-            + " rad "  + std::to_string(lh.rad() ) +  '\n'
-            + " cx "  + std::to_string(lh.cx() ) +  '\n'
-            + " cy "  + std::to_string(lh.cy() ) +  '\n'
-            + " phi0 "  + std::to_string(lh.phi0() )+  '\n'
-            + " track arrival time " + std::to_string(t1);
-          AddKinKalTrajectory<LHPT>(trajectory,scene,j, kaltitle, t1, t2);
+          auto const& lh = trajectory->nearestPiece(t0);
+          auto momvec = lh.momentum3(t0);
+          ksstream << ptable->particle(kseed.particle()).name() <<  " LoopHelix "
+            << std::setw(6) << std::setprecision(3)
+            <<  momvec.R() << " MeV/c, cos(Theta) " << cos(momvec.Theta()) << std::endl
+            << "t0 " << lh.t0() << " ns "
+            << "lam "  << lh.lam() << " mm "
+            << "rad "  << lh.rad() << " mm " << std::endl
+            << "cx "  << lh.cx() << " mm "
+            << "cy "  << lh.cy() << " mm "
+            << "phi0 "  << lh.phi0() << " rad " << std::endl
+            << "N hits " <<  nactive << " fit cons. " << kseed.fitConsistency() << std::endl;
+          //   << "track arrival time " << t1 << std::endl;
+          AddKinKalTrajectory<LHPT>(trajectory,scene,j, ksstream.str(), t1, t2);
           if(addTrkHits) AddTrkStrawHit<LHPT>(kseed, scene, trajectory);
         }
         else if(kseed.centralHelixFit())
         {
-          auto ch = segments[0].centralHelix();
-          std::string kaltitle = "KalSeed tag : " + names[j] +  '\n'
-            + " mom " + std::to_string(segments[0].mom()) + "MeV/c"+ '\n'
-            + " t0 " + std::to_string(ch.t0()) + "ns " +  '\n'
-            + " tandip " + std::to_string(ch.tanDip() ) +  '\n'
-            + " d0 " + std::to_string(ch.d0() ) +  '\n'
-            + " z0 " + std::to_string(ch.z0() ) +  '\n'
-            + " phi0 " + std::to_string(ch.phi0() ) +  '\n'
-            + " omega " + std::to_string(ch.omega() )+  '\n'
-            + " track arrival time " + std::to_string(t1);
           auto trajectory=kseed.centralHelixFitTrajectory();
-          AddKinKalTrajectory<CHPT>(trajectory,scene,j, kaltitle, t1, t2);
+          auto const& ch = trajectory->nearestPiece(t0);
+          auto momvec = ch.momentum3(t0);
+          ksstream << ptable->particle(kseed.particle()).name() << " CentralHelix "
+            << std::setw(6) << std::setprecision(3)
+            <<  momvec.R() << " MeV/c, cos(Theta) " << cos(momvec.Theta()) << std::endl
+            << "t0 " << ch.t0() << " ns "
+            << "tandip " << ch.tanDip( )
+            << "d0 " << ch.d0( ) << " mm " << std::endl
+            << "z0 " << ch.z0( ) << " mm "
+            << "phi0 " << ch.phi0( ) << " rad "
+            << "omega " << ch.omega( )<< " mm^-1 " << std::endl
+            << "track arrival time " << t1;
+          AddKinKalTrajectory<CHPT>(trajectory,scene,j, ksstream.str(), t1, t2);
         }
         else if(kseed.kinematicLineFit())
         {
-          auto kl = segments[0].kinematicLine();
-          std::string kaltitle = "KalSeed tag : " + names[j]
-            + " mom " + std::to_string(segments[0].mom()) + "MeV/c"+ '\n'
-            + " t0 " + std::to_string(kl.t0()) + "ns " +  '\n'
-            + " d0 " + std::to_string(kl.d0() ) +  '\n'
-            + " z0 " + std::to_string(kl.z0() ) +  '\n'
-            + " phi0 " + std::to_string(kl.phi0() ) +  '\n'
-            + " theta " + std::to_string(kl.theta() ) +  '\n'
-            + " track arrival time " + std::to_string(t1);
           auto trajectory=kseed.kinematicLineFitTrajectory();
-          AddKinKalTrajectory<KLPT>(trajectory,scene,j, kaltitle, t1, t2);
+          auto const& kl = trajectory->nearestPiece(t0);
+          auto momvec = kl.momentum3(t0);
+          ksstream << ptable->particle(kseed.particle()).name() << " KinematicLine "
+            << std::setw(6) << std::setprecision(3)
+            <<  momvec.R() << " MeV/c, cos(Theta) " << cos(momvec.Theta()) << std::endl
+            << " t0 " << kl.t0() << " ns "
+            << " d0 " << kl.d0( ) << " mm "
+            << " z0 " << kl.z0( ) << " mm " << std::endl
+            << " phi0 " << kl.phi0( )<< " rad "
+            << " theta " << kl.theta( ) << " rad " <<  std::endl
+            << " track arrival time " << t1;
+          AddKinKalTrajectory<KLPT>(trajectory,scene,j, ksstream.str(), t1, t2);
           if(addTrkHits) AddTrkStrawHit<KLPT>(kseed, scene, trajectory);
         }
+        if(plotKalIntersection) AddKalIntersection(kseed, scene);
       }
     }
   }
