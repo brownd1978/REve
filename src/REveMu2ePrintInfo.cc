@@ -1,4 +1,6 @@
 #include "REve/inc/REveMu2ePrintInfo.hh"
+#include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
+#include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
 
 using namespace mu2e;
 
@@ -54,6 +56,7 @@ void REveMu2ePrintInfo::PrintSimInfo(){
 }
 
 void  REveMu2ePrintInfo::PrintKalInfo(){
+  auto const& ptable = GlobalConstantsHandle<ParticleDataList>();
   std::vector<const KalSeedPtrCollection*> ktrack_list = std::get<1>(ftrack_tuple);
   std::vector<std::string> names = std::get<0>(ftrack_tuple);
   if(ktrack_list.size() > 0){
@@ -64,37 +67,36 @@ void  REveMu2ePrintInfo::PrintKalInfo(){
         std::cout<<"KALSEED INFORMATION"<<std::endl;
         for(auto const& kseedptr : *seedcol) {
           auto const& kseed = *kseedptr;
-          // taking the first segment is arbitrary; this should be configured by intersection type
+          // taking the first segment is arbitrary; this should be configured by intersection type TODO
           auto const& kseg = kseed.segments()[0];
           auto const& momvec = kseg.momentum3();
           std::string kaltitle;
           double d0(0.0);
           // hypo-specific parts
           if(kseed.loopHelixFit()){
-            kaltitle += "Loop Helix KalSeed";
             auto lh = kseg.loopHelix();
             d0 = lh.minAxisDist();
           } else if(kseed.centralHelixFit()){
-            kaltitle += "Central Helix KalSeed";
             auto ch = kseg.centralHelix();
             d0 = ch.d0();
           }else if(kseed.kinematicLineFit()){
-            kaltitle += "KinematicLine KalSeed";
             auto kl = kseg.kinematicLine();
             d0 = kl.d0();
           }
-          kaltitle += " PDG code " + std::to_string(kseed.particle()) + '\n';
-          kaltitle += " mom " + std::to_string(momvec.R()) + "MeV/c, cos(Theta) " + std::to_string(cos(momvec.Theta())) + '\n';
+          kaltitle += " status " + kseed.status().stringRep() + '\n';
+          kaltitle += " Particle " +  ptable->particle(kseed.particle()).name() + " mom " + std::to_string(momvec.R()) + "MeV/c, cos(Theta) " + std::to_string(cos(momvec.Theta())) + '\n';
           kaltitle += " t0 " + std::to_string(kseed.t0Val()) + " ns, d0 " + std::to_string(d0) + " mm " + '\n';
           unsigned nactive =0;
           for (auto const& hit : kseed.hits()){
             if (hit.strawHitState() >= WireHitState::inactive) ++nactive;
           }
           kaltitle += " N active hits " + std::to_string(nactive) + " fit consistency " + std::to_string(kseed.fitConsistency()) + '\n';
-          if(kseed.hasCaloCluster())
+          if(kseed.hasCaloCluster()){
             kaltitle += " calo cluster energy " + std::to_string(kseed.caloCluster()->energyDep()) + '\n';
-          else
-            kaltitle += " No calo cluster" + '\n';
+          }else {
+            kaltitle += std::string(" no calo cluster ") + '\n';
+          }
+
           std::cout<<kaltitle<<std::endl;
         }
       }
