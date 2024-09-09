@@ -58,7 +58,7 @@ services.TFileService.fileName: "/dev/null"
 #
 # to display a selected set of events, #include this file with a list of eventid triplets: ie:
 #
-##include "REve/nominal_example.fcl"
+##include "REve/examples/nominal_example.fcl"
 #physics.filters.eidsel.idsToMatch : [
 #  "1202:636:337031",
 #  "1202:648:370322" ]
