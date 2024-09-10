@@ -460,6 +460,11 @@ void REveMu2eMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* 
     //  std::cout<<" time through fill mctraj"<<std::chrono::duration<double, std::milli>(end1 - start1).count()<<" ms "<<std::endl;
   }
 
+  std::vector<const SurfaceStepCollection*> surfstep_list = std::get<1>(data.surfstep_tuple);
+  if(drawOpts.addSurfaceSteps and surfstep_list.size() !=0){
+    pass_mc->AddSurfaceStepCollection(eveMng, firstLoop,  data.surfstep_tuple, eventScene, particleIds, geomOpts.extracted);
+  }
+
   // ... project these events onto 2D geometry:
   projectEvents(eveMng);
 }

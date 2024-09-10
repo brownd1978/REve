@@ -10,6 +10,7 @@
 #include "Offline/RecoDataProducts/inc/CosmicTrackSeed.hh"
 #include "Offline/MCDataProducts/inc/MCTrajectoryPoint.hh"
 #include "Offline/MCDataProducts/inc/MCTrajectoryCollection.hh"
+#include "Offline/MCDataProducts/inc/SurfaceStep.hh"
 //Art/FCL:
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Principal/Run.h"
@@ -43,6 +44,7 @@ namespace mu2e{
       const mu2e::KalSeedPtrCollection* kalSeedcol = 0;
       const mu2e::CosmicTrackSeedCollection* CosmicTrackSeedcol = 0;
       const mu2e::MCTrajectoryCollection *mctrajcol = 0;
+      const mu2e::SurfaceStepCollection *surfstepcol = 0;
       //lists:
       std::vector<const mu2e::HelixSeedCollection*> helix_list;
       std::vector<const mu2e::KalSeedPtrCollection*> track_list;
@@ -53,12 +55,14 @@ namespace mu2e{
       std::vector<const mu2e::CrvCoincidenceClusterCollection*> crvcoin_list;
       std::vector<const mu2e::TimeClusterCollection*> timecluster_list;
       std::vector<const mu2e::MCTrajectoryCollection*> mctrack_list;
+      std::vector<const mu2e::SurfaceStepCollection*> surfstep_list;
       //Input Tag Labels:
       std::vector<std::string> helix_labels;
       std::vector<std::string> track_labels;
       std::vector<std::string> calodigi_labels;
       std::vector<std::string> calocluster_labels;
       std::vector<std::string> mctrack_labels;
+      std::vector<std::string> surfstep_labels;
       std::vector<std::string> combohit_labels;
       std::vector<std::string> crvpulse_labels;
       std::vector<std::string> crvcoin_labels;
@@ -73,7 +77,7 @@ namespace mu2e{
       std::tuple<std::vector<std::string>, std::vector<const mu2e::CrvCoincidenceClusterCollection*>> crvcoin_tuple;
       std::tuple<std::vector<std::string>, std::vector<const mu2e::TimeClusterCollection*>> timecluster_tuple;
       std::tuple<std::vector<std::string>, std::vector<const mu2e::MCTrajectoryCollection*>> mctrack_tuple;
-
+      std::tuple<std::vector<std::string>, std::vector<const mu2e::SurfaceStepCollection*>> surfstep_tuple;
 
       void Reset(){
         this->helix_list.clear();

@@ -46,15 +46,15 @@
 #include "REve/inc/REveMu2eGeomUtil.hh"
 #include "Offline/StoppingTargetGeom/inc/StoppingTarget.hh"
 namespace REX = ROOT::Experimental;
- 
+
 namespace mu2e {
-    
-    
+
+
   struct GeomOptions{
       // geom options
       bool showCRV = false;
       bool showPS = false;
-      bool showTS = false; 
+      bool showTS = false;
       bool showDS = false;
       bool show2D = true;
       bool caloVST = false;
@@ -66,7 +66,7 @@ namespace mu2e {
       bool showCaloCrystals = true;
       bool showEM = false;
       GeomOptions(){};
-      GeomOptions(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool calo, bool trk, bool crys, bool em) 
+      GeomOptions(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool calo, bool trk, bool crys, bool em)
       : showCRV(crv), showPS(ps), showTS(ts), showDS(ds), show2D(twodim), caloVST(cVST), showST(st), extracted(ext), showSTM(stm), showCalo(calo), showTracker(trk), showCaloCrystals(crys), showEM(em) {};
       void fill(bool crv, bool ps, bool ts, bool ds, bool twodim, bool cVST, bool st, bool ext, bool stm, bool cal, bool trk, bool crys, bool em) {
         showCRV = (crv);
@@ -100,40 +100,41 @@ namespace mu2e {
         <<"************************ "<<std::endl;
       }
      };
-  
+
   struct KinKalOptions{
     bool addKalInter = false;
     bool addTrkStrawHits = false;
     bool addTrkCaloHits = false;
     KinKalOptions(){};
-    KinKalOptions(bool kalinter, bool trkstrawhits, bool trkcalohits) 
+    KinKalOptions(bool kalinter, bool trkstrawhits, bool trkcalohits)
       : addKalInter(kalinter), addTrkStrawHits(trkstrawhits), addTrkCaloHits(trkcalohits){};
-      
+
   };
-  
-  
+
+
   struct DrawOptions{
       // data options
       bool addCosmicTracks = false;
       bool addHelices = false;
       bool addTracks = false;
-      bool addCaloDigis = false; 
-      bool addClusters = false; 
+      bool addCaloDigis = false;
+      bool addClusters = false;
       bool addComboHits = false;
       bool addCRVInfo = false;
       bool addCRVClusters = false;
       bool addTimeClusters = false;
       bool addTrkHits = false; // legacy
       bool addMCTrajectories = false;
+      bool addSurfaceSteps = false;
       bool addTrkErrBar = true;
       bool addCrystalDraw = false;
       bool addCRVBars = true;
       bool useBTrk = false;
       DrawOptions(){};
-      DrawOptions(bool cosmictracks, bool helices, bool tracks, bool calodigis, bool clusters, bool combohits, bool crv, bool crvclu, bool timeclusters, bool trkhits, bool mctraj, bool errbar, bool crys, bool crvbars, bool usebtrk) 
-      : addCosmicTracks(cosmictracks), addHelices(helices), addTracks(tracks), addCaloDigis(calodigis), addClusters(clusters), addComboHits(combohits), addCRVInfo(crv), addCRVClusters(crvclu), addTimeClusters(timeclusters), addTrkHits(trkhits), addMCTrajectories(mctraj), addTrkErrBar(errbar), addCrystalDraw(crys), addCRVBars(crvbars), useBTrk(usebtrk) {};
+      DrawOptions(bool cosmictracks, bool helices, bool tracks, bool calodigis, bool clusters, bool combohits, bool crv, bool crvclu, bool timeclusters, bool trkhits, bool mctraj, bool surfsteps, bool errbar, bool crys, bool crvbars, bool usebtrk)
+      : addCosmicTracks(cosmictracks), addHelices(helices), addTracks(tracks), addCaloDigis(calodigis), addClusters(clusters), addComboHits(combohits), addCRVInfo(crv), addCRVClusters(crvclu), addTimeClusters(timeclusters), addTrkHits(trkhits), addMCTrajectories(mctraj), addSurfaceSteps(surfsteps), addTrkErrBar(errbar), addCrystalDraw(crys), addCRVBars(crvbars), useBTrk(usebtrk) {};
      };
-     
+
     class REveMu2eMainWindow  : public REX::REveElement {
 
         public :
@@ -147,7 +148,7 @@ namespace mu2e {
             void changeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int j, bool crys1, bool crys2, std::string name);
             void showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, std::vector<double> shift, bool print, bool single, int color);
             void changeNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, std::vector<double> shift, bool print, bool single);
-            void GeomDrawer(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* bholder, REX::REveElement* trholder, REX::REveElement* cholder,REX::REveElement* crholder, REX::REveElement* vholder, REX::REveElement* tholder,int maxlevel, int level, GeomOptions geomOpts); 
+            void GeomDrawer(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* bholder, REX::REveElement* trholder, REX::REveElement* cholder,REX::REveElement* crholder, REX::REveElement* vholder, REX::REveElement* tholder,int maxlevel, int level, GeomOptions geomOpts);
             void makeGeometryScene(REX::REveManager *eveMng,  GeomOptions geomOpts, std::string filename);
             void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop,  bool firstLoopCalo, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts, KinKalOptions KKOpts);
             void changeEveGeoShape(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level);
@@ -156,7 +157,7 @@ namespace mu2e {
             void projectScenes(REX::REveManager *eveMng, bool geomp, bool eventp);
             void projectEvents(REX::REveManager *eveMng);
             void maketable(REX::REveManager *eveMng);
-            
+
             REX::REveProjectionManager *mngTrackerXY = nullptr;
             REX::REveProjectionManager *mngXYCaloDisk0 = nullptr;
             REX::REveProjectionManager *mngXYCaloDisk1 = nullptr;
@@ -169,7 +170,7 @@ namespace mu2e {
             REX::REveViewer *XYCaloDisk0View = nullptr;
             REX::REveViewer *XYCaloDisk1View = nullptr;
             REX::REveViewer *rhoZView = nullptr;
-            
+
             #else
                 ClassDef(REveMu2eMainWindow, 0);
             #endif

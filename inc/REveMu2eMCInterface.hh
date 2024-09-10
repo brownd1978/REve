@@ -10,6 +10,7 @@
 #include "Offline/DataProducts/inc/GenVector.hh"
 #include "Offline/MCDataProducts/inc/MCTrajectoryPoint.hh"
 #include "Offline/MCDataProducts/inc/MCTrajectoryCollection.hh"
+#include "Offline/MCDataProducts/inc/SurfaceStep.hh"
 #include <TApplication.h>
 #include <TEvePad.h>
 #include <TObject.h>
@@ -24,6 +25,8 @@ namespace REX = ROOT::Experimental;
 namespace mu2e{
     class REveMu2eMCInterface {
         public:
+          static int const mstyle = 20 ;
+          static int const msize = 5;
           explicit REveMu2eMCInterface(){};
           explicit REveMu2eMCInterface(const REveMu2eMCInterface &);
           REveMu2eMCInterface& operator=(const REveMu2eMCInterface &);
@@ -35,10 +38,11 @@ namespace mu2e{
           void SetLineColorPID(int PDGCode,REX::REveLine *line);
           void toExtracted(CLHEP::Hep3Vector& Pos);
           void AddMCTrajectoryCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const MCTrajectoryCollection*>> track_tuple, REX::REveElement* &scene, std::vector<int> particles, bool extracted );
+          void AddSurfaceStepCollection(REX::REveManager *&eveMng,bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const SurfaceStepCollection*>> track_tuple, REX::REveElement* &scene, std::vector<int> particles, bool extracted );
           #endif
           ClassDef(REveMu2eMCInterface, 0);
-      }; 
+      };
 }
 
 
-#endif 
+#endif
