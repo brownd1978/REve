@@ -193,11 +193,11 @@ void REveMu2eDataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firs
 
         ps1->SetMarkerColor(color);
         ps1->SetMarkerStyle(REveMu2eDataInterface::mstyle);
-        ps1->SetMarkerSize(REveMu2eDataInterface::mstyle);
+        ps1->SetMarkerSize(REveMu2eDataInterface::msize);
 
         ps2->SetMarkerColor(color);
         ps2->SetMarkerStyle(REveMu2eDataInterface::mstyle);
-        ps2->SetMarkerSize(REveMu2eDataInterface::mstyle);
+        ps2->SetMarkerSize(REveMu2eDataInterface::msize);
 
         // Add to REve world
         scene->AddElement(ps1);
@@ -700,23 +700,27 @@ void REveMu2eDataInterface::AddHelixSeedCollection(REX::REveManager *&eveMng,boo
 
 void REveMu2eDataInterface::AddKalIntersection(KalSeed const& kalseed, REX::REveElement* &scene){
   //Plot intersecitons:
-  std::vector<mu2e::KalIntersection> inters = kalseed.intersections();
+  std::vector<mu2e::KalIntersection> const& inters = kalseed.intersections();
 
-  for(unsigned int i = 0; i < inters.size(); i++){
-    KinKal::VEC3 posKI = inters[i].position3();
+  for(auto const& inter : inters){
+    KinKal::VEC3 posKI = inter.position3();
     std::string title = "KalIntersection position : x "  + std::to_string(posKI.x())  +  '\n'
       + " y " + std::to_string(posKI.y())  +  '\n'
       + " z " + std::to_string(posKI.z())  +  '\n'
-      + " time :" + std::to_string(inters[i].time()) +  '\n'
-      + " mom : "
-      + std::to_string(inters[i].mom())  +
+      + " time :" + std::to_string(inter.time()) +  '\n'
+      + " mom , dmom : "
+      + std::to_string(inter.mom()) + " , " + std::to_string(inter.dMom())  +
       + "MeV/c " + '\n'
-      + "Surface ID: " + std::to_string(inters[i].surfaceId().index()) ;
+      + "Surface " +  inter.surfaceId().name();
     auto interpoint = new REX::REvePointSet("KalIntersections", title,1);
 
     interpoint->SetMarkerStyle(REveMu2eDataInterface::mstyle);
     interpoint->SetMarkerSize(REveMu2eDataInterface::msize);
-    interpoint->SetMarkerColor(kViolet);
+    if(fabs(inter.dMom()) > 0.0){
+      interpoint->SetMarkerColor(kViolet);// color material intersections differently from virtual surface intersections
+    } else {
+      interpoint->SetMarkerColor(kYellow);
+    }
     interpoint->SetNextPoint(pointmmTocm(posKI.x()),pointmmTocm(posKI.y()) ,pointmmTocm(posKI.z()));
     if(interpoint->GetSize() !=0 ) scene->AddElement(interpoint);
   }
@@ -727,7 +731,7 @@ template<class KTRAJc> void REveMu2eDataInterface::AddTrkStrawHit(KalSeed const&
   std::cout<<"[REveMu2eDataInterface::AddTrkStrawHit]"<<std::endl;
   //Plot trk straw hits
   mu2e::GeomHandle<mu2e::Tracker> tracker;
-  const std::vector<mu2e::TrkStrawHitSeed> &hits = kalseed.hits();
+  std::vector<mu2e::TrkStrawHitSeed> const& hits = kalseed.hits();
 
   for(unsigned int i = 0; i < hits.size(); i++){
     const mu2e::TrkStrawHitSeed &tshs = hits.at(i);
@@ -761,9 +765,9 @@ template<class KTRAJc> void REveMu2eDataInterface::AddTrkStrawHit(KalSeed const&
       line->SetNextPoint(pointmmTocm(end1.x()),pointmmTocm(end1.y()) ,pointmmTocm(end1.z()));
       line->SetNextPoint(pointmmTocm(end2.x()),pointmmTocm(end2.y()) ,pointmmTocm(end2.z()));
       //goes along that same line (ddir)
-      std::string title = "TrkStrawHitSeed : x "  + std::to_string(pointmmTocm(tshspos.x()))  +  '\n'
-        + " y " + std::to_string(pointmmTocm(tshspos.y()))  +  '\n'
-        + " z " + std::to_string(pointmmTocm(tshspos.z()))  +  '\n'
+      std::string title = "TrkStrawHitSeed : x "  + std::to_string(tshspos.x())  +  '\n'
+        + " y " + std::to_string(tshspos.y())  +  '\n'
+        + " z " + std::to_string(tshspos.z())  +  '\n'
         + " time :" + std::to_string(tshs.hitTime())+  '\n'
         + " energyDep :" + std::to_string(tshs.energyDep())+ "MeV";
       auto trkstrawpoint = new REX::REvePointSet("TrkStrawHitSeed", title,1);
@@ -922,6 +926,7 @@ void REveMu2eDataInterface::FillKinKalTrajectory(REX::REveManager *&eveMng, bool
             << "omega " << ch.omega( )<< " mm^-1 " << std::endl
             << "track arrival time " << t1;
           AddKinKalTrajectory<CHPT>(trajectory,scene,j, ksstream.str(), t1, t2);
+          if(addTrkHits) AddTrkStrawHit<CHPT>(kseed, scene, trajectory);
         }
         else if(kseed.kinematicLineFit())
         {
@@ -955,14 +960,9 @@ void REveMu2eDataInterface::AddKalSeedPtrCollection(REX::REveManager *&eveMng,bo
 
   for(unsigned int j=0; j< track_list.size(); j++){
     const KalSeedPtrCollection* seedcol = track_list[j];
-    //bool useKinKal = names[j].find("KK") != std::string::npos;
-    //if(useKinKal) {
-    //  FillKinKalTrajectory(eveMng, firstloop, scene,  track_tuple);
-    //}
     if(seedcol!=0){
       for(unsigned int k = 0; k < seedcol->size(); k = k + 20){
         auto const& kseed = *(*seedcol)[k];
-        //if(plotKalIntersection) AddKalIntersection(kseed, scene);
         auto const&segments = kseed.segments();
         unsigned int nSegments=segments.size();
 

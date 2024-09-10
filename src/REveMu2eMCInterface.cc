@@ -145,5 +145,43 @@ void REveMu2eMCInterface::AddMCTrajectoryCollection(REX::REveManager *&eveMng, b
   }
 }
 
+void REveMu2eMCInterface::AddSurfaceStepCollection(REX::REveManager *&eveMng, bool firstloop,  std::tuple<std::vector<std::string>, std::vector<const SurfaceStepCollection *>> surfstep_tuple, REX::REveElement* &scene, std::vector<int> particleIds, bool extracted){
 
+  std::string drawfilename("REve/config/drawutils.txt");
+  SimpleConfig drawconfig(drawfilename);
 
+  // eEtract the track and input tag:
+  std::vector<const SurfaceStepCollection*> surfstep_list = std::get<1>(surfstep_tuple);
+  std::vector<std::string> names = std::get<0>(surfstep_tuple);
+
+  // Loop over surface steps
+  for(unsigned int j=0; j< surfstep_list.size(); j++){
+    const SurfaceStepCollection* surfstepcol = surfstep_list[j];
+    if(surfstepcol!=0){
+      for( auto const& surfstep : *surfstepcol) {
+        // Check user defined list of particles to plot
+        auto pdgid = surfstep.simParticle()->pdgId();
+        int x = Contains(particleIds,pdgid);
+        auto midpos = surfstep.midPosition();
+        if(x == 1){
+          // Make label
+          std::string momentum = std::to_string(surfstep.momentum().R());
+          std::string edep = std::to_string(surfstep.energyDeposit());
+          std::string mctitle = " SurfaceStep on " +  surfstep.surfaceId().name() + '\n'
+            + " x "  + std::to_string(midpos.X())
+            + " y " + std::to_string(midpos.Y())
+            + " z " + std::to_string(midpos.Z())
+            + " time :" + std::to_string(surfstep.time())+  '\n'
+            + " momentum " + momentum + " MeV/c, energy loss = " + edep + "MeV";
+          // add point
+          auto surfpoint = new REX::REvePointSet("SurfaceStep",mctitle,1);
+          surfpoint->SetMarkerStyle(REveMu2eMCInterface::mstyle);
+          surfpoint->SetMarkerSize(REveMu2eMCInterface::msize);
+          surfpoint->SetMarkerColor(kBlack);
+          surfpoint->SetNextPoint(pointmmTocm(midpos.X()),pointmmTocm(midpos.Y()) ,pointmmTocm(midpos.Z()));
+          scene->AddElement(surfpoint);
+        }
+      }
+    }
+  }
+}

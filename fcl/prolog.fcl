@@ -32,6 +32,7 @@ REveEventDisplay : {
       HelixSeedCollection : ["MHFinderDe"]
       CosmicTrackSeedCollection : "CosmicTrackFinderTimeFit"
       MCTrajectoryCollection :  ["compressRecoMCs"]
+      SurfaceStepCollection :  ["compressRecoMCs"]
       addHits : false
       addCrvHits : false
       addCrvClusters : false
@@ -42,6 +43,7 @@ REveEventDisplay : {
       addKalSeeds : false
       addCosmicTrackSeeds : false
       addMCTraj : true
+      addSurfSteps : true
       FillAll : false
     }
     particles :   [11,13,2212,2112,211,22,212]

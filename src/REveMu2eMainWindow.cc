@@ -26,7 +26,7 @@ double caloz0 = CConfig.getDouble("calorimeter.caloMotherZ0");//11842;
 double caloz1 = CConfig.getDouble("calorimeter.caloMotherZ1");//13220;
 double dz = (caloz1 - caloz0)/2 + caloz0 - trackerz0;
 
-SimpleConfig SConfig("Offline/Mu2eG4/geom/stoppingTarget_CD3C_34foils.txt");
+SimpleConfig SConfig("Offline/Mu2eG4/geom/stoppingTargetHoles_v02.txt");
 double STz0 = SConfig.getDouble("stoppingTarget.z0InMu2e");
 double STz = STz0 - motherhalflength;//4236
 
@@ -306,7 +306,7 @@ void REveMu2eMainWindow::GeomDrawer(TGeoNode* node, REX::REveTrans& trans, REX::
     static std::vector <std::string> substrings_stoppingtarget  {"TargetFoil"};
     shift.at(0) = 0;
     shift.at(1) = 0;
-    shift.at(2) = -1*STz/10;
+    shift.at(2) = -1*STz/10 - 6.5; // temporary kludge
     for(auto& i: substrings_stoppingtarget){
       showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("BLColor"));
     }
@@ -315,7 +315,7 @@ void REveMu2eMainWindow::GeomDrawer(TGeoNode* node, REX::REveTrans& trans, REX::
     static std::vector <std::string> substrings_stoppingtarget  {"protonabs"};
     shift.at(0) = 0;
     shift.at(1) = 0;
-    shift.at(2) = -1*STz/10;
+    shift.at(2) = -1*STz/10 + 32; // temporary kludge
     for(auto& i: substrings_stoppingtarget){
       showNodesByName(node,i,kFALSE, 0, trans, targetholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("BLColor"));
     }
@@ -458,6 +458,11 @@ void REveMu2eMainWindow::showEvents(REX::REveManager *eveMng, REX::REveElement* 
     pass_mc->AddMCTrajectoryCollection(eveMng, firstLoop,  data.mctrack_tuple, eventScene, particleIds, geomOpts.extracted);
     //auto end1 = std::chrono::high_resolution_clock::now();
     //  std::cout<<" time through fill mctraj"<<std::chrono::duration<double, std::milli>(end1 - start1).count()<<" ms "<<std::endl;
+  }
+
+  std::vector<const SurfaceStepCollection*> surfstep_list = std::get<1>(data.surfstep_tuple);
+  if(drawOpts.addSurfaceSteps and surfstep_list.size() !=0){
+    pass_mc->AddSurfaceStepCollection(eveMng, firstLoop,  data.surfstep_tuple, eventScene, particleIds, geomOpts.extracted);
   }
 
   // ... project these events onto 2D geometry:

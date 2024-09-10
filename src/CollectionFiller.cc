@@ -18,6 +18,7 @@ namespace mu2e{
     kalSeedTag_(conf.kalSeedTag()),
     cosmicTrackSeedTag_(conf.cosmicTrackSeedTag()),
     MCTrajTag_(conf.MCTrajTag()),
+    SurfStepsTag_(conf.SurfStepsTag()),
     addHits_(conf.addHits()),
     addCrvHits_(conf.addCrvHits()),
     addCrvClusters_(conf.addCrvClusters()),
@@ -29,6 +30,7 @@ namespace mu2e{
     addKalSeeds_(conf.addKalSeeds()),
     addCosmicTrackSeeds_(conf.addCosmicTrackSeeds()),
     addMCTraj_(conf.addMCTraj()),
+    addSurfSteps_(conf.addSurfSteps()),
     FillAll_(conf.FillAll())
   {}
 
@@ -168,6 +170,22 @@ namespace mu2e{
 
       }
       data.mctrack_tuple = std::make_tuple(data.mctrack_labels,data.mctrack_list);
+
+    }
+
+    if(FillAll_ or (CollectionName==SurfaceSteps)){
+
+      for(const auto &tag : SurfStepsTag_){
+        auto chH = evt.getValidHandle<mu2e::SurfaceStepCollection>(tag);
+        data.surfstepcol = chH.product();
+        data.surfstep_list.push_back(data.surfstepcol);
+
+        std::string name = TurnNameToString(tag);
+        std::cout<<"Plotting SurfaceStep Instance: "<<name<<std::endl;
+        data.surfstep_labels.push_back(name);
+
+      }
+      data.surfstep_tuple = std::make_tuple(data.surfstep_labels,data.surfstep_list);
 
     }
 
