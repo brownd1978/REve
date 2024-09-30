@@ -6,7 +6,7 @@ int CRYtrans  = 90;
 int CRVtrans  = 98;
 int BLtrans  = 90;//BL = beamline elements
 
-int maxlevel = 8; //8=calocrystals
+int maxlevel = 100; //8=calocrystals, moved to 10 for PA
 int level = 0;
 int maxSID = 20000;
 int maxStrawID = 70;
@@ -21,4 +21,4 @@ int CRVBarColor = 632;
 int RecoTrackColor = 600; //kGreen
 int CRVHitColor = 600; //kBlue
 int TrkHitColor = 632; //kBlue
-int  TrkNoHitColor = 600; //kBlue
+int TrkNoHitColor = 600; //kBlue
