@@ -5,7 +5,6 @@ namespace REX = ROOT::Experimental;
 using namespace std;
 using namespace mu2e;
 
-
 double x_d0 = 0; double x_d1 = 0; double x_cal = 0;double x_trk = 0;double x_ds3 = 0;double x_hall = 0;double x_world = 0;double x_st = 0; double x_ds2 = 0; double x_pa =0; 
 double y_d0 = 0; double y_d1 = 0; double y_cal  = 0;double y_trk = 0;double y_ds3 = 0;double y_hall = 0;double y_world = 0;double y_st = 0; double y_ds2 = 0; double y_pa =0;
 double z_d0 = 0; double z_d1 = 0; double z_cal = 0;double z_trk = 0;double z_ds3 = 0;double z_hall = 0;double z_world = 0;double z_st = 0; double z_ds2 = 0; double z_pa =0;
@@ -19,12 +18,7 @@ std::string drawoptfilename("REve/config/drawutils.txt");
 SimpleConfig geomconfig(calfilename);
 SimpleConfig drawconfigf(drawoptfilename);
 
-
-SimpleConfig TConfig("Offline/Mu2eG4/geom/tracker_v6.txt");
-SimpleConfig ExConfig("Offline/Mu2eG4/geom/geom_common_extracted.txt");
-double trackerz0_extracted = ExConfig.getDouble("tracker.z0");//24175
-double motherhalflength = TConfig.getDouble("tracker.mother.halfLength",motherhalflength);
-
+double trackerz0_extracted = 24175; //FIXME - will do in the next roun!
 
 void REveMu2eMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2, std::string name, int color)
 {
