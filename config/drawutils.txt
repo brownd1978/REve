@@ -6,7 +6,7 @@ int CRYtrans  = 90;
 int CRVtrans  = 98;
 int BLtrans  = 90;//BL = beamline elements
 
-int maxlevel = 100; //8=calocrystals, moved to 10 for PA
+int maxlevel = 8; //8=calocrystals, moved to 10 for PA
 int level = 0;
 int maxSID = 20000;
 int maxStrawID = 70;

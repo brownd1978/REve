@@ -5,6 +5,7 @@ namespace REX = ROOT::Experimental;
 using namespace std;
 using namespace mu2e;
 
+//positions of components for DS component offsets
 double x_d0 = 0; double x_d1 = 0; double x_cal = 0;double x_trk = 0;double x_ds3 = 0;double x_hall = 0;double x_world = 0;double x_st = 0; double x_ds2 = 0; double x_pa =0; 
 double y_d0 = 0; double y_d1 = 0; double y_cal  = 0;double y_trk = 0;double y_ds3 = 0;double y_hall = 0;double y_world = 0;double y_st = 0; double y_ds2 = 0; double y_pa =0;
 double z_d0 = 0; double z_d1 = 0; double z_cal = 0;double z_trk = 0;double z_ds3 = 0;double z_hall = 0;double z_world = 0;double z_st = 0; double z_ds2 = 0; double z_pa =0;
@@ -12,13 +13,11 @@ double x_crv = 0 ; double y_crv = 0 ; double z_crv = 0;  double z_crv_u = 0;  do
 double nCrystals = 674;
 double FrontTracker_gdmltag;
 
-// Get geom information from configs:
-std::string calfilename("REve/config/geomutils.txt");
+// Get geom information from Event Display configs:
 std::string drawoptfilename("REve/config/drawutils.txt");
-SimpleConfig geomconfig(calfilename);
 SimpleConfig drawconfigf(drawoptfilename);
 
-double trackerz0_extracted = 24175; //FIXME - will do in the next roun!
+double trackerz0_extracted = 24175; //
 
 void REveMu2eMainWindow::makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int val, bool crystal1, bool crystal2, std::string name, int color)
 {
@@ -214,15 +213,48 @@ void REveMu2eMainWindow::getOffsets(TGeoNode* n,const std::string& str, REX::REv
   }
 }
 
+void REveMu2eMainWindow::GeomDrawerSol(TGeoNode* node, REX::REveTrans& trans, REX::REveElement* beamlineholder, int maxlevel, int level, GeomOptions geomOpt, std::vector<std::pair<std::string, std::vector<float>>>& offsets) {
+
+  double x_sol = 0; double y_sol = 0; double z_sol = 0; 
+  
+  for(unsigned int i = 0; i < offsets.size(); i++){
+      if(offsets[i].first.find("DS3Vacuum0") != string::npos)      {
+        x_sol = offsets[i].second[0];
+        y_sol  = offsets[i].second[1];
+        z_sol = offsets[i].second[2];
+      }
+      }
+      std::vector<double> shift;
+
+      shift.push_back(-1*x_sol);
+      shift.push_back(-1*y_sol);
+      shift.push_back(z_sol);
+      // set tracker to be central in the frame (shift to 0,0,0)
+      if(geomOpt.showPS){
+        static std::vector <std::string> substring_ps  {"PSVacuum0"};
+        for(auto& i: substring_ps){
+          showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("BLColor"));
+        }
+      }
+      if(geomOpt.showTS){
+        static std::vector <std::string> substring_ts  {"TS1Vacuum0","TS2Vacuum0","TS3Vacuum0","TS4Vacuum0","TS5Vacuum0"};
+        for(auto& i: substring_ts){
+          showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("BLColor"));
+        }
+      }
+      if(geomOpt.showDS){
+        static std::vector <std::string> substring_ds  {"DS1Vacuum0","DS2Vacuum0","DS3Vacuum0"};
+        for(auto& i: substring_ds){
+          showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("BLColor"));
+        }
+      }
+  }
+
 void REveMu2eMainWindow::GeomDrawerDS(TGeoNode* node, REX::REveTrans& trans, REX::REveElement* beamlineholder, REX::REveElement* trackerholder, REX::REveElement* caloholder, REX::REveElement* crystalsholder, REX::REveElement* crvholder, REX::REveElement* targetholder, int maxlevel, int level, GeomOptions geomOpt, std::vector<std::pair<std::string, std::vector<float>>>& offsets){
-  static std::vector <std::string> substrings {"*"};
-    for(auto& i: substrings){
-      getOffsets(node, i, trans,  maxlevel, level, offsets);
-    }
 
     for(unsigned int i = 0; i < offsets.size(); i++){
       if(offsets[i].first.find("World") != string::npos){
-        x_hall = offsets[i].second[0];
+        x_world = offsets[i].second[0];
         y_world = offsets[i].second[1];
         z_world = offsets[i].second[2];
       }
@@ -505,7 +537,15 @@ void REveMu2eMainWindow::makeGeometryScene(REX::REveManager *eveMng, GeomOptions
 
     REX::REveTrans trans;
     //GeomDrawer(topnode, trans, beamlineholder, trackerholder, caloholder, crystalsholder, crvholder, targetholder, drawconfigf.getInt("maxlevel"),drawconfigf.getInt("level"), geomOpt);
+    static std::vector <std::string> substrings {"*"};
+    for(auto& i: substrings){
+      getOffsets(topnode, i, trans, drawconfigf.getInt("maxlevel"),drawconfigf.getInt("level"), offsets);
+    }
+
     GeomDrawerDS(topnode, trans, beamlineholder, trackerholder, caloholder, crystalsholder, crvholder, targetholder, drawconfigf.getInt("maxlevel"),drawconfigf.getInt("level"), geomOpt, offsets);
+    if(geomOpt.showPS or geomOpt.showTS or geomOpt.showDS){
+      GeomDrawerSol(topnode, trans, beamlineholder, drawconfigf.getInt("maxlevel"),drawconfigf.getInt("level"), geomOpt, offsets);
+    }
   }
 
   try {
