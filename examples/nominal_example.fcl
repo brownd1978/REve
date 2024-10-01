@@ -22,7 +22,7 @@ physics.analyzers.REveEventDisplay.showCRV : true
 physics.analyzers.REveEventDisplay.showPS : false
 physics.analyzers.REveEventDisplay.showTS : false
 physics.analyzers.REveEventDisplay.showDS : false
-physics.analyzers.REveEventDisplay.addCRVBars : false # currently crashing
+physics.analyzers.REveEventDisplay.addCRVBars : true # currently crashing
 physics.analyzers.REveEventDisplay.addKalInter : true
 physics.analyzers.REveEventDisplay.addCrystalHits : true
 physics.analyzers.REveEventDisplay.filler.addHelixSeeds : false
