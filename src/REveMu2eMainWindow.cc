@@ -79,8 +79,8 @@ void REveMu2eMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bo
       TGeoMatrix     *gm = n->GetMatrix();
       const Double_t *rm = gm->GetRotationMatrix();
       const Double_t *tv = gm->GetTranslation();
-      REX::REveTrans t;
-      t(1,1) = rm[0]; t(1,2) = rm[1]; t(1,3) = rm[2];
+      REX::REveTrans t;// NOTE: starts index at "1" whereas the matrices are indexed from 0
+      t(1,1) = rm[0]; t(1,2) = rm[1]; t(1,3) = rm[2]; 
       t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
       t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
       t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
@@ -98,7 +98,7 @@ void REveMu2eMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bo
         TGeoMatrix     *gm = n->GetMatrix();
         const Double_t *rm = gm->GetRotationMatrix();
         const Double_t *tv = gm->GetTranslation();
-        REX::REveTrans t;
+        REX::REveTrans t;// NOTE: starts index at "1" whereas the matrices are indexed from 0
         t(1,1) = rm[0]; t(1,2) = rm[1]; t(1,3) = rm[2];
         t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
         t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
@@ -191,7 +191,7 @@ void REveMu2eMainWindow::getOffsets(TGeoNode* n,const std::string& str, REX::REv
         TGeoMatrix     *gm = n->GetMatrix();
         const Double_t *rm = gm->GetRotationMatrix();
         const Double_t *tv = gm->GetTranslation();
-        REX::REveTrans t;
+        REX::REveTrans t;// NOTE: starts index at "1" whereas the matrices are indexed from 0
         t(1,1) = rm[0]; t(1,2) = rm[1]; t(1,3) = rm[2];
         t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
         t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
