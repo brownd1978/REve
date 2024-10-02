@@ -6,9 +6,9 @@ using namespace std;
 using namespace mu2e;
 
 //positions of components for DS component offsets
-double x_d0 = 0; double x_d1 = 0; double x_cal = 0;double x_trk = 0;double x_ds3 = 0;double x_hall = 0;double x_world = 0;double x_st = 0; double x_ds2 = 0; double x_pa =0; 
-double y_d0 = 0; double y_d1 = 0; double y_cal  = 0;double y_trk = 0;double y_ds3 = 0;double y_hall = 0;double y_world = 0;double y_st = 0; double y_ds2 = 0; double y_pa =0;
-double z_d0 = 0; double z_d1 = 0; double z_cal = 0;double z_trk = 0;double z_ds3 = 0;double z_hall = 0;double z_world = 0;double z_st = 0; double z_ds2 = 0; double z_pa =0;
+double x_d0 = 0; double x_d1 = 0; double x_cal = 0;double x_trk = 0;double x_ds3 = 0;double x_hall = 0;double x_world = 0;double x_st = 0; double x_ds2 = 0; double x_ipa =0; 
+double y_d0 = 0; double y_d1 = 0; double y_cal  = 0;double y_trk = 0;double y_ds3 = 0;double y_hall = 0;double y_world = 0;double y_st = 0; double y_ds2 = 0; double y_ipa =0;
+double z_d0 = 0; double z_d1 = 0; double z_cal = 0;double z_trk = 0;double z_ds3 = 0;double z_hall = 0;double z_world = 0;double z_st = 0; double z_ds2 = 0; double z_ipa =0;
 double x_crv = 0 ; double y_crv = 0 ; double z_crv = 0;  double z_crv_u = 0;  double z_crv_d = 0;
 double nCrystals = 674;
 double FrontTracker_gdmltag;
@@ -84,6 +84,7 @@ void REveMu2eMainWindow::showNodesByName(TGeoNode* n, const std::string& str, bo
       t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
       t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
       t(1,4) = tv[0] + shift[0]; t(2,4) = tv[1]  + shift[1]; t(3,4) = tv[2] + shift[2];
+      //std::cout<<name<<"  "<<tv[0] + shift[0]<<" "<<tv[1]  + shift[1] << " "<< tv[2] + shift[2]<<std::endl;
       ctrans *= t;
     }
     n->ls();
@@ -181,8 +182,28 @@ void REveMu2eMainWindow::getOffsets(TGeoNode* n,const std::string& str, REX::REv
   std::string name(n->GetName());
   j++;
 
-  int ndau = n->GetNdaughters();
+  REX::REveTrans ctrans;
+  ctrans.SetFrom(trans.Array());
+  TGeoMatrix     *gm = n->GetMatrix();
+  const Double_t *rm = gm->GetRotationMatrix();
+  const Double_t *tv = gm->GetTranslation();
+  REX::REveTrans t;// NOTE: starts index at "1" whereas the matrices are indexed from 0
+  t(1,1) = rm[0]; t(1,2) = rm[1]; t(1,3) = rm[2];
+  t(2,1) = rm[3]; t(2,2) = rm[4]; t(2,3) = rm[5];
+  t(3,1) = rm[6]; t(3,2) = rm[7]; t(3,3) = rm[8];
+  t(1,4) = tv[0]  ; t(2,4) = tv[1]  ; t(3,4) = tv[2] ;
 
+  ctrans *= t;
+  std::cout<<j<<" "<<name<<" located at "<<tv[0]<<" "<< tv[1]<<" "<<tv[2]<<std::endl;
+  std::vector<float> pos;
+  std::pair<std::string, std::vector<float>> offset;
+  pos.push_back(tv[0]);
+  pos.push_back(tv[1]);
+  pos.push_back(tv[2]);
+  offset = make_pair(name, pos);
+  offsets.push_back(offset);
+  n->ls();
+  int ndau = n->GetNdaughters();
   for ( int i=0; i<ndau; ++i ){
     TGeoNode * pn = n->GetDaughter(i);
       REX::REveTrans ctrans;
@@ -314,11 +335,11 @@ void REveMu2eMainWindow::GeomDrawerNominal(TGeoNode* node, REX::REveTrans& trans
         y_st = y_ds2 + offsets[i].second[1];
         z_st = z_ds2 + offsets[i].second[2];
       }
-      if(offsets[i].first.find("protonabs") != string::npos){
-        x_pa = x_ds2 + offsets[i].second[0];
-        y_pa = y_ds2 + offsets[i].second[1];
-        z_pa = z_ds2 + offsets[i].second[2];
-      }     
+      if(offsets[i].first.find("protonabs1") != string::npos){
+        x_ipa = x_st+ offsets[i].second[0];
+        y_ipa = y_st + offsets[i].second[1];
+        z_ipa = z_st + offsets[i].second[2];
+      }
     }
     std::vector<double> shift;
 
@@ -363,21 +384,20 @@ void REveMu2eMainWindow::GeomDrawerNominal(TGeoNode* node, REX::REveTrans& trans
         }
       }
     }
-    /*if(geomOpt.showST and !geomOpt.extracted){
-      static std::vector <std::string> substrings_pa  {"protonabs"};
-      shift.at(0) = x_pa - x_trk;
-      shift.at(1) = y_pa - y_trk;
-      shift.at(2) = z_pa - z_trk;//FIXME
+    if(geomOpt.showST and !geomOpt.extracted){
+      static std::vector <std::string> substrings_pa  {"protonabs1","protonabs3","protonabs4"};
+      shift.at(0) = x_ipa - x_trk;
+      shift.at(1) = y_ipa - y_trk;
+      shift.at(2) = z_ds2 - z_trk;
       for(auto& i: substrings_pa){
         showNodesByName(node,i,kFALSE, 0, trans, beamlineholder, maxlevel, level, false, false, shift, false, true, drawconfigf.getInt("BLColor"));
       }
-  }*/
+  }
   if(geomOpt.showCRV and !geomOpt.extracted){
     static std::vector <std::string> substrings_crv {"CRSmother_CRV"};
     shift.at(0) = x_crv;
     shift.at(1) = y_crv;
     shift.at(2) = z_crv - z_trk;
-    std::cout<<"z_crv "<<z_crv <<" -"<< z_trk<<std::endl;
     for(auto& i: substrings_crv){
       showNodesByName(node,i,kFALSE, 0, trans, crvholder, maxlevel, level,  false, false, shift, false, false, drawconfigf.getInt("CRVColor"));
     }
