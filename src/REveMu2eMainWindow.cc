@@ -239,7 +239,7 @@ void REveMu2eMainWindow::GeomDrawerSol(TGeoNode* node, REX::REveTrans& trans, RE
   double x_sol = 0; double y_sol = 0; double z_sol = 0; 
   double x_pt = 0; double y_pt = 0; double z_pt =0;
   for(unsigned int i = 0; i < offsets.size(); i++){
-      if(offsets[i].first.find("DS3Vacuum0") != string::npos)      {
+      if(offsets[i].first.find("DS3Vacuum") != string::npos)      {
         x_sol = offsets[i].second[0];
         y_sol  = offsets[i].second[1];
         z_sol = offsets[i].second[2];
@@ -301,9 +301,9 @@ void REveMu2eMainWindow::GeomDrawerNominal(TGeoNode* node, REX::REveTrans& trans
         x_ds3 = x_hall + offsets[i].second[0];
         y_ds3 = y_hall + offsets[i].second[1];
         z_ds3 = z_hall + offsets[i].second[2];
-        z_crv = -1*offsets[i].second[2];//595.3
-        x_crv = -1*offsets[i].second[0];//481.75
-        y_crv = -1*offsets[i].second[1];//591.76
+        z_crv = -1*offsets[i].second[2];
+        x_crv = -1*offsets[i].second[0];
+        y_crv = -1*offsets[i].second[1];
       }
       if(offsets[i].first.find("TrackerMother") != string::npos)       {
         x_trk = x_ds3 + offsets[i].second[0];
