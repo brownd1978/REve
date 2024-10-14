@@ -1,7 +1,10 @@
-# REve
-Eve-7 based event display for Mu2e. Eve-7 (formally REve) is an updated version of the well-known and widely used TEve ROOT based Event Visualization Software. The purpose is to update the TEve code, REve uses modernized infrastcutrue and allows Web Access for remote use.
+# Mu2eEventDisplay
 
-For more information about Eve-7 and the implementation for Mu2e see: https://mu2ewiki.fnal.gov/wiki/Eve7EventDisplay#Examples_of_the_Eve-7_Mu2e_Display.
+This repo contains the current Mu2eEventDisplay source code, example fcls, tutorials and documentation.
+
+The Mu2eEventDisplay is based on REve which is an updated version of the well-known and widely used TEve ROOT based Event Visualization Software. REve uses modernized infrastcutrue and allows Web Access for remote use.
+
+For more information about REve and the implementation for Mu2e see: https://mu2ewiki.fnal.gov/wiki/Eve7EventDisplay#Examples_of_the_Eve-7_Mu2e_Display.
 
 # Run an Example
 
@@ -10,12 +13,12 @@ You can run the REve Mu2e code in the same way as any analyzer in Mu2e Offline.
 A number of "examples" are contained in the "examples" directory. The nominal_example.fcl is used for displaying reconstructed (and true MC) for nominal geometry:
 
 ```
-mu2e -c REve/examples/nominal_example.fcl FILENAME.art  
+mu2e -c Mu2eEventDisplay/examples/nominal_example.fcl FILENAME.art  
 ```
 
 Things can be added and removed on the GUI once set to "true" in the FCL. Just uncheck the boxes associated with the geometry you want to remove.
 
-NOTE: you should run this from your working directory, not inside of REve. This is for the firefox browser path #FIXME.
+NOTE: you should run this from your working directory, not inside of Mu2eEventDisplay. This is for the firefox browser path #FIXME.
 
 For extracted position data/MC please use the extracted_example.fcl
 
@@ -31,6 +34,9 @@ Recently we upgraded the code to use the newest GDML. To get this built you need
 muse build GDML
 
 ```
+
+Note to make this work you need a local Offline release.
+
 # The Browser
 
 The user is advised to add the following to their .rootrc:
@@ -46,9 +52,11 @@ mu2egpvm01.fnal.gov:01234/win1/
 
 ```
 
+There is a script in the config directory which can help create the .rootrc.
+
 Or create a ssh tunnel:
 ```
-ssh  -Y  -A -L 01234:localhost:01234 sophie@mu2egpvm01.fnal.gov
+ssh  -Y  -A -L 01234:localhost:01234 <username>@mu2egpvm01.fnal.gov
 
 
 ```
@@ -57,4 +65,4 @@ You can then view the display on your local machine without need to use a VNC. B
 
 # Development
 
-This code is still under development by the Mu2e Analysis Tools Group: Sophie Middleton, Andy Edmonds and Namitha Chitraseemadam. Please contact us to contribute.
+This code is still under development by the Mu2e Analysis Tools Group. The development team current consists of Sophie Middleton, Andy Edmonds and Namitha Chithiraseemadam. Please contact us to contribute.
