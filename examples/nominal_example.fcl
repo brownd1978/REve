@@ -3,7 +3,7 @@
 #include "Offline/fcl/minimalMessageService.fcl"
 #include "Offline/fcl/standardProducers.fcl"
 #include "Offline/fcl/standardServices.fcl"
-#include "REve/fcl/prolog.fcl"
+#include "Mu2eEventDisplay/fcl/prolog.fcl"
 
 services : @local::Services.Reco
 
@@ -58,7 +58,7 @@ services.TFileService.fileName: "/dev/null"
 #
 # to display a selected set of events, #include this file with a list of eventid triplets: ie:
 #
-##include "REve/examples/nominal_example.fcl"
+##include "Mu2eEventDisplay/examples/nominal_example.fcl"
 #physics.filters.eidsel.idsToMatch : [
 #  "1202:636:337031",
 #  "1202:648:370322" ]

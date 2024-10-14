@@ -3,7 +3,7 @@
 #include "Offline/fcl/minimalMessageService.fcl"
 #include "Offline/fcl/standardProducers.fcl"
 #include "Offline/fcl/standardServices.fcl"
-#include "REve/fcl/prolog.fcl"
+#include "Mu2eEventDisplay/fcl/prolog.fcl"
 services : @local::Services.Reco
 process_name : HelixED
 source : { module_type : RootInput }
@@ -40,7 +40,7 @@ physics.analyzers.Mu2eEventDisplay.filler.addMCTraj : true
 //setup extracted geometry
 physics.analyzers.Mu2eEventDisplay.extracted : true
 //physics.analyzers.Mu2eEventDisplay.gdmlname :"Offline/gen/gdml/mu2e_extracted.gdml"
-physics.analyzers.Mu2eEventDisplay.gdmlname :"REve/gdml/mu2e_extracted.gdml"
+physics.analyzers.Mu2eEventDisplay.gdmlname :"Mu2eEventDisplay/gdml/mu2e_extracted.gdml"
 
 physics.analyzers.Mu2eEventDisplay.seqMode : true
 //for print statements
