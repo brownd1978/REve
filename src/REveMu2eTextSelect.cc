@@ -1,4 +1,4 @@
-#include "REve/inc/REveMu2eTextSelect.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eTextSelect.hh"
 
 using namespace mu2e;
 

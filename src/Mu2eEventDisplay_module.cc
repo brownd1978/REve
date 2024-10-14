@@ -51,14 +51,14 @@
 #pragma GCC diagnostic pop
 
 //REveMu2e
-#include "REve/inc/REveMu2eMainWindow.hh"
-#include "REve/inc/EventDisplayManager.hh"
-#include "REve/inc/CollectionFiller.hh"
-#include "REve/inc/DataCollections.hh"
-#include "REve/inc/REveMu2eGUI.hh"
-#include "REve/inc/REveMu2eTextSelect.hh"
-#include "REve/inc/REveMu2eDataProduct.hh"
-#include "REve/inc/REveMu2ePrintInfo.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eMainWindow.hh"
+#include "Mu2eEventDisplay/inc/EventDisplayManager.hh"
+#include "Mu2eEventDisplay/inc/CollectionFiller.hh"
+#include "Mu2eEventDisplay/inc/DataCollections.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eGUI.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eTextSelect.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eDataProduct.hh"
+#include "Mu2eEventDisplay/inc/REveMu2ePrintInfo.hh"
 
 //Ofline
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
@@ -468,7 +468,7 @@ namespace mu2e
       frame_->makeGeometryScene(eveMng_, geomOpts, gdmlname_);
 
       //add path to the custom GUI code here, this overrides ROOT GUI
-      eveMng_->AddLocation("mydir/", "REve/CustomGUIv2");
+      eveMng_->AddLocation("mydir/", "Mu2eEventDisplay/CustomGUIv2");
       eveMng_->SetDefaultHtmlPage("file:mydir/eventDisplay.html");
 
       // InitGuiInfo() cont'd

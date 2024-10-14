@@ -1,4 +1,4 @@
-#include "REve/inc/REveMu2eDataInterface.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eDataInterface.hh"
 #include "Offline/DataProducts/inc/GenVector.hh"
 #include "Offline/ConfigTools/inc/SimpleConfig.hh"
 #include "Offline/GeometryService/inc/GeomHandle.hh"

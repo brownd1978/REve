@@ -1,5 +1,5 @@
 #include "Offline/GeometryService/inc/GeomHandle.hh"
-#include "REve/inc/REveMu2eGeomUtil.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eGeomUtil.hh"
 
 namespace REX = ROOT::Experimental;
 using namespace std;
