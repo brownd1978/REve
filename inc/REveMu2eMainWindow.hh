@@ -40,10 +40,10 @@
 #include <ROOT/REveTableInfo.hxx>
 #include <ROOT/REveViewContext.hxx>
 #include "art/Framework/Principal/Event.h"
-#include "REve/inc/DataCollections.hh"
-#include "REve/inc/REveMu2eDataInterface.hh"
-#include "REve/inc/REveMu2eMCInterface.hh"
-#include "REve/inc/REveMu2eGeomUtil.hh"
+#include "Mu2eEventDisplay/inc/DataCollections.hh"
+#include "Mu2eEventDisplay//inc/REveMu2eDataInterface.hh"
+#include "Mu2eEventDisplay/e/inc/REveMu2eMCInterface.hh"
+#include "Mu2eEventDisplay//inc/REveMu2eGeomUtil.hh"
 #include "Offline/StoppingTargetGeom/inc/StoppingTarget.hh"
 
 #include <utility>
