@@ -1,6 +1,6 @@
 //Author: S Middleton
 //Date: 2021
-//Purpose: REveEventDisplay Driving module
+//Purpose: Mu2eEventDisplay Driving module
 
 #include "TRACE/trace.h"
 //Art:
@@ -51,14 +51,14 @@
 #pragma GCC diagnostic pop
 
 //REveMu2e
-#include "REve/inc/REveMu2eMainWindow.hh"
-#include "REve/inc/EventDisplayManager.hh"
-#include "REve/inc/CollectionFiller.hh"
-#include "REve/inc/DataCollections.hh"
-#include "REve/inc/REveMu2eGUI.hh"
-#include "REve/inc/REveMu2eTextSelect.hh"
-#include "REve/inc/REveMu2eDataProduct.hh"
-#include "REve/inc/REveMu2ePrintInfo.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eMainWindow.hh"
+#include "Mu2eEventDisplay/inc/EventDisplayManager.hh"
+#include "Mu2eEventDisplay/inc/CollectionFiller.hh"
+#include "Mu2eEventDisplay/inc/DataCollections.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eGUI.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eTextSelect.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eDataProduct.hh"
+#include "Mu2eEventDisplay/inc/REveMu2ePrintInfo.hh"
 
 //Ofline
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
@@ -102,7 +102,7 @@ namespace mu2e
             }
     };
 
-    class REveEventDisplay : public art::EDAnalyzer {
+    class Mu2eEventDisplay : public art::EDAnalyzer {
       public:
         struct Config{
           using Name=fhicl::Name;
@@ -137,8 +137,8 @@ namespace mu2e
         };
 
         typedef art::EDAnalyzer::Table<Config> Parameters;
-        explicit REveEventDisplay(const Parameters& conf);
-        virtual ~REveEventDisplay();
+        explicit Mu2eEventDisplay(const Parameters& conf);
+        virtual ~Mu2eEventDisplay();
         virtual void beginJob() override;
         virtual void beginRun(const art::Run& run) override;
         virtual void analyze(const art::Event& e);
@@ -220,7 +220,7 @@ namespace mu2e
     };
 
 
-  REveEventDisplay::REveEventDisplay(const Parameters& conf)  :
+  Mu2eEventDisplay::Mu2eEventDisplay(const Parameters& conf)  :
     art::EDAnalyzer(conf),
     diagLevel_(conf().diagLevel()),
     showCRV_(conf().showCRV()),
@@ -263,16 +263,16 @@ namespace mu2e
       geomOpts.fill(showCRV_,showPS_, showTS_, showDS_, show2D_, caloVST_, showST_, extracted_, showSTM_, showCalo_, showTracker_, showCaloCrystals_, showEM_ );
     }
 
-  REveEventDisplay::~REveEventDisplay() {}
+  Mu2eEventDisplay::~Mu2eEventDisplay() {}
 
-  void REveEventDisplay::signalAppStart()
+  void Mu2eEventDisplay::signalAppStart()
   {
       std::unique_lock lock{m_};
       cv_.notify_all();
   }
 
-  void REveEventDisplay::beginJob(){
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting ..."<<std::endl;
+  void Mu2eEventDisplay::beginJob(){
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : beginJob()] -- starting ..."<<std::endl;
       {
       std::unique_lock lock{m_};
 
@@ -280,26 +280,26 @@ namespace mu2e
 
       // Wait for app init to finish ... this will process pending timer events.
       XThreadTimer sut([this]{ signalAppStart(); });
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on app start"<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : beginJob()] -- starting wait on app start"<<std::endl;
       cv_.wait(lock);
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- app start signal received, starting eve init"<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : beginJob()] -- app start signal received, starting eve init"<<std::endl;
       //auto start1 = std::chrono::high_resolution_clock::now();
 
       XThreadTimer suet([this]{ setup_eve(); });
       //auto end1 = std::chrono::high_resolution_clock::now();
       //std::cout<<" time through process setup evene"<<std::chrono::duration<double, std::milli>(end1 - start1).count()<<" ms "<<std::endl;
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on eve setup"<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : beginJob()] -- starting wait on eve setup"<<std::endl;
       cv_.wait(lock);
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- eve setup apparently complete"<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : beginJob()] -- eve setup apparently complete"<<std::endl;
       }
   }
 
 
-  void REveEventDisplay::beginRun(const art::Run&){
+  void Mu2eEventDisplay::beginRun(const art::Run&){
 
   }
 
-  void REveEventDisplay::printOpts(){
+  void Mu2eEventDisplay::printOpts(){
     std::cout<<"*********** REve Mu2e **************"
     <<" User Options: "
     <<" addHits : "<< filler_.addHits_
@@ -314,7 +314,7 @@ namespace mu2e
   }
 
 
-  template <class T, class S> void REveEventDisplay::FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveMu2eDataProduct>>& list, std::tuple<std::vector<std::string>, std::vector<S>>& tuple){
+  template <class T, class S> void Mu2eEventDisplay::FillAnyCollection(const art::Event& evt, std::vector<std::shared_ptr<REveMu2eDataProduct>>& list, std::tuple<std::vector<std::string>, std::vector<S>>& tuple){
       // get all instances of products of type T
       std::vector<art::Handle<T>> vah = evt.getMany<T>();
       std::string name;
@@ -339,7 +339,7 @@ namespace mu2e
 
     }
 
-  void REveEventDisplay::analyze(art::Event const& event){
+  void Mu2eEventDisplay::analyze(art::Event const& event){
 
       //auto start = std::chrono::high_resolution_clock::now();
 
@@ -356,7 +356,7 @@ namespace mu2e
       if((seqMode_) or ( runid_ == runn and subrunid_ == subrunn and eventid_ == eventn)){
         // Hand off control to display thread
         std::unique_lock lock{m_};
-        if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
+        if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : analyze()] -- Fill collections "<<std::endl;
         //auto start1 = std::chrono::high_resolution_clock::now();
         // fill the collection lists
         if(filler_.addClusters_) {
@@ -410,34 +410,34 @@ namespace mu2e
 
         if(filler_.addTrkHits_) filler_.FillRecoCollections(event, data, TrkHits);
         if(filler_.addCosmicTrackSeeds_)  filler_.FillRecoCollections(event, data, CosmicTrackSeeds);
-        if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- Event processing started "<<std::endl;
+        if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : analyze()] -- Event processing started "<<std::endl;
         XThreadTimer proc_timer([this]{ process_single_event(); });
 
-        if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
+        if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : analyze()] -- transferring to TApplication thread "<<std::endl;
         cv_.wait(lock);
-        if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- TApplication thread returning control "<<std::endl;
-        if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] Ended Event "<<std::endl;
+        if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : analyze()] -- TApplication thread returning control "<<std::endl;
+        if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : analyze()] Ended Event "<<std::endl;
         seqMode_ = true;
 
         std::cout<<"test VALUE "<<eventMgr_->run<<std::endl;
       }
   }
 
-    void REveEventDisplay::endJob()
+    void Mu2eEventDisplay::endJob()
     {
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : EndJob] Start "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : EndJob] Start "<<std::endl;
       application_.Terminate(0);
 
       if (appThread_.joinable()) {
         appThread_.join();
       }
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : EndJob] End "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : EndJob] End "<<std::endl;
     }
 
 
 
   // Functions invoked by the threads explicitly created by this module
-  void REveEventDisplay::run_application()
+  void Mu2eEventDisplay::run_application()
   {
       // Without this the startup timer might not get invoked.
       gSystem->ProcessEvents();
@@ -445,7 +445,7 @@ namespace mu2e
   }
 
 
-  void REveEventDisplay::setup_eve()
+  void Mu2eEventDisplay::setup_eve()
   {
       RWebWindowsManager::AssignMainThrd();
       eveMng_ = REX::REveManager::Create();
@@ -468,7 +468,7 @@ namespace mu2e
       frame_->makeGeometryScene(eveMng_, geomOpts, gdmlname_);
 
       //add path to the custom GUI code here, this overrides ROOT GUI
-      eveMng_->AddLocation("mydir/", "REve/CustomGUIv2");
+      eveMng_->AddLocation("mydir/", "Mu2eEventDisplay/CustomGUIv2");
       eveMng_->SetDefaultHtmlPage("file:mydir/eventDisplay.html");
 
       // InitGuiInfo() cont'd
@@ -476,7 +476,7 @@ namespace mu2e
       world->AddElement(fText);
       world->AddElement(eventMgr_);
       world->AddElement(fPrint);
-      std::cout<<"[REveEventDisplay::setup_eve] run in display is set to "<<eventMgr_->run<<std::endl;
+      std::cout<<"[Mu2eEventDisplay::setup_eve] run in display is set to "<<eventMgr_->run<<std::endl;
 
       world->AddCommand("QuitRoot",  "sap-icon://log",  eventMgr_, "QuitRoot()");
       world->AddCommand("NextEvent", "sap-icon://step", eventMgr_, "NextEvent()");
@@ -488,9 +488,9 @@ namespace mu2e
   }
 
   // Actually interesting function responsible for drawing the current event
-  void REveEventDisplay::process_single_event()
+  void Mu2eEventDisplay::process_single_event()
     {
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] Start "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : process_single_event] Start "<<std::endl;
       eveMng_->DisableRedraw();
       eveMng_->GetWorld()->BeginAcceptingChanges();
       eveMng_->GetScenes()->AcceptChanges(true);
@@ -503,15 +503,15 @@ namespace mu2e
       fPrint->fmctrack_tuple = data.mctrack_tuple;
       fPrint->ftrack_tuple = data.track_tuple;
 
-      std::cout<<"[REveEventDisplay::process_single_event] display has run number set to "<<eventMgr_->run<<std::endl;
-      std::cout<<"[REveEventDisplay::process_single_event] value in the text class "<<fText->get()<<std::endl;
+      std::cout<<"[Mu2eEventDisplay::process_single_event] display has run number set to "<<eventMgr_->run<<std::endl;
+      std::cout<<"[Mu2eEventDisplay::process_single_event] value in the text class "<<fText->get()<<std::endl;
 
       fGui->StampObjProps();
 
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- extract event scene "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : process_single_event] -- extract event scene "<<std::endl;
       REX::REveElement* scene = eveMng_->GetEventScene();
 
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : process_single_event] -- calls to data interface "<<std::endl;
 
       // fill draw options
       DrawOptions drawOpts(filler_.addCosmicTrackSeeds_, filler_.addHelixSeeds_, filler_.addKalSeeds_, filler_.addCaloDigis_, filler_.addClusters_, filler_.addHits_,  filler_.addCrvHits_, filler_.addCrvClusters_, filler_.addTimeClusters_, filler_.addTrkHits_, filler_.addMCTraj_, filler_.addSurfSteps_, addErrBar_, addCrystalHits_, addCRVBars_, useBTrk_);
@@ -522,15 +522,15 @@ namespace mu2e
       // call the "show events" function to add the
       frame_->showEvents(eveMng_, scene, firstLoop_, firstLoopCalo_, data, drawOpts, particles_, strawdisplay_, geomOpts, KKOpts);
 
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : process_single_event] -- cluster added to scene "<<std::endl;
 
       firstLoop_ = false;
       eveMng_->GetScenes()->AcceptChanges(false);
       eveMng_->GetWorld()->EndAcceptingChanges();
       eveMng_->EnableRedraw();
 
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : process_single_event] End "<<std::endl;
+      if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : process_single_event] End "<<std::endl;
     }
   }
-  using mu2e::REveEventDisplay;
-  DEFINE_ART_MODULE(REveEventDisplay)
+  using mu2e::Mu2eEventDisplay;
+  DEFINE_ART_MODULE(Mu2eEventDisplay)

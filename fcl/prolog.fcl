@@ -1,7 +1,7 @@
 BEGIN_PROLOG
 
-REveEventDisplay : {
-    module_type : REveEventDisplay
+Mu2eEventDisplay : {
+    module_type : Mu2eEventDisplay
     diagLevel : 1
     showCRV : false
     showPS : false
@@ -54,7 +54,7 @@ REveEventDisplay : {
 
 REveDis : {
   analyzers : {
-      REveEventDisplay     : @local::REveEventDisplay
+      Mu2eEventDisplay     : @local::Mu2eEventDisplay
   }
   producers: {
       MergeKK : {
@@ -68,7 +68,7 @@ REveDis : {
       idsToMatch: [ "*:*:*" ]
     }
   }
-  seqBase   : [REveEventDisplay]
+  seqBase   : [Mu2eEventDisplay]
 }
 REvePath : ["eidsel", "MergeKK" ]
 

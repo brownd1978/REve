@@ -1,5 +1,5 @@
 #include "Offline/ConfigTools/inc/SimpleConfig.hh"
-#include "REve/inc/REveMu2eMainWindow.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eMainWindow.hh"
 
 namespace REX = ROOT::Experimental;
 using namespace std;
