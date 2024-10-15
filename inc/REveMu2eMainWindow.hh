@@ -40,11 +40,13 @@
 #include <ROOT/REveTableInfo.hxx>
 #include <ROOT/REveViewContext.hxx>
 #include "art/Framework/Principal/Event.h"
-#include "REve/inc/DataCollections.hh"
-#include "REve/inc/REveMu2eDataInterface.hh"
-#include "REve/inc/REveMu2eMCInterface.hh"
-#include "REve/inc/REveMu2eGeomUtil.hh"
+#include "Mu2eEventDisplay/inc/DataCollections.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eDataInterface.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eMCInterface.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eGeomUtil.hh"
 #include "Offline/StoppingTargetGeom/inc/StoppingTarget.hh"
+
+#include <utility>
 namespace REX = ROOT::Experimental;
 
 namespace mu2e {
@@ -147,8 +149,13 @@ namespace mu2e {
             void makeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int j, bool crys1, bool crys2, std::string name, int color);
             void changeEveGeoShape(TGeoNode* n, REX::REveTrans& trans, REX::REveElement* holder, int j, bool crys1, bool crys2, std::string name);
             void showNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, std::vector<double> shift, bool print, bool single, int color);
+            void getOffsets(TGeoNode* n, const std::string& str, REX::REveTrans& trans, int maxlevel, int level, std::vector<std::pair<std::string, std::vector<float>>> & offsets);
             void changeNodesByName(TGeoNode* n, const std::string& str, bool onOff, int _diagLevel, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level, bool caloshift, bool crystal, std::vector<double> shift, bool print, bool single);
             void GeomDrawer(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* bholder, REX::REveElement* trholder, REX::REveElement* cholder,REX::REveElement* crholder, REX::REveElement* vholder, REX::REveElement* tholder,int maxlevel, int level, GeomOptions geomOpts);
+
+            void GeomDrawerNominal(TGeoNode* node, REX::REveTrans& trans, REX::REveElement* bholder, REX::REveElement* trholder, REX::REveElement* cholder,REX::REveElement* crholder, REX::REveElement* vholder, REX::REveElement* tholder, int maxlevel, int level, GeomOptions geomOpt, std::vector<std::pair<std::string, std::vector<float>>>& offsets);
+            void GeomDrawerSol(TGeoNode* node, REX::REveTrans& trans, REX::REveElement* beamlineholder, int maxlevel, int level, GeomOptions geomOpt, std::vector<std::pair<std::string, std::vector<float>>>& offsets);
+            void GeomDrawerExtracted(TGeoNode* node, REX::REveTrans& trans, REX::REveElement* beamlineholder, REX::REveElement* trackerholder, REX::REveElement* caloholder, REX::REveElement* crystalsholder, REX::REveElement* crvholder, REX::REveElement* targetholder,int maxlevel, int level, GeomOptions geomOpt);
             void makeGeometryScene(REX::REveManager *eveMng,  GeomOptions geomOpts, std::string filename);
             void showEvents(REX::REveManager *eveMng,  REX::REveElement* &eventScene, bool firstLoop,  bool firstLoopCalo, DataCollections &data, DrawOptions drawOpts, std::vector<int> particleIds, bool strawdisplay, GeomOptions geomOpts, KinKalOptions KKOpts);
             void changeEveGeoShape(TGeoNode* node, REX::REveTrans& trans,  REX::REveElement* holder, int maxlevel, int level);

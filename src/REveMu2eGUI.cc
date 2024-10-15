@@ -1,4 +1,4 @@
-#include "REve/inc/REveMu2eGUI.hh"
+#include "Mu2eEventDisplay/inc/REveMu2eGUI.hh"
 
 using namespace mu2e;
 

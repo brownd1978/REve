@@ -1,4 +1,4 @@
-#include "REve/inc/REveMu2ePrintInfo.hh"
+#include "Mu2eEventDisplay/inc/REveMu2ePrintInfo.hh"
 #include "Offline/GlobalConstantsService/inc/GlobalConstantsHandle.hh"
 #include "Offline/GlobalConstantsService/inc/ParticleDataList.hh"
 
