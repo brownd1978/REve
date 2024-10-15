@@ -355,19 +355,15 @@ namespace mu2e
     std::vector<std::shared_ptr<REveMu2eDataProduct>> _chits;
 
     if((seqMode_) or ( runid_ == runn and subrunid_ == subrunn and eventid_ == eventn)){
-      // Hand off control to display thread
       std::unique_lock lock{m_};
-      <<<<<<< HEAD:src/REveEventDisplay_module.cc
-        if(diagLevel_ >=2 ) std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
-      =======
-        if(diagLevel_ == 1) std::cout<<"[Mu2eEventDisplay : analyze()] -- Fill collections "<<std::endl;
-      >>>>>>> main:src/Mu2eEventDisplay_module.cc
-        //auto start1 = std::chrono::high_resolution_clock::now();
-        // fill the collection lists
-        if(filler_.addClusters_) {
-          if(specifyTag_) filler_.FillRecoCollections(event, data, CaloClusters);
-          else { FillAnyCollection<CaloClusterCollection, const CaloClusterCollection*>(event, _chits, data.calocluster_tuple);}
-        }
+      // Hand off control to display thread
+      if(diagLevel_ >=1) std::cout<<"[Mu2eEventDisplay : analyze()] -- Fill collections "<<std::endl;
+      //auto start1 = std::chrono::high_resolution_clock::now();
+      // fill the collection lists
+      if(filler_.addClusters_) {
+        if(specifyTag_) filler_.FillRecoCollections(event, data, CaloClusters);
+        else { FillAnyCollection<CaloClusterCollection, const CaloClusterCollection*>(event, _chits, data.calocluster_tuple);}
+      }
       if(filler_.addCaloDigis_) {
         if(specifyTag_) filler_.FillRecoCollections(event, data, CaloDigis);
         else { FillAnyCollection<CaloDigiCollection, const CaloDigiCollection*>(event, _chits, data.calodigi_tuple);}
