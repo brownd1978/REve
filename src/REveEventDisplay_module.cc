@@ -272,26 +272,29 @@ namespace mu2e
   }
 
   void REveEventDisplay::beginJob(){
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting ..."<<std::endl;
-      {
+    if(diagLevel_ >= 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting ..."<<std::endl;
+    {
       std::unique_lock lock{m_};
 
       appThread_ = std::thread{[this] { run_application(); }};
 
       // Wait for app init to finish ... this will process pending timer events.
       XThreadTimer sut([this]{ signalAppStart(); });
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on app start"<<std::endl;
+      if(diagLevel_ >= 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on app start"<<std::endl;
       cv_.wait(lock);
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- app start signal received, starting eve init"<<std::endl;
+      if(diagLevel_ >= 1) std::cout<<"[REveEventDisplay : beginJob()] -- app start signal received, starting eve init"<<std::endl;
       //auto start1 = std::chrono::high_resolution_clock::now();
 
       XThreadTimer suet([this]{ setup_eve(); });
       //auto end1 = std::chrono::high_resolution_clock::now();
       //std::cout<<" time through process setup evene"<<std::chrono::duration<double, std::milli>(end1 - start1).count()<<" ms "<<std::endl;
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on eve setup"<<std::endl;
+      if(diagLevel_ >= 1) std::cout<<"[REveEventDisplay : beginJob()] -- starting wait on eve setup"<<std::endl;
       cv_.wait(lock);
-      if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : beginJob()] -- eve setup apparently complete"<<std::endl;
-      }
+      if(diagLevel_ >= 1) std::cout<<"[REveEventDisplay : beginJob()] -- eve setup apparently complete"<<std::endl;
+
+      if(diagLevel_ >= 1) printOpts();
+
+    }
   }
 
 
@@ -301,16 +304,16 @@ namespace mu2e
 
   void REveEventDisplay::printOpts(){
     std::cout<<"*********** REve Mu2e **************"
-    <<" User Options: "
-    <<" addHits : "<< filler_.addHits_
-    <<" addTimeClusters : "<<filler_.addTimeClusters_
-    <<" addCRVpulses : "<<filler_.addCrvHits_
-    <<" addCRVclusters : "<<filler_.addCrvClusters_
-    <<" addClusters : "<<filler_.addClusters_
-    <<" addHelices : "<<filler_.addHelixSeeds_
-    <<" addTracks : "<<filler_.addKalSeeds_
-    <<" addCosmicTrackSeeds : "<<filler_.addCosmicTrackSeeds_
-    <<" add CRV : "<<filler_.addCrvHits_<<std::endl;
+      <<" User Options: "
+      <<" addHits : "<< filler_.addHits_
+      <<" addTimeClusters : "<<filler_.addTimeClusters_
+      <<" addCRVpulses : "<<filler_.addCrvHits_
+      <<" addCRVclusters : "<<filler_.addCrvClusters_
+      <<" addClusters : "<<filler_.addClusters_
+      <<" addHelices : "<<filler_.addHelixSeeds_
+      <<" addTracks : "<<filler_.addKalSeeds_
+      <<" addCosmicTrackSeeds : "<<filler_.addCosmicTrackSeeds_
+      <<" add CRV : "<<filler_.addCrvHits_<<std::endl;
   }
 
 
@@ -330,7 +333,7 @@ namespace mu2e
         alist.push_back(ah.product());
         std::string name = fcn + "_" + prov->moduleLabel() + "_" + instn;
         alabel.push_back(name);
-        if(diagLevel_ == 1){
+        if(diagLevel_ >= 2){
           std::cout<<"extracting name =  "<<fcn<<" "<<modn<<" "<<instn<<std::endl;
           std::cout<<"with type =  "<<typeid(prov).name()<<std::endl;
         }
@@ -356,7 +359,7 @@ namespace mu2e
       if((seqMode_) or ( runid_ == runn and subrunid_ == subrunn and eventid_ == eventn)){
         // Hand off control to display thread
         std::unique_lock lock{m_};
-        if(diagLevel_ == 1) std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
+        if(diagLevel_ >=2 ) std::cout<<"[REveEventDisplay : analyze()] -- Fill collections "<<std::endl;
         //auto start1 = std::chrono::high_resolution_clock::now();
         // fill the collection lists
         if(filler_.addClusters_) {
