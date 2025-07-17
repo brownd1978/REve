@@ -70,7 +70,7 @@ void DataInterface::AddCaloDigis(REX::REveManager *&eveMng, bool firstLoop_, std
         // Set positions of clusters
         if(diskID == 0)
           ps1->SetNextPoint(pointmmTocm(crystal.position().x()), pointmmTocm(crystal.position().y()) , zpos );
-        if(diskID == 1) 
+        if(diskID == 1)
           ps2->SetNextPoint(pointmmTocm(crystalPos.x()), pointmmTocm(crystalPos.y()) , zpos );
 
         Color_t color = kRed;
@@ -207,11 +207,11 @@ void DataInterface::AddCaloClusters(REX::REveManager *&eveMng, bool firstLoop_, 
 
 
         // Set positions of clusters
-        if(cluster.diskID() == 0) 
+        if(cluster.diskID() == 0)
           ps1->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z())));
         if(cluster.diskID() == 1)
           ps2->SetNextPoint(pointmmTocm(COG.x()), pointmmTocm(COG.y()) , abs(pointmmTocm(pointInMu2e.z())));
-        
+
         // Set draw options
         /*TColor color1;
           color1.SetPalette(1,0);
@@ -812,7 +812,7 @@ template<class KTRAJc> void DataInterface::AddTrkStrawHit(KalSeed const& kalseed
       std::string title = "TrkStrawHitSeed : x "  + std::to_string(tshspos.x())  +  '\n'
         + " y " + std::to_string(tshspos.y())  +  '\n'
         + " z " + std::to_string(tshspos.z())  +  '\n'
-        + " time :" + std::to_string(tshs.hitTime())+  '\n'
+        + " time :" + std::to_string(tshs.time())+  '\n'
         + " energyDep :" + std::to_string(tshs.energyDep())+ "MeV" + '\n'
         + " error : " + err_title;
       auto point_with_error = new REX::REveCompound("TrkStrawHitSeed "+std::to_string(i), "TrkStrawHitSeed",1);
